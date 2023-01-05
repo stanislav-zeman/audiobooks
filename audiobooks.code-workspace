@@ -1,0 +1,30 @@
+{
+  "folders": [
+    { "name": "root", "path": "." },
+    { "name": "eshop", "path": "packages/eshop" },
+    { "name": "backend", "path": "packages/backend" },
+    { "name": "proto", "path": "packages/proto" },
+    { "name": "grpc-ts", "path": "packages/grpc-ts" }
+  ],
+  "settings": {
+    "prettier.documentSelectors": ["**/*.astro"],
+    "[astro]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "editor.quickSuggestions": {
+      "strings": true
+    },
+    "rust-analyzer.cargo.buildScripts.enable": true
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "command": "./node_modules/.bin/astro dev",
+        "name": "Development server",
+        "request": "launch",
+        "type": "node-terminal"
+      }
+    ]
+  }
+}
