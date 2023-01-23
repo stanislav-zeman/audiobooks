@@ -8,16 +8,22 @@
     "*.d.ts"
   ],
   "scripts": {
-    "build": "grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./ --grpc_out=grpc_js:./ -I ../proto ../proto/*.proto && grpc_tools_node_protoc --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --ts_out=grpc_js:. -I ../proto ../proto/*.proto",
+    "clean": "rimraf *.js *.ts",
+    "build_old": "yarn clean && protoc --plugin=protoc-gen-grpc-web=./node_modules/.bin/protoc-gen-grpc-web --js_out=import_style=commonjs,binary:./ --grpc-web_out=import_style=commonjs+dts,mode=grpcweb:./ -I ../proto ../proto/*.proto",
+    "build": "yarn clean && protoc --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:./ --ts_out=service=grpc-web:./ -I ../proto ../proto/*.proto",
     "dev": "nodemon --watch ../proto --exec \"yarn build\" --delay 1 --ext proto"
   },
   "devDependencies": {
     "grpc-proto": "*",
-    "grpc-tools": "^1.12.3",
-    "grpc_tools_node_protoc_ts": "^5.3.2",
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "rimraf": "^4.1.0",
+    "ts-protoc-gen": "^0.15.0"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@improbable-eng/grpc-web": "^0.15.0",
+    "google-protobuf": "^3.21.2"
   }
 }

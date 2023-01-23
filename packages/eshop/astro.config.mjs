@@ -1,5 +1,5 @@
 import { defineConfig } from "astro/config";
-import node from "@astrojs/node";
+import adapter from "@astrojs/vercel/edge";
 
 // https://astro.build/config
 import tailwind from "@astrojs/tailwind";
@@ -16,7 +16,7 @@ export default defineConfig({
       external: ["grpc-ts"],
     },
   },
-  adapter: node({
-    mode: "standalone",
+  adapter: adapter({
+    // mode: "standalone",
   }),
 });

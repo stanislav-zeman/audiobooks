@@ -3,42 +3,48 @@ import Layout from "@layouts/Layout.astro";
 import Card from "@components/Card.astro";
 import Counter from "@components/Counter";
 
-import { ChannelCredentials } from "@grpc/grpc-js";
+import { EshopService } from "grpc-ts/eshop_pb_service";
 import { HelloWorldRequest } from "grpc-ts/eshop_pb";
-import { EshopServiceClient } from "grpc-ts/eshop_grpc_pb";
-import { promise } from "@utils/grpc/promise";
-
-const client = new EshopServiceClient(
-  "0.0.0.0:9000",
-  ChannelCredentials.createInsecure()
-);
+import { grpc } from "@improbable-eng/grpc-web";
+import { FetchReadableStreamTransport } from "@utils/grpc/transport";
+grpc.setDefaultTransport(FetchReadableStreamTransport({}));
 
 const request = new HelloWorldRequest();
-request.setName("Astro");
+request.setName("Audiobooks");
 
-const req = promise(client.helloWorld.bind(client));
+grpc.unary(EshopService.HelloWorld, {
+  request,
+  host: "http://0.0.0.0:9000",
+  onEnd: ({ message, status, statusMessage }) => {
+    if (status === grpc.Code.OK && message) {
+      console.log("HelloWorld", message.toObject());
+    } else {
+      console.log("Error", statusMessage);
+    }
+  },
+});
 
-const msg = await req(request);
+// await new Promise((resolve) => setTimeout(resolve, 1000));
 ---
 
-<Layout title="Welcome to Astro.">
+<Layout title="Welcome to Audiobooks">
   <main>
     <h1>Welcome to <span class="text-gradient">AUDIO</span></h1>
     <div class="instructions flex justify-between">
       <Counter client:load />
     </div>
-    {msg.getMessage()}
+    {"yoo"}
 
     <ul role="list" class="link-card-grid">
       <Card href="https://docs.astro.build/" title="Documentation">
-        Learn how Astro works and explore the official API docs.</Card
-      >
+        Learn how Astro works and explore the official API docs.
+      </Card>
       <Card href="https://astro.build/integrations/" title="Integrations">
         Supercharge your project with new frameworks and libraries.
       </Card>
       <Card href="https://astro.build/themes/" title="Themes">
-        Explore a galaxy of community-built starter themes.</Card
-      >
+        Explore a galaxy of community-built starter themes.
+      </Card>
       <Card href="https://astro.build/chat/" title="Community">
         Come say hi to our amazing Discord community. ❤️
       </Card>

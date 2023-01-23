@@ -2,6 +2,7 @@ use tonic::{Request, Response, Status};
 
 use super::grpc::*;
 
+#[derive(Default)]
 pub struct EshopHandler {}
 
 #[tonic::async_trait]
@@ -10,6 +11,8 @@ impl eshop_service_server::EshopService for EshopHandler {
         &self,
         request: Request<HelloWorldRequest>,
     ) -> Result<Response<HelloWorldResponse>, Status> {
+        println!("Got a request from {:?}", request.remote_addr());
+
         let reply = HelloWorldResponse {
             message: format!("Hello {}!", request.into_inner().name),
         };
