@@ -9,7 +9,9 @@
       "@components/*": ["./src/components/*"],
       "@pages/*": ["./src/pages/*"],
       "@layouts/*": ["./src/layouts/*"],
-      "@utils/*": ["./src/utils/*"]
+      "@utils/*": ["./src/utils/*"],
+      "@typings/*": ["./src/types/*"],
+      "@assets/*": ["./src/assets/*"]
     }
   }
 }
