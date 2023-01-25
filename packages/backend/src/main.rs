@@ -3,7 +3,7 @@ use sqlx::{MySql, MySqlPool};
 
 use tonic_web::GrpcWebLayer;
 
-use crate::handlers::{grpc::eshop_service_server::EshopServiceServer, hello::EshopHandler};
+use crate::handlers::{grpc::eshop_service_server::EshopServiceServer, eshop::EshopHandler};
 use tower_http::trace::TraceLayer;
 
 mod handlers;
