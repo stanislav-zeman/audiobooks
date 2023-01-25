@@ -1,6 +1,7 @@
-use std::sync::Arc;
-use sqlx;
 use crate::models::User;
+use async_trait::async_trait;
+use sqlx;
+use std::sync::Arc;
 
 #[async_trait]
 pub trait UserRepo {
@@ -19,11 +20,10 @@ impl UserRepository {
     }
 }
 
+#[async_trait]
 impl UserRepo for UserRepository {
     async fn add_user(&self, user: User) -> anyhow::Result<()> {
-        sqlx::query(
-            "INSERT INTO user (id, name, studio_access) VALUES (?, ?);"
-        )
+        sqlx::query("INSERT INTO user (id, name, studio_access) VALUES (?, ?);")
             .bind(user.id)
             .bind(user.name)
             .bind(user.studio_access)
@@ -34,9 +34,7 @@ impl UserRepo for UserRepository {
     }
 
     async fn edit_user(&self, user: User) -> anyhow::Result<()> {
-        sqlx::query(
-            "UPDATE TABLE user SET name = ?, studio_access = ? WHERE id = ?;"
-        )
+        sqlx::query("UPDATE TABLE user SET name = ?, studio_access = ? WHERE id = ?;")
             .bind(user.name)
             .bind(user.studio_access)
             .bind(user.id)
@@ -47,9 +45,7 @@ impl UserRepo for UserRepository {
     }
 
     async fn delete_user(&self, user: User) -> anyhow::Result<()> {
-        sqlx::query(
-            "DELETE FROM user WHERE id = ?;"
-        )
+        sqlx::query("DELETE FROM user WHERE id = ?;")
             .bind(user.id)
             .execute(&*self.mysql_pool)
             .await?;
@@ -57,5 +53,3 @@ impl UserRepo for UserRepository {
         Ok(())
     }
 }
-
-
