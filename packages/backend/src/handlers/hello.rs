@@ -8,11 +8,44 @@ pub struct EshopHandler {}
 #[tonic::async_trait]
 impl eshop_service_server::EshopService for EshopHandler {
     async fn get_book(&self, _: Request<BookRequest>) -> Result<Response<Book>, Status> {
+        let chapters = vec![
+            Chapter {
+                id: "jedna".to_string(),
+                chapter_name: "jedna".to_string(),
+                start: 0,
+            },
+            Chapter {
+                id: "dva".to_string(),
+                chapter_name: "dva".to_string(),
+                start: 1,
+            },
+            Chapter {
+                id: "tri".to_string(),
+                chapter_name: "tri".to_string(),
+                start: 2,
+            },
+        ];
+
+        let authors = vec![
+            Author {
+                id: "jedna".to_string(),
+                name: "jedna".to_string(),
+            },
+            Author {
+                id: "dva".to_string(),
+                name: "dva".to_string(),
+            },
+            Author {
+                id: "tri".to_string(),
+                name: "tri".to_string(),
+            },
+        ];
+
         Ok(Response::new(Book {
             id: String::from("prdel"),
             is_owned: false,
-            chapters: vec![],
-            author: vec![],
+            chapters,
+            authors,
             length: 420_u64,
             name: String::from("epic book name"),
             description: String::from("desc"),

@@ -2,7 +2,6 @@
 // file: eshop.proto
 
 import * as jspb from "google-protobuf";
-import * as google_protobuf_timestamp_pb from "google-protobuf/google/protobuf/timestamp_pb";
 
 export class BookRequest extends jspb.Message {
   getId(): string;
@@ -36,10 +35,10 @@ export class Book extends jspb.Message {
   setChaptersList(value: Array<Chapter>): void;
   addChapters(value?: Chapter, index?: number): Chapter;
 
-  clearAuthorList(): void;
-  getAuthorList(): Array<Author>;
-  setAuthorList(value: Array<Author>): void;
-  addAuthor(value?: Author, index?: number): Author;
+  clearAuthorsList(): void;
+  getAuthorsList(): Array<Author>;
+  setAuthorsList(value: Array<Author>): void;
+  addAuthors(value?: Author, index?: number): Author;
 
   getLength(): number;
   setLength(value: number): void;
@@ -77,7 +76,7 @@ export namespace Book {
     id: string,
     isOwned: boolean,
     chaptersList: Array<Chapter.AsObject>,
-    authorList: Array<Author.AsObject>,
+    authorsList: Array<Author.AsObject>,
     length: number,
     name: string,
     description: string,
@@ -139,6 +138,9 @@ export class Chapter extends jspb.Message {
   getChapterName(): string;
   setChapterName(value: string): void;
 
+  getStart(): number;
+  setStart(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Chapter.AsObject;
   static toObject(includeInstance: boolean, msg: Chapter): Chapter.AsObject;
@@ -153,6 +155,7 @@ export namespace Chapter {
   export type AsObject = {
     id: string,
     chapterName: string,
+    start: number,
   }
 }
 

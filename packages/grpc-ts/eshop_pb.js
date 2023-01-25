@@ -12,8 +12,6 @@ var jspb = require('google-protobuf');
 var goog = jspb;
 var global = Function('return this')();
 
-var google_protobuf_timestamp_pb = require('google-protobuf/google/protobuf/timestamp_pb.js');
-goog.object.extend(proto, google_protobuf_timestamp_pb);
 goog.exportSymbol('proto.eshop.Author', null, global);
 goog.exportSymbol('proto.eshop.AuthorRequest', null, global);
 goog.exportSymbol('proto.eshop.Book', null, global);
@@ -341,7 +339,7 @@ proto.eshop.Book.toObject = function(includeInstance, msg) {
     isOwned: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
     chaptersList: jspb.Message.toObjectList(msg.getChaptersList(),
     proto.eshop.Chapter.toObject, includeInstance),
-    authorList: jspb.Message.toObjectList(msg.getAuthorList(),
+    authorsList: jspb.Message.toObjectList(msg.getAuthorsList(),
     proto.eshop.Author.toObject, includeInstance),
     length: jspb.Message.getFieldWithDefault(msg, 5, 0),
     name: jspb.Message.getFieldWithDefault(msg, 6, ""),
@@ -402,7 +400,7 @@ proto.eshop.Book.deserializeBinaryFromReader = function(msg, reader) {
     case 4:
       var value = new proto.eshop.Author;
       reader.readMessage(value,proto.eshop.Author.deserializeBinaryFromReader);
-      msg.addAuthor(value);
+      msg.addAuthors(value);
       break;
     case 5:
       var value = /** @type {number} */ (reader.readUint64());
@@ -483,7 +481,7 @@ proto.eshop.Book.serializeBinaryToWriter = function(message, writer) {
       proto.eshop.Chapter.serializeBinaryToWriter
     );
   }
-  f = message.getAuthorList();
+  f = message.getAuthorsList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
       4,
@@ -618,10 +616,10 @@ proto.eshop.Book.prototype.clearChaptersList = function() {
 
 
 /**
- * repeated Author author = 4;
+ * repeated Author authors = 4;
  * @return {!Array<!proto.eshop.Author>}
  */
-proto.eshop.Book.prototype.getAuthorList = function() {
+proto.eshop.Book.prototype.getAuthorsList = function() {
   return /** @type{!Array<!proto.eshop.Author>} */ (
     jspb.Message.getRepeatedWrapperField(this, proto.eshop.Author, 4));
 };
@@ -631,7 +629,7 @@ proto.eshop.Book.prototype.getAuthorList = function() {
  * @param {!Array<!proto.eshop.Author>} value
  * @return {!proto.eshop.Book} returns this
 */
-proto.eshop.Book.prototype.setAuthorList = function(value) {
+proto.eshop.Book.prototype.setAuthorsList = function(value) {
   return jspb.Message.setRepeatedWrapperField(this, 4, value);
 };
 
@@ -641,7 +639,7 @@ proto.eshop.Book.prototype.setAuthorList = function(value) {
  * @param {number=} opt_index
  * @return {!proto.eshop.Author}
  */
-proto.eshop.Book.prototype.addAuthor = function(opt_value, opt_index) {
+proto.eshop.Book.prototype.addAuthors = function(opt_value, opt_index) {
   return jspb.Message.addToRepeatedWrapperField(this, 4, opt_value, proto.eshop.Author, opt_index);
 };
 
@@ -650,8 +648,8 @@ proto.eshop.Book.prototype.addAuthor = function(opt_value, opt_index) {
  * Clears the list making it empty but non-null.
  * @return {!proto.eshop.Book} returns this
  */
-proto.eshop.Book.prototype.clearAuthorList = function() {
-  return this.setAuthorList([]);
+proto.eshop.Book.prototype.clearAuthorsList = function() {
+  return this.setAuthorsList([]);
 };
 
 
@@ -1104,7 +1102,8 @@ proto.eshop.Chapter.prototype.toObject = function(opt_includeInstance) {
 proto.eshop.Chapter.toObject = function(includeInstance, msg) {
   var f, obj = {
     id: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    chapterName: jspb.Message.getFieldWithDefault(msg, 2, "")
+    chapterName: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    start: jspb.Message.getFieldWithDefault(msg, 3, 0)
   };
 
   if (includeInstance) {
@@ -1149,6 +1148,10 @@ proto.eshop.Chapter.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {string} */ (reader.readString());
       msg.setChapterName(value);
       break;
+    case 3:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setStart(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -1192,6 +1195,13 @@ proto.eshop.Chapter.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
+  f = message.getStart();
+  if (f !== 0) {
+    writer.writeUint32(
+      3,
+      f
+    );
+  }
 };
 
 
@@ -1228,6 +1238,24 @@ proto.eshop.Chapter.prototype.getChapterName = function() {
  */
 proto.eshop.Chapter.prototype.setChapterName = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+/**
+ * optional uint32 start = 3;
+ * @return {number}
+ */
+proto.eshop.Chapter.prototype.getStart = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.eshop.Chapter} returns this
+ */
+proto.eshop.Chapter.prototype.setStart = function(value) {
+  return jspb.Message.setProto3IntField(this, 3, value);
 };
 
 
