@@ -4,28 +4,38 @@
 import * as eshop_pb from "./eshop_pb";
 import {grpc} from "@improbable-eng/grpc-web";
 
-type EshopServiceHelloWorld = {
+type EshopServiceGetBook = {
   readonly methodName: string;
   readonly service: typeof EshopService;
   readonly requestStream: false;
   readonly responseStream: false;
-  readonly requestType: typeof eshop_pb.HelloWorldRequest;
-  readonly responseType: typeof eshop_pb.HelloWorldResponse;
+  readonly requestType: typeof eshop_pb.BookRequest;
+  readonly responseType: typeof eshop_pb.Book;
 };
 
-type EshopServiceHelloWorld2 = {
+type EshopServiceGetAuthor = {
   readonly methodName: string;
   readonly service: typeof EshopService;
   readonly requestStream: false;
   readonly responseStream: false;
-  readonly requestType: typeof eshop_pb.HelloWorldRequest;
-  readonly responseType: typeof eshop_pb.HelloWorldResponse;
+  readonly requestType: typeof eshop_pb.AuthorRequest;
+  readonly responseType: typeof eshop_pb.Author;
+};
+
+type EshopServiceGetUser = {
+  readonly methodName: string;
+  readonly service: typeof EshopService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof eshop_pb.UserRequest;
+  readonly responseType: typeof eshop_pb.User;
 };
 
 export class EshopService {
   static readonly serviceName: string;
-  static readonly HelloWorld: EshopServiceHelloWorld;
-  static readonly HelloWorld2: EshopServiceHelloWorld2;
+  static readonly GetBook: EshopServiceGetBook;
+  static readonly GetAuthor: EshopServiceGetAuthor;
+  static readonly GetUser: EshopServiceGetUser;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -60,23 +70,32 @@ export class EshopServiceClient {
   readonly serviceHost: string;
 
   constructor(serviceHost: string, options?: grpc.RpcOptions);
-  helloWorld(
-    requestMessage: eshop_pb.HelloWorldRequest,
+  getBook(
+    requestMessage: eshop_pb.BookRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: eshop_pb.HelloWorldResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: eshop_pb.Book|null) => void
   ): UnaryResponse;
-  helloWorld(
-    requestMessage: eshop_pb.HelloWorldRequest,
-    callback: (error: ServiceError|null, responseMessage: eshop_pb.HelloWorldResponse|null) => void
+  getBook(
+    requestMessage: eshop_pb.BookRequest,
+    callback: (error: ServiceError|null, responseMessage: eshop_pb.Book|null) => void
   ): UnaryResponse;
-  helloWorld2(
-    requestMessage: eshop_pb.HelloWorldRequest,
+  getAuthor(
+    requestMessage: eshop_pb.AuthorRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: eshop_pb.HelloWorldResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: eshop_pb.Author|null) => void
   ): UnaryResponse;
-  helloWorld2(
-    requestMessage: eshop_pb.HelloWorldRequest,
-    callback: (error: ServiceError|null, responseMessage: eshop_pb.HelloWorldResponse|null) => void
+  getAuthor(
+    requestMessage: eshop_pb.AuthorRequest,
+    callback: (error: ServiceError|null, responseMessage: eshop_pb.Author|null) => void
+  ): UnaryResponse;
+  getUser(
+    requestMessage: eshop_pb.UserRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: eshop_pb.User|null) => void
+  ): UnaryResponse;
+  getUser(
+    requestMessage: eshop_pb.UserRequest,
+    callback: (error: ServiceError|null, responseMessage: eshop_pb.User|null) => void
   ): UnaryResponse;
 }
 

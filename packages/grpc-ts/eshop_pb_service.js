@@ -10,22 +10,31 @@ var EshopService = (function () {
   return EshopService;
 }());
 
-EshopService.HelloWorld = {
-  methodName: "HelloWorld",
+EshopService.GetBook = {
+  methodName: "GetBook",
   service: EshopService,
   requestStream: false,
   responseStream: false,
-  requestType: eshop_pb.HelloWorldRequest,
-  responseType: eshop_pb.HelloWorldResponse
+  requestType: eshop_pb.BookRequest,
+  responseType: eshop_pb.Book
 };
 
-EshopService.HelloWorld2 = {
-  methodName: "HelloWorld2",
+EshopService.GetAuthor = {
+  methodName: "GetAuthor",
   service: EshopService,
   requestStream: false,
   responseStream: false,
-  requestType: eshop_pb.HelloWorldRequest,
-  responseType: eshop_pb.HelloWorldResponse
+  requestType: eshop_pb.AuthorRequest,
+  responseType: eshop_pb.Author
+};
+
+EshopService.GetUser = {
+  methodName: "GetUser",
+  service: EshopService,
+  requestStream: false,
+  responseStream: false,
+  requestType: eshop_pb.UserRequest,
+  responseType: eshop_pb.User
 };
 
 exports.EshopService = EshopService;
@@ -35,11 +44,11 @@ function EshopServiceClient(serviceHost, options) {
   this.options = options || {};
 }
 
-EshopServiceClient.prototype.helloWorld = function helloWorld(requestMessage, metadata, callback) {
+EshopServiceClient.prototype.getBook = function getBook(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(EshopService.HelloWorld, {
+  var client = grpc.unary(EshopService.GetBook, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
@@ -66,11 +75,42 @@ EshopServiceClient.prototype.helloWorld = function helloWorld(requestMessage, me
   };
 };
 
-EshopServiceClient.prototype.helloWorld2 = function helloWorld2(requestMessage, metadata, callback) {
+EshopServiceClient.prototype.getAuthor = function getAuthor(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(EshopService.HelloWorld2, {
+  var client = grpc.unary(EshopService.GetAuthor, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+EshopServiceClient.prototype.getUser = function getUser(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(EshopService.GetUser, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

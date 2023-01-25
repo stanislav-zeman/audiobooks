@@ -2,9 +2,46 @@ syntax = "proto3";
 package eshop;
 
 service EshopService {
-  rpc HelloWorld(HelloWorldRequest) returns (HelloWorldResponse) {}
-  rpc HelloWorld2(HelloWorldRequest) returns (HelloWorldResponse) {}
+  rpc GetBook(BookRequest) returns (Book) {}
+  rpc GetAuthor(AuthorRequest) returns (Author) {}
+  rpc GetUser(UserRequest) returns (User) {}
 }
 
-message HelloWorldRequest { string name = 1; }
-message HelloWorldResponse { string message = 1; }
+message BookRequest { string id = 1; }
+
+message Book {
+  string id = 1;
+  bool is_owned = 2;
+  repeated Chapter chapters = 3;
+  repeated Author authors = 4;
+  uint64 length = 5;
+  string name = 6;
+  string description = 7;
+  string file_url = 8;
+  string cover_url = 9;
+  uint64 price = 10;
+  string ISBN = 11;
+}
+
+message AuthorRequest { string id = 1; }
+
+message Author {
+  string id = 1;
+  string name = 2;
+}
+
+message Chapter {
+  string id = 1;
+  string chapter_name = 2;
+  uint32 start = 3;
+}
+
+message UserRequest { string id = 1; }
+
+message User {
+  string id = 1;
+  string name = 2;
+  bool studio_access = 3;
+}
+
+// todo chapter

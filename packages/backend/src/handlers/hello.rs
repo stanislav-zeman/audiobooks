@@ -7,27 +7,67 @@ pub struct EshopHandler {}
 
 #[tonic::async_trait]
 impl eshop_service_server::EshopService for EshopHandler {
-    async fn hello_world(
-        &self,
-        request: Request<HelloWorldRequest>,
-    ) -> Result<Response<HelloWorldResponse>, Status> {
-        println!("Got a request from {:?}", request.remote_addr());
+    async fn get_book(&self, _: Request<BookRequest>) -> Result<Response<Book>, Status> {
+        let chapters = vec![
+            Chapter {
+                id: "jedna".to_string(),
+                chapter_name: "jedna".to_string(),
+                start: 0,
+            },
+            Chapter {
+                id: "dva".to_string(),
+                chapter_name: "dva".to_string(),
+                start: 1,
+            },
+            Chapter {
+                id: "tri".to_string(),
+                chapter_name: "tri".to_string(),
+                start: 2,
+            },
+        ];
 
-        let reply = HelloWorldResponse {
-            message: format!("Hello {}!", request.into_inner().name),
-        };
+        let authors = vec![
+            Author {
+                id: "jedna".to_string(),
+                name: "jedna".to_string(),
+            },
+            Author {
+                id: "dva".to_string(),
+                name: "dva".to_string(),
+            },
+            Author {
+                id: "tri".to_string(),
+                name: "tri".to_string(),
+            },
+        ];
 
-        Ok(Response::new(reply))
+        Ok(Response::new(Book {
+            id: String::from("prdel"),
+            is_owned: false,
+            chapters,
+            authors,
+            length: 420_u64,
+            name: String::from("epic book name"),
+            description: String::from("desc"),
+            file_url: String::from("file url"),
+            cover_url: String::from("cover url"),
+            price: 69_u64,
+            isbn: String::from("IIII I  II"),
+        }))
     }
 
-    async fn hello_world2(
-        &self,
-        request: Request<HelloWorldRequest>,
-    ) -> Result<Response<HelloWorldResponse>, Status> {
-        let reply = HelloWorldResponse {
-            message: format!("Hello2 {}!", request.into_inner().name),
-        };
+    async fn get_author(&self, _: Request<AuthorRequest>) -> Result<Response<Author>, Status> {
+        Ok(Response::new(Author {
+            id: String::from("mock id"),
+            name: String::from("mock name"),
+        }))
+    }
 
-        Ok(Response::new(reply))
+    async fn get_user(&self, _: Request<UserRequest>) -> Result<Response<User>, Status> {
+        Ok(Response::new(User {
+            id: String::from("mock id"),
+            name: String::from("this mock user"),
+            studio_access: true,
+        }))
     }
 }
