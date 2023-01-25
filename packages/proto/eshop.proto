@@ -1,10 +1,42 @@
 syntax = "proto3";
 package eshop;
 
+import "google/protobuf/timestamp.proto";
+
 service EshopService {
   rpc HelloWorld(HelloWorldRequest) returns (HelloWorldResponse) {}
   rpc HelloWorld2(HelloWorldRequest) returns (HelloWorldResponse) {}
+
+  rpc BookService(BookRequest) returns (Book) {}
 }
 
 message HelloWorldRequest { string name = 1; }
 message HelloWorldResponse { string message = 1; }
+
+message BookRequest {
+  string id = 1;
+}
+
+message Book {
+  string id = 1;
+  bool isOwned = 2;
+  repeated Chapter chapters = 3;
+  repeated Author author = 4;
+  uint64 length = 5;
+  string name = 6;
+  string description = 7;
+  string fileUrl = 8;
+  string coverUrl = 9;
+  uint64 price = 10;
+  string ISBN = 11;
+}
+
+message Author {
+  string id = 1;
+  string name = 2;
+}
+
+message Chapter {
+  string id = 1;
+  string chapter_name = 2;
+}

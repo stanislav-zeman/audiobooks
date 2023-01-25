@@ -1,6 +1,7 @@
 use tonic::{Request, Response, Status};
 
 use super::grpc::*;
+use serde::__private::de::IdentifierDeserializer;
 
 #[derive(Default)]
 pub struct EshopHandler {}
@@ -29,5 +30,28 @@ impl eshop_service_server::EshopService for EshopHandler {
         };
 
         Ok(Response::new(reply))
+    }
+
+    async fn book_service(
+        &self,
+        request: Request<BookRequest>
+    ) -> Result<Response<Book>, Status> {
+        Ok(
+            Response::new(
+                Book {
+                    id: String::from("prdel"),
+                    is_owned: true,
+                    chapters: vec![],
+                    author: vec![],
+                    length: 420_u64,
+                    name: String::from("epic book name"),
+                    description: String::from("desc"),
+                    file_url: String::from("file url"),
+                    cover_url: String::from("cover url"),
+                    price: 69_u64,
+                    isbn: String::from("IIII I  II")
+                }
+            )
+        )
     }
 }
