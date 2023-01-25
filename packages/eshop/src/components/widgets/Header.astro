@@ -5,6 +5,10 @@ import CartButton from "@components/common/CartButton.astro";
 import ToggleMenu from "@components/common/ToggleMenu.astro";
 import SearchBar from "@components/widgets/SearchBar.astro";
 
+export type Props = {
+  showSearch?: boolean;
+};
+
 const links = [
   {
     text: "Pages",
@@ -36,6 +40,8 @@ const links = [
     ],
   },
 ];
+
+const { showSearch = false } = Astro.props as Props;
 ---
 
 <header
@@ -54,9 +60,13 @@ const links = [
         <ToggleMenu />
       </div>
     </div>
-    <div class="hidden items-center md:flex">
-      <SearchBar />
-    </div>
+    {
+      showSearch && (
+        <div class="hidden items-center md:flex">
+          <SearchBar />
+        </div>
+      )
+    }
     <nav
       class="items-center w-full md:w-auto hidden md:flex text-gray-600 dark:text-slate-200 h-[calc(100vh-72px)] md:h-auto overflow-y-auto md:overflow-visible"
       aria-label="Main navigation"

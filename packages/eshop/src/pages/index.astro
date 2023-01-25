@@ -1,5 +1,8 @@
 ---
 import Layout from "@layouts/PageLayout.astro";
+import Listening from "@assets/images/listening.svg";
+import Creativity from "@assets/images/creativity.svg";
+import Hero from "@assets/images/hero.svg";
 
 const meta = {
   title: "Lol",
@@ -8,9 +11,80 @@ const meta = {
 ---
 
 <Layout {meta}>
-  <h1
-    class="mb-4 text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
-  >
-    Hello there
-  </h1>
+  <section class="p-12 md:mt-[76px]">
+    <div class="mx-auto text-center max-w-screen-lg md:pb-16 pb-10">
+      <h1
+        class="mb-4 text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
+      >
+        Listen to all the good stuff
+      </h1>
+      <p class="text-muted text-xl dark:text-slate-300 mb-6">Mostly bad tho</p>
+    </div>
+    <div class="mx-auto text-center max-w-screen-lg md:pb-16 pb-10">
+      <p class="text-muted text-xl dark:text-slate-300 mb-6">
+        Best-selling audiobooks, exclusive originals, popular podcasts, and
+        more. Always find the best of what you're into. Listen on your phone or
+        tablet, or download for later.
+      </p>
+    </div>
+    <div class="m-auto max-w-5xl">
+      <img src={Listening} alt="hero" class="m-auto" />
+    </div>
+  </section>
+  <section class="dark:bg-slate-800 bg-blue-50">
+    <div
+      class="font-medium px-4 max-w-6xl mx-auto py-4 sm:px-6 text-center text-md"
+    >
+      Best in the universe (said noone)
+    </div>
+  </section>
+  <section class="mx-auto px-10 sm:px-6 max-w-6xl lg:px-8 lg:py-20 py-16">
+    <div class="grid md:grid-cols-2 gap-6 row-gap-10">
+      <div class="md:basis-1/2 md:mt-0 mt-10">
+        <div class="dark:text-slate-400 text-lg mb-12">
+          <h3
+            class="font-bold dark:text-white text-2xl mb-2 sm:text-3xl tracking-tight"
+          >
+            ChatGPT went offline
+          </h3>
+          I have no idea what to write here
+        </div>
+      </div>
+
+      <div class="md:basis-1/2 md:mt-0 mt-10">
+        <img src={Creativity} alt="creativity" />
+      </div>
+    </div>
+  </section>
+  <section class="dark:bg-slate-800 bg-blue-50 pt-10 pb-10 px-10">
+    <div class="lg:max-w-2xl max-w-xl sm:mx-auto md:basis-1">
+      <div class="text-center max-w-3xl md:mx-auto mb-10 md:mb-12">
+        <p
+          class="text-primary dark:text-blue-200 font-semibold text-base tracking-wide uppercase"
+        >
+          Some rando text
+        </p>
+        <h2
+          class="font-bold font-heading mb-4 leading-tighter tracking-tighter text-4xl md:text-5xl"
+        >
+          More rando text
+        </h2>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-2 gap-6 row-gap-10">
+      <div class="md:basis-1/2 md:mt-0 mt-10">
+        <img src={Hero} alt="hero" />
+      </div>
+      <div class="md:basis-1/2 md:mt-0 mt-10">
+        <div class="dark:text-slate-400 text-lg mb-12">
+          <h3
+            class="font-bold dark:text-white text-2xl mb-2 sm:text-3xl tracking-tight"
+          >
+            ChatGPT went offline
+          </h3>
+          I have no idea what to write here
+        </div>
+      </div>
+    </div>
+  </section>
 </Layout>
