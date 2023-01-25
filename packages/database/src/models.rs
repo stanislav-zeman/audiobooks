@@ -3,21 +3,21 @@ use time::{Date, OffsetDateTime};
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
 pub struct User {
-    pub id: i64,
+    pub id: String,
     pub name: String,
     pub studio_access: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Author {
-    pub id: i64,
+    pub id: String,
     pub name: String,
     pub created_at: OffsetDateTime,
 }
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Book {
-    pub id: i64,
+    pub id: String,
     pub name: String,
     pub description: String,
     pub published_at: Date,
@@ -36,8 +36,9 @@ pub struct Tag {
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Chapter {
-    pub id: i64,
-    pub book_id: i64,
+    pub id: String,
+    pub book_id: String,
     pub name: String,
     pub start: i32,
+    pub created_at: OffsetDateTime,
 }

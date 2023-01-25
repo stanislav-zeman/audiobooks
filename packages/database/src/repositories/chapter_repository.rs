@@ -23,8 +23,7 @@ impl ChapterRepository {
 #[async_trait]
 impl ChapterRepo for ChapterRepository {
     async fn get_chapters_of_book(&self, book_id: String) -> anyhow::Result<Vec<Chapter>> {
-        let res = sqlx::query_as::<_, Chapter>("SELECT * FROM chapter WHERE book_id = ?")
-            .bind(book_id)
+        let res = sqlx::query_as!(Chapter, "SELECT * FROM chapter WHERE book_id = ?", book_id)
             .fetch_all(&*self.mysql_pool)
             .await?;
 
@@ -32,20 +31,21 @@ impl ChapterRepo for ChapterRepository {
     }
 
     async fn add_chapter_to_book(&self, chapter: Chapter) -> anyhow::Result<()> {
-        sqlx::query("INSERT INTO chapter (id, book_id, name, start) VALUES (?, ?, ?);")
-            .bind(chapter.id)
-            .bind(chapter.book_id)
-            .bind(chapter.name)
-            .bind(chapter.start)
-            .execute(&*self.mysql_pool)
-            .await?;
+        sqlx::query!(
+            "INSERT INTO chapter (id, book_id, name, start) VALUES (?, ?, ?, ?)",
+            chapter.id,
+            chapter.book_id,
+            chapter.name,
+            chapter.start
+        )
+        .execute(&*self.mysql_pool)
+        .await?;
 
         Ok(())
     }
 
     async fn remove_chapter(&self, chapter: Chapter) -> anyhow::Result<()> {
-        sqlx::query("REMOVE FROM chapter WHERE id = ?;")
-            .bind(chapter.id)
+        sqlx::query!("DELETE FROM chapter WHERE id = ?;", chapter.id)
             .execute(&*self.mysql_pool)
             .await?;
 
