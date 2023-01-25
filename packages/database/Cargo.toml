@@ -9,5 +9,5 @@ edition = "2021"
 anyhow = "1.0.68"
 async-trait = "0.1.63"
 chrono = { version = "0.4.23", features = ["serde"] }
-serde = "1.0.152"
+serde = { version = "1.0.152", features = ["derive"] }
 sqlx = { version = "0.6.2", features = ["mysql", "runtime-tokio-rustls"] }

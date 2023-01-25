@@ -6,14 +6,14 @@ pub struct User {
     pub id: i64,
     pub name: String,
     pub studio_access: bool,
-    pub books: Vec<Book>
+    pub books: Vec<Book>,
 }
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Author {
     pub id: i64,
     pub name: String,
-    pub books: Vec<Book>
+    pub books: Vec<Book>,
 }
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]

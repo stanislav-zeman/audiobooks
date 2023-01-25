@@ -1,6 +1,7 @@
-use std::sync::Arc;
-use sqlx::{MySqlPool, QueryBuilder};
 use crate::models::Author;
+use async_trait::async_trait;
+use sqlx::MySqlPool;
+use std::sync::Arc;
 
 #[async_trait]
 pub trait AuthorRepo {
@@ -24,12 +25,12 @@ impl AuthorRepo for AuthorRepository {
     async fn add_author(&self, author: Author) -> anyhow::Result<()> {
         sqlx::query!(
             "INSERT INTO author (id, name)
-             VALUES ($1, $2)",
+             VALUES (?, ?)",
             author.id,
             author.name
         )
-            .execute(&*self.mysql_pool)
-            .await?;
+        .execute(&*self.mysql_pool)
+        .await?;
 
         Ok(())
     }

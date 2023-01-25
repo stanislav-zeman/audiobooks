@@ -4,7 +4,8 @@
     { "name": "eshop", "path": "packages/eshop" },
     { "name": "backend", "path": "packages/backend" },
     { "name": "proto", "path": "packages/proto" },
-    { "name": "grpc-ts", "path": "packages/grpc-ts" }
+    { "name": "grpc-ts", "path": "packages/grpc-ts" },
+    { "name": "database", "path": "packages/database" }
   ],
   "settings": {
     "prettier.documentSelectors": ["**/*.astro"],
