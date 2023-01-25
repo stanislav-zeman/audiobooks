@@ -1,6 +1,5 @@
 use crate::models::Chapter;
 use async_trait::async_trait;
-use nanoid::nanoid;
 use sqlx;
 use std::sync::Arc;
 
@@ -15,15 +14,19 @@ pub struct ChapterRepository {
     mysql_pool: Arc<sqlx::MySqlPool>,
 }
 
+impl ChapterRepository {
+    pub fn new(mysql_pool: Arc<sqlx::MySqlPool>) -> Self {
+        Self { mysql_pool }
+    }
+}
+
 #[async_trait]
 impl ChapterRepo for ChapterRepository {
     async fn get_chapters_of_book(&self, book_id: String) -> anyhow::Result<Vec<Chapter>> {
-        let res = sqlx::query_as::<_, Chapter>(
-            "SELECT (id, name, start) FROM chapter WHERE book_id = ?;",
-        )
-        .bind(book_id)
-        .fetch_all(&*self)
-        .await?;
+        let res = sqlx::query_as::<_, Chapter>("SELECT * FROM chapter WHERE book_id = ?")
+            .bind(book_id)
+            .fetch_all(&*self.mysql_pool)
+            .await?;
 
         Ok(res)
     }
