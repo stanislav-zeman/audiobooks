@@ -59,9 +59,25 @@ message Authors {
   repeated Author authors = 2;
 }
 
+message BooksFilters {
+  optional string name = 1;
+  optional string author_id = 2;
+  optional uint64 priceFrom = 4;
+  optional uint64 priceTo = 5;
+  repeated string tags = 6;
+}
+
+message AuthorFilters { optional string name = 1; }
+
 message GetBookByIdRequest { string id = 1; }
 message GetAuthorByIdRequest { string id = 1; }
 message GetUserByIdRequest { string id = 1; }
-message GetBooksRequest { Pagination pagination = 1; }
-message GetAuthorsRequest { Pagination pagination = 1; }
+message GetBooksRequest {
+  Pagination pagination = 1;
+  BooksFilters filters = 2;
+}
+message GetAuthorsRequest {
+  Pagination pagination = 1;
+  AuthorFilters filters = 2;
+}
 message GetMyBooksRequest { Pagination pagination = 1; }
