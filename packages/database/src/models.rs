@@ -22,6 +22,7 @@ pub struct Book {
     pub name: String,
     pub description: String,
     pub tags: Vec<Tag>,
+    pub chapters: Vec<Chapter>,
     pub published_at: DateTime<Utc>,
     pub length: i32,
     pub file_url: String,
