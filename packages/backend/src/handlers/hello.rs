@@ -8,39 +8,16 @@ pub struct EshopHandler {}
 
 #[tonic::async_trait]
 impl eshop_service_server::EshopService for EshopHandler {
-    async fn hello_world(
-        &self,
-        request: Request<HelloWorldRequest>,
-    ) -> Result<Response<HelloWorldResponse>, Status> {
-        println!("Got a request from {:?}", request.remote_addr());
-
-        let reply = HelloWorldResponse {
-            message: format!("Hello {}!", request.into_inner().name),
-        };
-
-        Ok(Response::new(reply))
-    }
-
-    async fn hello_world2(
-        &self,
-        request: Request<HelloWorldRequest>,
-    ) -> Result<Response<HelloWorldResponse>, Status> {
-        let reply = HelloWorldResponse {
-            message: format!("Hello2 {}!", request.into_inner().name),
-        };
-
-        Ok(Response::new(reply))
-    }
-
-    async fn book_service(
+    async fn get_book(
         &self,
         request: Request<BookRequest>
     ) -> Result<Response<Book>, Status> {
+
         Ok(
             Response::new(
                 Book {
                     id: String::from("prdel"),
-                    is_owned: true,
+                    is_owned: false,
                     chapters: vec![],
                     author: vec![],
                     length: 420_u64,
@@ -49,7 +26,30 @@ impl eshop_service_server::EshopService for EshopHandler {
                     file_url: String::from("file url"),
                     cover_url: String::from("cover url"),
                     price: 69_u64,
-                    isbn: String::from("IIII I  II")
+                    isbn: String::from("IIII I  II"),
+                }
+            )
+        )
+    }
+
+    async fn get_author(&self, request: Request<AuthorRequest>) -> Result<Response<Author>, Status> {
+        Ok(
+            Response::new(
+                Author {
+                    id: String::from("mock id"),
+                    name: String::from("mock name"),
+                }
+            )
+        )
+    }
+
+    async fn get_user(&self, request: Request<UserRequest>) -> Result<Response<User>, Status> {
+        Ok(
+            Response::new(
+                User {
+                    id: String::from("mock id"),
+                    name: String::from("this mock user"),
+                    studio_access: true,
                 }
             )
         )
