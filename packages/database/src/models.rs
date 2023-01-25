@@ -36,6 +36,7 @@ pub struct Tag {
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Chapter {
     pub id: i64,
+    pub book_id: i64,
     pub name: String,
     pub start: i32,
 }
