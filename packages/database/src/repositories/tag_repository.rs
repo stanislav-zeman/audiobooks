@@ -15,6 +15,12 @@ pub struct TagRepository {
     mysql_pool: Arc<sqlx::MySqlPool>,
 }
 
+impl TagRepository {
+    pub fn new(mysql_pool: Arc<sqlx::MySqlPool>) -> Self {
+        Self { mysql_pool }
+    }
+}
+
 #[async_trait]
 impl TagRepo for TagRepository {
     async fn get_tags_of_book(&self, book_id: String) -> anyhow::Result<Vec<Tag>> {
