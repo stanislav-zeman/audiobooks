@@ -15,6 +15,9 @@ prost = "0.11.2"
 tonic-web = "0.5.0"
 tower-http = { version = "0.3.5", features = ["trace"] }
 tracing-subscriber = "0.3.16"
+mysql = "23.0.1"
+dotenvy = "0.15.6"
+sqlx = { version = "0.6.2", features = ["mysql", "runtime-tokio-rustls"] }
 
 [build-dependencies]
 tonic-build = "0.8"
