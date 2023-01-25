@@ -1,10 +1,12 @@
+use std::sync::Arc;
+use sqlx;
 use crate::models::User;
 use async_trait::async_trait;
-use sqlx;
-use std::sync::Arc;
+use nanoid::nanoid;
 
 #[async_trait]
 pub trait UserRepo {
+    async fn get_user_by_id(&self, id: nanoid) -> anyhow::Result<User>;
     async fn add_user(&self, user: User) -> anyhow::Result<()>;
     async fn edit_user(&self, user: User) -> anyhow::Result<()>;
     async fn delete_user(&self, user: User) -> anyhow::Result<()>;
@@ -22,6 +24,17 @@ impl UserRepository {
 
 #[async_trait]
 impl UserRepo for UserRepository {
+    async fn get_user_by_id(&self, id: nanoid) -> anyhow::Result<User> {
+        Ok(
+            sqlx::query_as::<_, User> (
+                "SELECT (id, name, studio_access) FROM user WHERE id = ?;"
+            )
+                .bind(id)
+                .fetch_one(&*self.mysql_pool)
+                .await?
+        )
+    }
+
     async fn add_user(&self, user: User) -> anyhow::Result<()> {
         sqlx::query("INSERT INTO user (id, name, studio_access) VALUES (?, ?);")
             .bind(user.id)
