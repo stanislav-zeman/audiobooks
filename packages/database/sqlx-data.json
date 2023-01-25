@@ -7,12 +7,12 @@
           "name": "id",
           "ordinal": 0,
           "type_info": {
-            "char_set": 63,
+            "char_set": 255,
             "flags": {
-              "bits": 36867
+              "bits": 4099
             },
-            "max_size": 20,
-            "type": "LongLong"
+            "max_size": 128,
+            "type": "VarString"
           }
         },
         {
@@ -162,6 +162,83 @@
     },
     "query": "INSERT INTO author (id, name) VALUES(?, ?)"
   },
+  "4d25837c89ad0f552af7ff9c02afe280bd2f021ebb904a922199631939cec67d": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": {
+            "char_set": 255,
+            "flags": {
+              "bits": 4099
+            },
+            "max_size": 128,
+            "type": "VarString"
+          }
+        },
+        {
+          "name": "book_id",
+          "ordinal": 1,
+          "type_info": {
+            "char_set": 255,
+            "flags": {
+              "bits": 4097
+            },
+            "max_size": 128,
+            "type": "VarString"
+          }
+        },
+        {
+          "name": "name",
+          "ordinal": 2,
+          "type_info": {
+            "char_set": 255,
+            "flags": {
+              "bits": 4113
+            },
+            "max_size": 262140,
+            "type": "Blob"
+          }
+        },
+        {
+          "name": "start",
+          "ordinal": 3,
+          "type_info": {
+            "char_set": 63,
+            "flags": {
+              "bits": 36865
+            },
+            "max_size": 11,
+            "type": "Long"
+          }
+        },
+        {
+          "name": "created_at",
+          "ordinal": 4,
+          "type_info": {
+            "char_set": 63,
+            "flags": {
+              "bits": 1153
+            },
+            "max_size": 19,
+            "type": "Timestamp"
+          }
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT * FROM chapter WHERE book_id = ?"
+  },
   "6413b2f0929af9d43457564f2f89765b00e67816a8eaddfab65506366efecfd7": {
     "describe": {
       "columns": [
@@ -169,12 +246,12 @@
           "name": "id",
           "ordinal": 0,
           "type_info": {
-            "char_set": 63,
+            "char_set": 255,
             "flags": {
-              "bits": 36867
+              "bits": 4099
             },
-            "max_size": 20,
-            "type": "LongLong"
+            "max_size": 128,
+            "type": "VarString"
           }
         },
         {
@@ -233,6 +310,16 @@
     },
     "query": "UPDATE book SET name = ?, description = ?, published_at = ?, length = ?, file_url = ?, cover_url = ?, price = ?, isbn = ?\n             WHERE id = ?"
   },
+  "923e1fccfb14e96dcbfedba70f4ebe377e43fa3d66b6b236fea8edffbef62d9c": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 4
+      }
+    },
+    "query": "INSERT INTO chapter (id, book_id, name, start) VALUES (?, ?, ?, ?)"
+  },
   "aaf6c2f79398948ffac7a20a27464fd60944c37fbbe821f5c63c635d141b99d1": {
     "describe": {
       "columns": [],
@@ -242,6 +329,16 @@
       }
     },
     "query": "INSERT INTO book (id, name, description, published_at, length, file_url, cover_url, price, isbn)\n             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+  },
+  "d8a1c9218ef60ec453812e192fbcac1660a5de569a35f6c981424e2c42533f5d": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "DELETE FROM chapter WHERE id = ?;"
   },
   "e344a63268630aa4811e4dcbc65102b9704b545d0b45e75bd5d50a0fa747d3d5": {
     "describe": {
