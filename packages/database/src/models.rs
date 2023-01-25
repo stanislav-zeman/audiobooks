@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use time::OffsetDateTime;
+use time::{Date, OffsetDateTime};
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
 pub struct User {
@@ -20,13 +20,13 @@ pub struct Book {
     pub id: i64,
     pub name: String,
     pub description: String,
-    pub published_at: OffsetDateTime,
+    pub published_at: Date,
     pub length: i32,
     pub file_url: String,
     pub cover_url: String,
     pub price: i32,
     pub isbn: String,
-    pub studio_access: bool,
+    pub created_at: OffsetDateTime,
 }
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]

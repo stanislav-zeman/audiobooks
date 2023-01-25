@@ -1,3 +1,276 @@
 {
-  "db": "MySQL"
+  "db": "MySQL",
+  "1248742b9ff6e60aaf314eb28f2488deb17bd46677b7c80a6e6f61557b1b5716": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": {
+            "char_set": 63,
+            "flags": {
+              "bits": 36867
+            },
+            "max_size": 20,
+            "type": "LongLong"
+          }
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": {
+            "char_set": 255,
+            "flags": {
+              "bits": 4113
+            },
+            "max_size": 262140,
+            "type": "Blob"
+          }
+        },
+        {
+          "name": "description",
+          "ordinal": 2,
+          "type_info": {
+            "char_set": 255,
+            "flags": {
+              "bits": 4113
+            },
+            "max_size": 262140,
+            "type": "Blob"
+          }
+        },
+        {
+          "name": "published_at",
+          "ordinal": 3,
+          "type_info": {
+            "char_set": 63,
+            "flags": {
+              "bits": 4225
+            },
+            "max_size": 10,
+            "type": "Date"
+          }
+        },
+        {
+          "name": "length",
+          "ordinal": 4,
+          "type_info": {
+            "char_set": 63,
+            "flags": {
+              "bits": 36865
+            },
+            "max_size": 11,
+            "type": "Long"
+          }
+        },
+        {
+          "name": "file_url",
+          "ordinal": 5,
+          "type_info": {
+            "char_set": 255,
+            "flags": {
+              "bits": 4113
+            },
+            "max_size": 262140,
+            "type": "Blob"
+          }
+        },
+        {
+          "name": "cover_url",
+          "ordinal": 6,
+          "type_info": {
+            "char_set": 255,
+            "flags": {
+              "bits": 4113
+            },
+            "max_size": 262140,
+            "type": "Blob"
+          }
+        },
+        {
+          "name": "price",
+          "ordinal": 7,
+          "type_info": {
+            "char_set": 63,
+            "flags": {
+              "bits": 36865
+            },
+            "max_size": 11,
+            "type": "Long"
+          }
+        },
+        {
+          "name": "isbn",
+          "ordinal": 8,
+          "type_info": {
+            "char_set": 255,
+            "flags": {
+              "bits": 4113
+            },
+            "max_size": 262140,
+            "type": "Blob"
+          }
+        },
+        {
+          "name": "created_at",
+          "ordinal": 9,
+          "type_info": {
+            "char_set": 63,
+            "flags": {
+              "bits": 1153
+            },
+            "max_size": 19,
+            "type": "Timestamp"
+          }
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT * FROM book WHERE id = ?"
+  },
+  "2850e15843d31c6f3276241c3edb0c6ba65d814351010af8d17dac3088caa09f": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "DELETE FROM author WHERE id = (?)"
+  },
+  "390ceb63f74d76d490101899d9dd9a1ca8d8f914eee5dd5d6c556a2bc00ca5a1": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "INSERT INTO author (id, name) VALUES(?, ?)"
+  },
+  "6413b2f0929af9d43457564f2f89765b00e67816a8eaddfab65506366efecfd7": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": {
+            "char_set": 63,
+            "flags": {
+              "bits": 36867
+            },
+            "max_size": 20,
+            "type": "LongLong"
+          }
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": {
+            "char_set": 255,
+            "flags": {
+              "bits": 4113
+            },
+            "max_size": 262140,
+            "type": "Blob"
+          }
+        },
+        {
+          "name": "created_at",
+          "ordinal": 2,
+          "type_info": {
+            "char_set": 63,
+            "flags": {
+              "bits": 1153
+            },
+            "max_size": 19,
+            "type": "Timestamp"
+          }
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT * FROM author as a WHERE a.id = ?"
+  },
+  "6a40462b327e615c3c7391b5d7c89f126ca601f80f3cf9b5e8673b40fb711774": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "DELETE FROM author_book WHERE author_id = ?"
+  },
+  "6bf175a74a09778cf272a4897d0f5f668d5ae71cb694a015de0197b10698154d": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 9
+      }
+    },
+    "query": "UPDATE book SET name = ?, description = ?, published_at = ?, length = ?, file_url = ?, cover_url = ?, price = ?, isbn = ?\n             WHERE id = ?"
+  },
+  "aaf6c2f79398948ffac7a20a27464fd60944c37fbbe821f5c63c635d141b99d1": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 9
+      }
+    },
+    "query": "INSERT INTO book (id, name, description, published_at, length, file_url, cover_url, price, isbn)\n             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+  },
+  "e344a63268630aa4811e4dcbc65102b9704b545d0b45e75bd5d50a0fa747d3d5": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "DELETE FROM book WHERE id = ?"
+  },
+  "e583b8c9b0bca03432fe37e9fb9b8acb2336b25b3e84a01d3483d6f0f6b44d7a": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "UPDATE author SET name = ?\n            WHERE id = ?"
+  },
+  "f2ff2a1440f62432b9387937bc619b3aa24c12dd363910f3cbe17c1887b68a1d": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "DELETE FROM author_book WHERE book_id = ?"
+  }
 }
