@@ -5,7 +5,8 @@ use time::{Date, OffsetDateTime};
 pub struct User {
     pub id: String,
     pub name: String,
-    pub studio_access: bool,
+    pub studio_access: i8, // but irl bool
+    pub created_at: OffsetDateTime,
 }
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
@@ -31,7 +32,9 @@ pub struct Book {
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Tag {
-    pub name: String,
+    pub book_id: String,
+    pub tag: String,
+    pub created_at: OffsetDateTime,
 }
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]

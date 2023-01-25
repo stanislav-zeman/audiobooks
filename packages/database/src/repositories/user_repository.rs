@@ -25,38 +25,40 @@ impl UserRepository {
 impl UserRepo for UserRepository {
     async fn get_user_by_id(&self, id: String) -> anyhow::Result<User> {
         Ok(
-            sqlx::query_as::<_, User>("SELECT (id, name, studio_access) FROM user WHERE id = ?;")
-                .bind(id)
+            sqlx::query_as!(User, "SELECT * FROM user WHERE id = ?;", id)
                 .fetch_one(&*self.mysql_pool)
                 .await?,
         )
     }
 
     async fn add_user(&self, user: User) -> anyhow::Result<()> {
-        sqlx::query("INSERT INTO user (id, name, studio_access) VALUES (?, ?);")
-            .bind(user.id)
-            .bind(user.name)
-            .bind(user.studio_access)
-            .execute(&*self.mysql_pool)
-            .await?;
+        sqlx::query!(
+            "INSERT INTO user (id, name, studio_access) VALUES (?, ?, ?);",
+            user.id,
+            user.name,
+            user.studio_access
+        )
+        .execute(&*self.mysql_pool)
+        .await?;
 
         Ok(())
     }
 
     async fn edit_user(&self, user: User) -> anyhow::Result<()> {
-        sqlx::query("UPDATE TABLE user SET name = ?, studio_access = ? WHERE id = ?;")
-            .bind(user.name)
-            .bind(user.studio_access)
-            .bind(user.id)
-            .execute(&*self.mysql_pool)
-            .await?;
+        sqlx::query!(
+            "UPDATE user SET name = ?, studio_access = ? WHERE id = ?;",
+            user.name,
+            user.studio_access,
+            user.id
+        )
+        .execute(&*self.mysql_pool)
+        .await?;
 
         Ok(())
     }
 
     async fn delete_user(&self, user: User) -> anyhow::Result<()> {
-        sqlx::query("DELETE FROM user WHERE id = ?;")
-            .bind(user.id)
+        sqlx::query!("DELETE FROM user WHERE id = ?;", user.id)
             .execute(&*self.mysql_pool)
             .await?;
 
