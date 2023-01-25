@@ -1,0 +1,13 @@
+[package]
+name = "database"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.68"
+async-trait = "0.1.63"
+chrono = { version = "0.4.23", features = ["serde"] }
+serde = "1.0.152"
+sqlx = { version = "0.6.2", features = ["mysql", "runtime-tokio-rustls"] }
