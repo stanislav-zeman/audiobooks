@@ -6,14 +6,12 @@ pub struct User {
     pub id: i64,
     pub name: String,
     pub studio_access: bool,
-    pub books: Vec<Book>,
 }
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Author {
     pub id: i64,
     pub name: String,
-    pub books: Vec<Book>,
 }
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
@@ -21,8 +19,6 @@ pub struct Book {
     pub id: i64,
     pub name: String,
     pub description: String,
-    pub tags: Vec<Tag>,
-    pub chapters: Vec<Chapter>,
     pub published_at: DateTime<Utc>,
     pub length: i32,
     pub file_url: String,
