@@ -111,4 +111,23 @@ impl eshop_service_server::EshopService for EshopHandler {
             }],
         }))
     }
+
+    async fn get_my_books(&self, _: Request<GetMyBooksRequest>) -> Result<Response<Books>, Status> {
+        Ok(Response::new(Books {
+            total: 1,
+            books: vec![Book {
+                id: String::from("prdel"),
+                is_owned: false,
+                chapters: vec![],
+                authors: vec![],
+                length: 420_u64,
+                name: String::from("epic book name"),
+                description: String::from("desc"),
+                file_url: String::from("file url"),
+                cover_url: String::from("cover url"),
+                price: 69_u64,
+                isbn: String::from("IIII I  II"),
+            }],
+        }))
+    }
 }

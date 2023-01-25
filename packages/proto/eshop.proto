@@ -15,9 +15,8 @@ service EshopService {
   rpc GetUserByID(GetUserByIdRequest) returns (User) {}
   rpc GetBooks(GetBooksRequest) returns (Books) {}
   rpc GetAuthors(GetAuthorsRequest) returns (Authors) {}
+  rpc GetMyBooks(GetMyBooksRequest) returns (Books) {}
 }
-
-message GetBookByIdRequest { string id = 1; }
 
 message Book {
   string id = 1;
@@ -60,7 +59,9 @@ message Authors {
   repeated Author authors = 2;
 }
 
+message GetBookByIdRequest { string id = 1; }
 message GetAuthorByIdRequest { string id = 1; }
 message GetUserByIdRequest { string id = 1; }
 message GetBooksRequest { Pagination pagination = 1; }
 message GetAuthorsRequest { Pagination pagination = 1; }
+message GetMyBooksRequest { Pagination pagination = 1; }

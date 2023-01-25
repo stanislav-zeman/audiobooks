@@ -27,26 +27,6 @@ export namespace Pagination {
   }
 }
 
-export class GetBookByIdRequest extends jspb.Message {
-  getId(): string;
-  setId(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetBookByIdRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: GetBookByIdRequest): GetBookByIdRequest.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: GetBookByIdRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetBookByIdRequest;
-  static deserializeBinaryFromReader(message: GetBookByIdRequest, reader: jspb.BinaryReader): GetBookByIdRequest;
-}
-
-export namespace GetBookByIdRequest {
-  export type AsObject = {
-    id: string,
-  }
-}
-
 export class Book extends jspb.Message {
   getId(): string;
   setId(value: string): void;
@@ -243,6 +223,26 @@ export namespace Authors {
   }
 }
 
+export class GetBookByIdRequest extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetBookByIdRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetBookByIdRequest): GetBookByIdRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetBookByIdRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetBookByIdRequest;
+  static deserializeBinaryFromReader(message: GetBookByIdRequest, reader: jspb.BinaryReader): GetBookByIdRequest;
+}
+
+export namespace GetBookByIdRequest {
+  export type AsObject = {
+    id: string,
+  }
+}
+
 export class GetAuthorByIdRequest extends jspb.Message {
   getId(): string;
   setId(value: string): void;
@@ -322,6 +322,28 @@ export class GetAuthorsRequest extends jspb.Message {
 }
 
 export namespace GetAuthorsRequest {
+  export type AsObject = {
+    pagination?: Pagination.AsObject,
+  }
+}
+
+export class GetMyBooksRequest extends jspb.Message {
+  hasPagination(): boolean;
+  clearPagination(): void;
+  getPagination(): Pagination | undefined;
+  setPagination(value?: Pagination): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetMyBooksRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetMyBooksRequest): GetMyBooksRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetMyBooksRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetMyBooksRequest;
+  static deserializeBinaryFromReader(message: GetMyBooksRequest, reader: jspb.BinaryReader): GetMyBooksRequest;
+}
+
+export namespace GetMyBooksRequest {
   export type AsObject = {
     pagination?: Pagination.AsObject,
   }
