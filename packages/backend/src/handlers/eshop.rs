@@ -27,10 +27,8 @@ impl eshop_service_server::EshopService for EshopHandler {
         request: Request<GetBookByIdRequest>,
     ) -> Result<Response<Book>, Status> {
         let id = request.into_inner().id;
-
-        let book = match self.library.books.get_book_by_id(id.clone()).await {
-            Ok(b) => b,
-            Err(_) => return Err(Status::not_found("Book not found.")),
+        let Ok(book) = self.library.books.get_book_by_id(id.clone()).await else {
+            return Err(Status::not_found("Book not found!"))
         };
 
         Ok(Response::new(get_book(&self.library, &book).await?))
@@ -40,15 +38,12 @@ impl eshop_service_server::EshopService for EshopHandler {
         &self,
         request: Request<GetAuthorByIdRequest>,
     ) -> Result<Response<Author>, Status> {
-        Ok(Response::new(Author::from(&match self
-            .library
-            .authors
-            .get_author(request.into_inner().id)
-            .await
-        {
-            Ok(author) => author,
-            Err(_) => return Err(Status::not_found("Author not found.")),
-        })))
+        let id = request.into_inner().id;
+        let Ok(author) = self.library.authors.get_author_by_id(id.clone()).await else {
+            return Err(Status::not_found("Author not found!"))
+        };
+
+        Ok(Response::new(Author::from(&author)))
     }
 
     async fn get_user_by_id(
@@ -56,7 +51,9 @@ impl eshop_service_server::EshopService for EshopHandler {
         request: Request<GetUserByIdRequest>,
     ) -> Result<Response<User>, Status> {
         let id = request.into_inner().id;
-        let user = self.library.users.get_user_by_id(id.clone()).await.unwrap();
+        let Ok(user) = self.library.users.get_user_by_id(id.clone()).await else {
+            return Err(Status::not_found("User not found!"))
+        };
 
         Ok(Response::new(User::from(&user)))
     }
@@ -66,20 +63,37 @@ impl eshop_service_server::EshopService for EshopHandler {
         request: Request<GetBooksRequest>,
     ) -> Result<Response<Books>, Status> {
         let inner = request.into_inner();
-        let filters = inner.filters.unwrap();
-        let pagination = inner.pagination.unwrap();
 
-        let books = self
-            .library
-            .books
+        let filters = match inner.filters {
+            None => models::BookFilter {
+                book_name: None,
+                author_name: None,
+                price_from: None,
+                price_to: None,
+                tag: None,
+            },
+            Some(filters) => models::BookFilter::from(&filters),
+        };
+
+        let pagination = match inner.pagination {
+            None => models::Pagination {
+                limit: u32::MAX,
+                offset: 0,
+            },
+            Some(pagination) => models::Pagination::from(&pagination),
+        };
+
+        let Ok(books) = self.library.books
             .get_filtered_books(
-                models::BookFilter::from(&filters),
-                models::Pagination::from(&pagination),
-            )
-            .await
-            .unwrap();
+                filters,
+                pagination,
+            ).await else {
+            return Err(Status::internal("Failed filtering books!"))
+        };
 
-        let books = map_books(&self.library, books).await?;
+        let Ok(books) = map_books(&self.library, books).await else {
+            return Err(Status::internal("Failed mapping books!"))
+        };
 
         Ok(Response::new(Books {
             total: books.len() as u32,
@@ -92,21 +106,32 @@ impl eshop_service_server::EshopService for EshopHandler {
         request: Request<GetAuthorsRequest>,
     ) -> Result<Response<Authors>, Status> {
         let inner = request.into_inner();
-        let author_name = inner.filters.unwrap().name;
-        let pagination = inner.pagination.unwrap();
 
-        let authors = self
+        let author_name = match inner.filters {
+            None => None,
+            Some(filters) => filters.name,
+        };
+
+        let pagination = match inner.pagination {
+            None => models::Pagination {
+                limit: u32::MAX,
+                offset: 0,
+            },
+            Some(pagination) => models::Pagination::from(&pagination),
+        };
+
+        let Ok(authors) = self
             .library
             .authors
             .get_authors_by_name(
-                author_name.unwrap_or_default(),
-                models::Pagination::from(&pagination),
+                author_name,
+                pagination,
             )
-            .await
-            .unwrap()
-            .iter()
-            .map(Author::from)
-            .collect();
+            .await else {
+            return Err(Status::internal("Failed filtering authors"))
+        };
+
+        let authors = authors.iter().map(Author::from).collect();
 
         Ok(Response::new(Authors { total: 0, authors }))
     }
@@ -115,19 +140,30 @@ impl eshop_service_server::EshopService for EshopHandler {
         &self,
         request: Request<GetMyBooksRequest>,
     ) -> Result<Response<Books>, Status> {
-        let pagination = request.into_inner().pagination.unwrap();
+        let inner = request.into_inner();
 
-        let books = self
+        let pagination = match inner.pagination {
+            None => models::Pagination {
+                limit: u32::MAX,
+                offset: 0,
+            },
+            Some(pagination) => models::Pagination::from(&pagination),
+        };
+
+        let Ok(books) = self
             .library
             .books
             .get_user_books(
                 "".to_string(), // TODO: Add when we have identities
-                models::Pagination::from(&pagination),
+                pagination,
             )
-            .await
-            .unwrap();
+            .await else {
+            return Err(Status::internal("Failed getting user books!"))
+        };
 
-        let books = map_books(&self.library, books).await?;
+        let Ok(books) = map_books(&self.library, books).await else {
+            return Err(Status::internal("Failed mapping books!"))
+        };
 
         Ok(Response::new(Books {
             total: books.len() as u32,
@@ -136,17 +172,28 @@ impl eshop_service_server::EshopService for EshopHandler {
     }
 }
 
-async fn get_book(library: &Library, book: &models::Book) -> Result<Book, Status> {
-    let chapters: Vec<Chapter> = match library.chapters.get_chapters_of_book(book.id.clone()).await
-    {
-        Ok(chapters) => chapters.iter().map(Chapter::from).collect(),
-        Err(_) => return Err(Status::internal("Failed getting chapters.")),
-    };
+async fn map_books(library: &Library, books: Vec<models::Book>) -> Result<Vec<Book>, Status> {
+    let mut result = Vec::new();
 
-    let authors: Vec<_> = match library.authors.get_book_authors(book.id.clone()).await {
-        Ok(authors) => authors.iter().map(Author::from).collect(),
-        Err(_) => return Err(Status::internal("Failed getting authors.")),
+    for book in books {
+        let book = get_book(library, &book).await?;
+        result.push(book);
+    }
+
+    Ok(result)
+}
+
+async fn get_book(library: &Library, book: &models::Book) -> Result<Book, Status> {
+    let Ok(chapters) = library.chapters.get_chapters_of_book(book.id.clone()).await else
+    {
+        return Err(Status::internal("Failed getting chapters."));
     };
+    let chapters = chapters.iter().map(Chapter::from).collect();
+
+    let Ok(authors) = library.authors.get_book_authors(book.id.clone()).await else {
+        return Err(Status::internal("Failed getting authors."))
+    };
+    let authors = authors.iter().map(Author::from).collect();
 
     Ok(Book {
         id: book.id.clone(),
@@ -161,15 +208,4 @@ async fn get_book(library: &Library, book: &models::Book) -> Result<Book, Status
         price: book.price as u64,
         isbn: book.isbn.clone(),
     })
-}
-
-async fn map_books(library: &Library, books: Vec<models::Book>) -> Result<Vec<Book>, Status> {
-    let mut result = Vec::new();
-
-    for book in books {
-        let book = get_book(library, &book).await?;
-        result.push(book);
-    }
-
-    Ok(result)
 }

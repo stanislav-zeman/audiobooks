@@ -5,10 +5,10 @@ use std::sync::Arc;
 
 #[async_trait]
 pub trait AuthorRepo {
-    async fn get_author(&self, id: String) -> anyhow::Result<Author>;
+    async fn get_author_by_id(&self, id: String) -> anyhow::Result<Author>;
     async fn get_authors_by_name(
         &self,
-        name: String,
+        name: Option<String>,
         pagination: Pagination,
     ) -> anyhow::Result<Vec<Author>>;
     async fn get_book_authors(&self, id: String) -> anyhow::Result<Vec<Author>>;
@@ -29,7 +29,7 @@ impl AuthorRepository {
 
 #[async_trait]
 impl AuthorRepo for AuthorRepository {
-    async fn get_author(&self, id: String) -> anyhow::Result<Author> {
+    async fn get_author_by_id(&self, id: String) -> anyhow::Result<Author> {
         let author = sqlx::query_as!(Author, "SELECT * FROM author WHERE id = ?", id)
             .fetch_one(&*self.mysql_pool)
             .await?;
@@ -39,7 +39,7 @@ impl AuthorRepo for AuthorRepository {
 
     async fn get_authors_by_name(
         &self,
-        name: String,
+        name: Option<String>,
         pagination: Pagination,
     ) -> anyhow::Result<Vec<Author>> {
         let author = sqlx::query_as!(
@@ -48,7 +48,7 @@ impl AuthorRepo for AuthorRepository {
                 WHERE name LIKE ?
                 ORDER BY created_at DESC
                 LIMIT ?, ?",
-            format!("%{}%", name),
+            format!("%{}%", name.unwrap_or_default()),
             pagination.offset,
             pagination.limit
         )

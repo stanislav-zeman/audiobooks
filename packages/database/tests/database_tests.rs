@@ -121,7 +121,7 @@ async fn test_author_repo() {
 
     // insert/get works
     repo.add_author(test_author.clone()).await.unwrap();
-    let from_db = repo.get_author(test_author.id.clone()).await.unwrap();
+    let from_db = repo.get_author_by_id(test_author.id.clone()).await.unwrap();
     assert_eq!(from_db.id, test_author.id);
     assert_eq!(from_db.name, test_author.name);
     // do not compare created_at; db fucked
@@ -133,12 +133,12 @@ async fn test_author_repo() {
         ..test_author.clone()
     };
     repo.edit_author(author_with_new_name).await.unwrap();
-    let from_db = repo.get_author(test_author.id.clone()).await.unwrap();
+    let from_db = repo.get_author_by_id(test_author.id.clone()).await.unwrap();
     assert_eq!(from_db.name, new_name.clone());
 
     // delete works
     repo.delete_author(test_author.clone()).await.unwrap();
-    assert!(repo.get_author(test_author.id.clone()).await.is_err());
+    assert!(repo.get_author_by_id(test_author.id.clone()).await.is_err());
 }
 
 #[tokio::test]
