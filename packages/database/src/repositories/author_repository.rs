@@ -6,6 +6,7 @@ use std::sync::Arc;
 #[async_trait]
 pub trait AuthorRepo {
     async fn get_author(&self, id: String) -> anyhow::Result<Author>;
+    async fn get_book_authors(&self, id: String) -> anyhow::Result<Vec<Author>>;
     async fn add_author(&self, author: Author) -> anyhow::Result<()>;
     async fn edit_author(&self, author: Author) -> anyhow::Result<()>;
     async fn delete_author(&self, author: Author) -> anyhow::Result<()>;
@@ -29,6 +30,18 @@ impl AuthorRepo for AuthorRepository {
             .await?;
 
         Ok(author)
+    }
+
+    async fn get_book_authors(&self, book_id: String) -> anyhow::Result<Vec<Author>> {
+        let authors = sqlx::query_as!(Author, "SELECT author.id, author.name, author.created_at
+            FROM author
+            INNER JOIN author_book
+            ON author.id = author_book.author_id
+            WHERE book_id = ?", book_id)
+            .fetch_all(&*self.mysql_pool)
+            .await?;
+
+        Ok(authors)
     }
 
     async fn add_author(&self, author: Author) -> anyhow::Result<()> {
