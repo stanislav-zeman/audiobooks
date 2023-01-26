@@ -40,11 +40,10 @@ pub struct BookFilter {
     pub tag: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
-pub struct Tag {
-    pub book_id: String,
-    pub tag: String,
-    pub created_at: OffsetDateTime,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Pagination {
+    pub limit: u32,
+    pub offset: u32,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]

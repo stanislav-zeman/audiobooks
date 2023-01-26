@@ -1,4 +1,4 @@
-use crate::models::{Author, Book, BookFilter};
+use crate::models::{Author, Book, BookFilter, Pagination};
 use async_trait::async_trait;
 use sqlx::MySqlPool;
 use std::sync::Arc;
@@ -6,7 +6,7 @@ use std::sync::Arc;
 #[async_trait]
 pub trait BookRepo {
     async fn get_book_by_id(&self, id: String) -> anyhow::Result<Book>;
-    async fn get_filtered_books(&self, filter: BookFilter) -> anyhow::Result<Vec<Book>>;
+    async fn get_filtered_books(&self, filter: BookFilter, pagination: Pagination) -> anyhow::Result<Vec<Book>>;
     async fn add_book(&self, book: Book) -> anyhow::Result<()>;
     async fn add_author_to_book(&self, book: Book, author: Author) -> anyhow::Result<()>;
     async fn edit_book(&self, book: Book) -> anyhow::Result<()>;
@@ -33,7 +33,7 @@ impl BookRepo for BookRepository {
         Ok(book)
     }
 
-    async fn get_filtered_books(&self, filter: BookFilter) -> anyhow::Result<Vec<Book>> {
+    async fn get_filtered_books(&self, filter: BookFilter, pagination: Pagination) -> anyhow::Result<Vec<Book>> {
         let author_name = format!("%{}%", filter.author_name.unwrap_or_default());
         let book_name = format!("%{}%", filter.book_name.unwrap_or_default());
         let tag = format!("%{}%", filter.tag.unwrap_or_default());
@@ -47,16 +47,19 @@ impl BookRepo for BookRepository {
                WHERE at.name LIKE ?
                AND bk.name LIKE ?
                AND bk.tag LIKE ?
-               AND price BETWEEN ? AND ?",
+               AND price BETWEEN ? AND ?
+               ORDER BY bk.created_at DESC
+               LIMIT ?, ?",
             author_name,
             book_name,
             tag,
             filter.price_from.unwrap_or(u64::MIN),
             filter.price_to.unwrap_or(u64::MAX),
+            pagination.offset,
+            pagination.limit
             )
             .fetch_all(&*self.mysql_pool)
             .await?;
-        
         Ok(books)
     }
 
