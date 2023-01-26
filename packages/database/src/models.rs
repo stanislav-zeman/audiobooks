@@ -30,6 +30,15 @@ pub struct Book {
     pub created_at: OffsetDateTime,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BookFilter {
+    pub book_name: Option<String>,
+    pub author_name: Option<String>,
+    pub price_from: Option<u64>,
+    pub price_to: Option<u64>,
+    pub tag: Option<String>,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Tag {
     pub book_id: String,
