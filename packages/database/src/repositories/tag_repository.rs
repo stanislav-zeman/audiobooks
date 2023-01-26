@@ -1,6 +1,5 @@
 use crate::models::Tag;
 use async_trait::async_trait;
-use nanoid::nanoid;
 use sqlx;
 use std::sync::Arc;
 

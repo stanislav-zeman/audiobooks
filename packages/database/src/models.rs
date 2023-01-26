@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use time::{Date, OffsetDateTime};
 
-#[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
 pub struct User {
     pub id: String,
     pub name: String,
@@ -9,14 +9,14 @@ pub struct User {
     pub created_at: OffsetDateTime,
 }
 
-#[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Author {
     pub id: String,
     pub name: String,
     pub created_at: OffsetDateTime,
 }
 
-#[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Book {
     pub id: String,
     pub name: String,
@@ -30,14 +30,14 @@ pub struct Book {
     pub created_at: OffsetDateTime,
 }
 
-#[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Tag {
     pub book_id: String,
     pub tag: String,
     pub created_at: OffsetDateTime,
 }
 
-#[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Chapter {
     pub id: String,
     pub book_id: String,
