@@ -34,22 +34,25 @@ impl BookRepo for BookRepository {
     }
 
     async fn get_filtered_books(&self, filter: BookFilter) -> anyhow::Result<Vec<Book>> {
-        let books = sqlx::query_as!(Book, 
-            "SELECT bk.id, bk.name, bk.description, bk.published_at, bk.length,
+        let author_name = format!("%{}%", filter.author_name.unwrap_or_default());
+        let book_name = format!("%{}%", filter.book_name.unwrap_or_default());
+        let tag = format!("%{}%", filter.tag.unwrap_or_default());
+
+        let books = sqlx::query_as!(Book,
+            "SELECT bk.id, bk.name, bk.description, bk.tag, bk.published_at, bk.length,
                bk.file_url, bk.cover_url, bk.price, bk.isbn, bk.created_at
                FROM author at
                INNER JOIN author_book ab on at.id = ab.author_id
                INNER JOIN book bk on ab.book_id = bk.id
-               INNER JOIN book_tag bt on bk.id = bt.book_id
                WHERE at.name LIKE ?
                AND bk.name LIKE ?
-               AND price BETWEEN ? AND ?
-               AND bt.tag LIKE ?",
-            filter.author_name.unwrap_or("%".to_string()),
-            filter.book_name.unwrap_or("%".to_string()),
+               AND bk.tag LIKE ?
+               AND price BETWEEN ? AND ?",
+            author_name,
+            book_name,
+            tag,
             filter.price_from.unwrap_or(u64::MIN),
             filter.price_to.unwrap_or(u64::MAX),
-            filter.tag.unwrap_or("%".to_string())
             )
             .fetch_all(&*self.mysql_pool)
             .await?;
@@ -60,11 +63,12 @@ impl BookRepo for BookRepository {
 
     async fn add_book(&self, book: Book) -> anyhow::Result<()> {
         sqlx::query!(
-            "INSERT INTO book (id, name, description, published_at, length, file_url, cover_url, price, isbn)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO book (id, name, description, tag, published_at, length, file_url, cover_url, price, isbn)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             book.id,
             book.name,
             book.description,
+            book.tag,
             book.published_at,
             book.length,
             book.file_url,
@@ -93,10 +97,11 @@ impl BookRepo for BookRepository {
 
     async fn edit_book(&self, book: Book) -> anyhow::Result<()> {
         sqlx::query!(
-            "UPDATE book SET name = ?, description = ?, published_at = ?, length = ?, file_url = ?, cover_url = ?, price = ?, isbn = ?
+            "UPDATE book SET name = ?, description = ?, tag = ?, published_at = ?, length = ?, file_url = ?, cover_url = ?, price = ?, isbn = ?
              WHERE id = ?",
             book.name,
             book.description,
+            book.tag,
             book.published_at,
             book.length,
             book.file_url,

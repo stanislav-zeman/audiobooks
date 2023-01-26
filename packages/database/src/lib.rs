@@ -1,7 +1,6 @@
 use crate::repositories::author_repository::AuthorRepository;
 use crate::repositories::book_repository::BookRepository;
 use crate::repositories::chapter_repository::ChapterRepository;
-use crate::repositories::tag_repository::TagRepository;
 use crate::repositories::user_repository::UserRepository;
 use sqlx::{MySql, MySqlPool, Pool};
 use std::env;
@@ -14,7 +13,6 @@ pub struct Library {
     pub users: UserRepository,
     pub authors: AuthorRepository,
     pub books: BookRepository,
-    pub tags: TagRepository,
     pub chapters: ChapterRepository,
 }
 
@@ -25,7 +23,6 @@ impl Library {
             users: UserRepository::new(pool.clone()),
             authors: AuthorRepository::new(pool.clone()),
             books: BookRepository::new(pool.clone()),
-            tags: TagRepository::new(pool.clone()),
             chapters: ChapterRepository::new(pool.clone()),
         }
     }
