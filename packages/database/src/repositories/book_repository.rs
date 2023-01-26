@@ -13,7 +13,7 @@ pub trait BookRepo {
     ) -> anyhow::Result<Vec<Book>>;
     async fn get_user_books(
         &self,
-        user_id: i32,
+        user_id: String,
         pagination: Pagination,
     ) -> anyhow::Result<Vec<Book>>;
     async fn add_book(&self, book: Book) -> anyhow::Result<()>;
@@ -80,7 +80,7 @@ impl BookRepo for BookRepository {
 
     async fn get_user_books(
         &self,
-        user_id: i32,
+        user_id: String,
         pagination: Pagination,
     ) -> anyhow::Result<Vec<Book>> {
         let books = sqlx::query_as!(
