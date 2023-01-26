@@ -1,10 +1,10 @@
-use time::{Date, OffsetDateTime};
-use time::Weekday::Monday;
-use database::Library;
-use database::models::{User, Book, Author};
-use database::repositories::user_repository::UserRepo;
-use database::repositories::book_repository::BookRepo;
+use database::models::{Author, Book, User};
 use database::repositories::author_repository::AuthorRepo;
+use database::repositories::book_repository::BookRepo;
+use database::repositories::user_repository::UserRepo;
+use database::Library;
+use time::Weekday::Monday;
+use time::{Date, OffsetDateTime};
 
 #[tokio::test]
 async fn test_user_repo() -> anyhow::Result<()> {
@@ -127,7 +127,10 @@ async fn test_author_repo() {
 
     // edit works
     let new_name = "new name".to_string();
-    let author_with_new_name = Author { name: new_name.clone(), ..test_author.clone() };
+    let author_with_new_name = Author {
+        name: new_name.clone(),
+        ..test_author.clone()
+    };
     repo.edit_author(author_with_new_name).await.unwrap();
     let from_db = repo.get_author(test_author.id.clone()).await.unwrap();
     assert_eq!(from_db.name, new_name.clone());

@@ -1,9 +1,9 @@
+use sqlx::MySqlPool;
 use std::env;
-use sqlx::{MySqlPool};
 
 use tonic_web::GrpcWebLayer;
 
-use crate::handlers::{grpc::eshop_service_server::EshopServiceServer, eshop::EshopHandler};
+use crate::handlers::{eshop::EshopHandler, grpc::eshop_service_server::EshopServiceServer};
 use tower_http::trace::TraceLayer;
 
 mod handlers;

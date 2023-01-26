@@ -33,13 +33,17 @@ impl AuthorRepo for AuthorRepository {
     }
 
     async fn get_book_authors(&self, book_id: String) -> anyhow::Result<Vec<Author>> {
-        let authors = sqlx::query_as!(Author, "SELECT author.id, author.name, author.created_at
+        let authors = sqlx::query_as!(
+            Author,
+            "SELECT author.id, author.name, author.created_at
             FROM author
             INNER JOIN author_book
             ON author.id = author_book.author_id
-            WHERE book_id = ?", book_id)
-            .fetch_all(&*self.mysql_pool)
-            .await?;
+            WHERE book_id = ?",
+            book_id
+        )
+        .fetch_all(&*self.mysql_pool)
+        .await?;
 
         Ok(authors)
     }

@@ -1,14 +1,14 @@
-use std::env;
-use std::sync::Arc;
-use sqlx::{MySql, MySqlPool, Pool};
 use crate::repositories::author_repository::AuthorRepository;
 use crate::repositories::book_repository::BookRepository;
 use crate::repositories::chapter_repository::ChapterRepository;
 use crate::repositories::tag_repository::TagRepository;
 use crate::repositories::user_repository::UserRepository;
+use sqlx::{MySql, MySqlPool, Pool};
+use std::env;
+use std::sync::Arc;
 
-pub mod repositories;
 pub mod models;
+pub mod repositories;
 
 pub struct Library {
     pub users: UserRepository,

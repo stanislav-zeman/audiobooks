@@ -1,8 +1,8 @@
+use database::repositories::author_repository::AuthorRepo;
+use database::repositories::book_repository::BookRepo;
+use database::repositories::chapter_repository::ChapterRepo;
 use database::Library;
 use tonic::{Request, Response, Status};
-use database::repositories::book_repository::BookRepo;
-use database::repositories::author_repository::AuthorRepo;
-use database::repositories::chapter_repository::ChapterRepo;
 
 use super::grpc::*;
 
@@ -32,8 +32,24 @@ impl eshop_service_server::EshopService for EshopHandler {
             Err(_) => return Err(Status::not_found("Book not found.")),
         };
 
-        let chapters: Vec<_> = self.library.chapters.get_chapters_of_book(id.clone()).await.unwrap().iter().map(convert_chapter).collect();
-        let authors: Vec<_> = self.library.authors.get_book_authors(id.clone()).await.unwrap().iter().map(convert_author).collect();
+        let chapters: Vec<_> = self
+            .library
+            .chapters
+            .get_chapters_of_book(id.clone())
+            .await
+            .unwrap()
+            .iter()
+            .map(convert_chapter)
+            .collect();
+        let authors: Vec<_> = self
+            .library
+            .authors
+            .get_book_authors(id.clone())
+            .await
+            .unwrap()
+            .iter()
+            .map(convert_author)
+            .collect();
 
         Ok(Response::new(Book {
             id,
@@ -52,12 +68,16 @@ impl eshop_service_server::EshopService for EshopHandler {
 
     async fn get_author_by_id(
         &self,
-        _: Request<GetAuthorByIdRequest>,
+        request: Request<GetAuthorByIdRequest>,
     ) -> Result<Response<Author>, Status> {
-        Ok(Response::new(Author {
-            id: String::from("mock id"),
-            name: String::from("mock name"),
-        }))
+        Ok(Response::new(convert_author(
+            &self
+                .library
+                .authors
+                .get_author(request.into_inner().id)
+                .await
+                .unwrap(),
+        )))
     }
 
     async fn get_user_by_id(
