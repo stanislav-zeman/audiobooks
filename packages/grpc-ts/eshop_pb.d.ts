@@ -223,16 +223,16 @@ export namespace Authors {
   }
 }
 
-export class BooksFilters extends jspb.Message {
+export class BookFilters extends jspb.Message {
   hasName(): boolean;
   clearName(): void;
   getName(): string;
   setName(value: string): void;
 
-  hasAuthorId(): boolean;
-  clearAuthorId(): void;
-  getAuthorId(): string;
-  setAuthorId(value: string): void;
+  hasAuthorName(): boolean;
+  clearAuthorName(): void;
+  getAuthorName(): string;
+  setAuthorName(value: string): void;
 
   hasPricefrom(): boolean;
   clearPricefrom(): void;
@@ -244,28 +244,28 @@ export class BooksFilters extends jspb.Message {
   getPriceto(): number;
   setPriceto(value: number): void;
 
-  clearTagsList(): void;
-  getTagsList(): Array<string>;
-  setTagsList(value: Array<string>): void;
-  addTags(value: string, index?: number): string;
+  hasTag(): boolean;
+  clearTag(): void;
+  getTag(): string;
+  setTag(value: string): void;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): BooksFilters.AsObject;
-  static toObject(includeInstance: boolean, msg: BooksFilters): BooksFilters.AsObject;
+  toObject(includeInstance?: boolean): BookFilters.AsObject;
+  static toObject(includeInstance: boolean, msg: BookFilters): BookFilters.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: BooksFilters, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): BooksFilters;
-  static deserializeBinaryFromReader(message: BooksFilters, reader: jspb.BinaryReader): BooksFilters;
+  static serializeBinaryToWriter(message: BookFilters, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): BookFilters;
+  static deserializeBinaryFromReader(message: BookFilters, reader: jspb.BinaryReader): BookFilters;
 }
 
-export namespace BooksFilters {
+export namespace BookFilters {
   export type AsObject = {
     name: string,
-    authorId: string,
+    authorName: string,
     pricefrom: number,
     priceto: number,
-    tagsList: Array<string>,
+    tag: string,
   }
 }
 
@@ -359,8 +359,8 @@ export class GetBooksRequest extends jspb.Message {
 
   hasFilters(): boolean;
   clearFilters(): void;
-  getFilters(): BooksFilters | undefined;
-  setFilters(value?: BooksFilters): void;
+  getFilters(): BookFilters | undefined;
+  setFilters(value?: BookFilters): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetBooksRequest.AsObject;
@@ -375,7 +375,7 @@ export class GetBooksRequest extends jspb.Message {
 export namespace GetBooksRequest {
   export type AsObject = {
     pagination?: Pagination.AsObject,
-    filters?: BooksFilters.AsObject,
+    filters?: BookFilters.AsObject,
   }
 }
 

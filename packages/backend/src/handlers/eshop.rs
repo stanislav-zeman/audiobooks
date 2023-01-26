@@ -1,9 +1,11 @@
 use crate::handlers::adapters::{convert_author, convert_chapter, convert_user};
+use database::models;
 use database::repositories::{
     author_repository::AuthorRepo, book_repository::BookRepo, chapter_repository::ChapterRepo,
     user_repository::UserRepo,
 };
 use database::Library;
+use std::sync::Arc;
 use tonic::{Request, Response, Status};
 
 use super::grpc::*;
@@ -28,36 +30,12 @@ impl eshop_service_server::EshopService for EshopHandler {
     ) -> Result<Response<Book>, Status> {
         let id = request.into_inner().id;
 
-        // TODO: Clean unwraps
         let book = match self.library.books.get_book_by_id(id.clone()).await {
             Ok(b) => b,
             Err(_) => return Err(Status::not_found("Book not found.")),
         };
 
-        let chapters: Vec<Chapter> =
-            match self.library.chapters.get_chapters_of_book(id.clone()).await {
-                Ok(chapters) => chapters.iter().map(convert_chapter).collect(),
-                Err(_) => return Err(Status::internal("Failed getting chapters.")),
-            };
-
-        let authors: Vec<_> = match self.library.authors.get_book_authors(id.clone()).await {
-            Ok(authors) => authors.iter().map(convert_author).collect(),
-            Err(_) => return Err(Status::internal("Failed getting authors.")),
-        };
-
-        Ok(Response::new(Book {
-            id,
-            is_owned: false,
-            chapters,
-            authors,
-            length: book.length as u64,
-            name: book.name,
-            description: book.description,
-            file_url: book.file_url,
-            cover_url: book.cover_url,
-            price: book.price as u64,
-            isbn: book.isbn,
-        }))
+        Ok(Response::new(get_book(&self.library, book).await?))
     }
 
     async fn get_author_by_id(
@@ -89,6 +67,22 @@ impl eshop_service_server::EshopService for EshopHandler {
         &self,
         request: Request<GetBooksRequest>,
     ) -> Result<Response<Books>, Status> {
+        let inner = request.into_inner();
+        let filters = inner.filters.unwrap();
+        let pagination = inner.pagination.unwrap();
+
+        /*let books = self
+        .library
+        .books
+        .get_filtered_books(
+            models::BookFilter::from(&filters),
+            models::Pagination::from(&pagination),
+        )
+        .await
+        .unwrap()
+        .iter()
+        .map(|x| -> get_book(&self.library, x));*/
+
         Ok(Response::new(Books {
             total: 1,
             books: vec![Book {
@@ -138,4 +132,31 @@ impl eshop_service_server::EshopService for EshopHandler {
             }],
         }))
     }
+}
+
+async fn get_book(library: &Library, book: models::Book) -> Result<Book, Status> {
+    let chapters: Vec<Chapter> = match library.chapters.get_chapters_of_book(book.id.clone()).await
+    {
+        Ok(chapters) => chapters.iter().map(convert_chapter).collect(),
+        Err(_) => return Err(Status::internal("Failed getting chapters.")),
+    };
+
+    let authors: Vec<_> = match library.authors.get_book_authors(book.id.clone()).await {
+        Ok(authors) => authors.iter().map(convert_author).collect(),
+        Err(_) => return Err(Status::internal("Failed getting authors.")),
+    };
+
+    Ok(Book {
+        id: book.id,
+        is_owned: false,
+        chapters,
+        authors,
+        length: book.length as u64,
+        name: book.name,
+        description: book.description,
+        file_url: book.file_url,
+        cover_url: book.cover_url,
+        price: book.price as u64,
+        isbn: book.isbn,
+    })
 }
