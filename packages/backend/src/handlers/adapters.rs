@@ -1,4 +1,4 @@
-use crate::handlers::grpc::{Author, Chapter};
+use crate::handlers::grpc::{Author, Chapter, User};
 use grpc_backend::handlers::grpc::{Author, Chapter};
 
 pub fn convert_chapter(chapter: &database::models::Chapter) -> Chapter {
@@ -13,5 +13,13 @@ pub fn convert_author(author: &database::models::Author) -> Author {
     Author {
         id: author.id.clone(),
         name: author.name.clone(),
+    }
+}
+
+pub fn convert_user(user: &database::models::User) -> User {
+    User {
+        id: user.id.clone(),
+        name: user.id.clone(),
+        studio_access: user.studio_access != 0,
     }
 }

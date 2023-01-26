@@ -1,4 +1,4 @@
-use crate::handlers::adapters::{convert_author, convert_chapter};
+use crate::handlers::adapters::{convert_author, convert_chapter, convert_user};
 use database::repositories::{
     author_repository::AuthorRepo, book_repository::BookRepo, chapter_repository::ChapterRepo,
     tag_repository::TagRepo, user_repository::UserRepo,
@@ -84,16 +84,15 @@ impl eshop_service_server::EshopService for EshopHandler {
 
     async fn get_user_by_id(
         &self,
-        _: Request<GetUserByIdRequest>,
+        request: Request<GetUserByIdRequest>,
     ) -> Result<Response<User>, Status> {
-        Ok(Response::new(User {
-            id: String::from("mock id"),
-            name: String::from("this mock user"),
-            studio_access: true,
-        }))
+        let id = request.into_inner().id;
+        let user = self.library.users.get_user_by_id(id.clone()).await.unwrap();
+
+        Ok(Response::new(convert_user(&user)))
     }
 
-    async fn get_books(&self, _: Request<GetBooksRequest>) -> Result<Response<Books>, Status> {
+    async fn get_books(&self, request: Request<GetBooksRequest>) -> Result<Response<Books>, Status> {
         Ok(Response::new(Books {
             total: 1,
             books: vec![Book {
