@@ -7,7 +7,7 @@ use std::sync::Arc;
 pub trait ChapterRepo {
     async fn get_chapters_of_book(&self, book_id: String) -> anyhow::Result<Vec<Chapter>>;
     async fn add_chapter_to_book(&self, chapter: Chapter) -> anyhow::Result<()>;
-    async fn remove_chapter(&self, chapter: Chapter) -> anyhow::Result<()>;
+    async fn delete_chapter(&self, chapter: Chapter) -> anyhow::Result<()>;
 }
 
 pub struct ChapterRepository {
@@ -44,7 +44,7 @@ impl ChapterRepo for ChapterRepository {
         Ok(())
     }
 
-    async fn remove_chapter(&self, chapter: Chapter) -> anyhow::Result<()> {
+    async fn delete_chapter(&self, chapter: Chapter) -> anyhow::Result<()> {
         sqlx::query!("DELETE FROM chapter WHERE id = ?;", chapter.id)
             .execute(&*self.mysql_pool)
             .await?;

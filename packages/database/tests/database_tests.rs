@@ -1,10 +1,11 @@
-use database::models::{Author, Book, User};
-use database::repositories::author_repository::AuthorRepo;
-use database::repositories::book_repository::BookRepo;
-use database::repositories::user_repository::UserRepo;
-use database::Library;
-use time::Weekday::Monday;
 use time::{Date, OffsetDateTime};
+use time::Weekday::Monday;
+use database::Library;
+use database::models::{User, Book, Author, Chapter};
+use database::repositories::user_repository::UserRepo;
+use database::repositories::book_repository::BookRepo;
+use database::repositories::author_repository::AuthorRepo;
+use database::repositories::chapter_repository::ChapterRepo;
 
 #[tokio::test]
 async fn test_user_repo() -> anyhow::Result<()> {
@@ -118,7 +119,7 @@ async fn test_author_repo() {
     // ensure not in db
     repo.delete_author(test_author.clone()).await;
 
-    // insert works
+    // insert/get works
     repo.add_author(test_author.clone()).await.unwrap();
     let from_db = repo.get_author(test_author.id.clone()).await.unwrap();
     assert_eq!(from_db.id, test_author.id);
@@ -138,4 +139,37 @@ async fn test_author_repo() {
     // delete works
     repo.delete_author(test_author.clone()).await.unwrap();
     assert!(repo.get_author(test_author.id.clone()).await.is_err());
+}
+
+#[tokio::test]
+async fn test_chapter_repo() {
+    let repo = Library::new().await.chapters;
+
+    let test_chapter_id = "test chapter id 3q4635w5747".to_string();
+    let test_chapter_book_id = "test chapter book is q34q5775fdh".to_string();
+    let test_chapter_name = "test chapter name w46q35ee5w75".to_string();
+    let test_chapter_start = 666_i32;
+
+    let test_chapter = Chapter {
+        id: test_chapter_id.clone(),
+        book_id: test_chapter_book_id.clone(),
+        name: test_chapter_name.clone(),
+        start: test_chapter_start,
+        created_at: OffsetDateTime::now_utc(),
+    };
+
+    // insert/get works
+    repo.add_chapter_to_book(test_chapter.clone()).await.unwrap();  // this might fail cuz db not cleaned; fix: change id
+    let mut from_db_vec = repo.get_chapters_of_book(test_chapter.book_id.clone()).await.unwrap();
+    assert_eq!(1, from_db_vec.len());
+    let from_db_item = from_db_vec.pop().unwrap();
+    assert_eq!(from_db_item.id, test_chapter.id.clone());
+    assert_eq!(from_db_item.book_id, test_chapter.book_id.clone());
+    assert_eq!(from_db_item.name, test_chapter.name.clone());
+    assert_eq!(from_db_item.start, test_chapter.start);
+    // do not compare created_at; db fucked
+
+    // delete works
+    repo.delete_chapter(test_chapter.clone()).await.unwrap();
+    assert_eq!(repo.get_chapters_of_book(test_chapter.book_id.clone()).await.unwrap().len(), 0);
 }
