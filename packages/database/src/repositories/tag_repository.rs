@@ -7,7 +7,7 @@ use std::sync::Arc;
 pub trait TagRepo {
     async fn get_tags_of_book(&self, book_id: String) -> anyhow::Result<Vec<Tag>>;
     async fn add_tag_to_book(&self, tag: Tag, book_id: String) -> anyhow::Result<()>;
-    async fn remove_tag_from_book(&self, tag: Tag, book_id: String) -> anyhow::Result<()>;
+    async fn remove_tag_from_book(&self, tag: Tag) -> anyhow::Result<()>;
 }
 
 pub struct TagRepository {
@@ -46,10 +46,10 @@ impl TagRepo for TagRepository {
         Ok(())
     }
 
-    async fn remove_tag_from_book(&self, tag: Tag, book_id: String) -> anyhow::Result<()> {
+    async fn remove_tag_from_book(&self, tag: Tag) -> anyhow::Result<()> {
         sqlx::query!(
             "DELETE FROM book_tag WHERE book_id = ? AND tag = ?;",
-            book_id,
+            tag.book_id,
             tag.tag
         )
         .execute(&*self.mysql_pool)

@@ -1,11 +1,12 @@
 use time::{Date, OffsetDateTime};
 use time::Weekday::Monday;
 use database::Library;
-use database::models::{User, Book, Author, Chapter};
+use database::models::{User, Book, Author, Chapter, Tag};
 use database::repositories::user_repository::UserRepo;
 use database::repositories::book_repository::BookRepo;
 use database::repositories::author_repository::AuthorRepo;
 use database::repositories::chapter_repository::ChapterRepo;
+use database::repositories::tag_repository::TagRepo;
 
 #[tokio::test]
 async fn test_user_repo() -> anyhow::Result<()> {
@@ -171,5 +172,32 @@ async fn test_chapter_repo() {
 
     // delete works
     repo.delete_chapter(test_chapter.clone()).await.unwrap();
-    assert_eq!(repo.get_chapters_of_book(test_chapter.book_id.clone()).await.unwrap().len(), 0);
+    assert_eq!(0, repo.get_chapters_of_book(test_chapter.book_id.clone()).await.unwrap().len());
+}
+
+#[tokio::test]
+async fn test_tag_repo() {
+    let repo = Library::new().await.tags;
+
+    let test_book_id = "test book id x3q5yh3".to_string();
+    let test_tag = "test tag cs4we575".to_string();
+
+    let test_tag = Tag {
+        book_id: test_book_id.clone(),
+        tag: test_tag.clone(),
+        created_at: OffsetDateTime::now_utc(),
+    };
+
+    // insert/get works
+    repo.add_tag_to_book(test_tag.clone(), test_book_id.clone()).await.unwrap();  // this might fail cuz db not cleaned; fix: change tag-book
+    let mut from_db_vec = repo.get_tags_of_book(test_book_id.clone()).await.unwrap();
+    assert_eq!(1, from_db_vec.len());
+    let from_db_item = from_db_vec.pop().unwrap();
+    assert_eq!(from_db_item.book_id, test_tag.book_id.clone());
+    assert_eq!(from_db_item.tag, test_tag.tag.clone());
+    // do not compare created_at; db fucked
+
+    // delete works
+    repo.remove_tag_from_book(test_tag.clone()).await.unwrap();
+    assert_eq!(0, repo.get_tags_of_book(test_book_id.clone()).await.unwrap().len())
 }
