@@ -1,9 +1,10 @@
 use time::{Date, OffsetDateTime};
 use time::Weekday::Monday;
 use database::Library;
-use database::models::{Book, User};
+use database::models::{User, Book, Author};
 use database::repositories::user_repository::UserRepo;
 use database::repositories::book_repository::BookRepo;
+use database::repositories::author_repository::AuthorRepo;
 
 #[tokio::test]
 async fn test_user_repo() -> anyhow::Result<()> {
@@ -102,4 +103,36 @@ async fn test_book_repo() -> anyhow::Result<()> {
     assert!(book_repo.get_book_by_id(edited_book.id).await.is_err());
 
     Ok(())
+}
+
+#[tokio::test]
+async fn test_author_repo() {
+    let repo = Library::new().await.authors;
+
+    let test_author = Author {
+        id: "test author id 3645w74668568".to_string(),
+        name: "test author name".to_string(),
+        created_at: OffsetDateTime::now_utc(),
+    };
+
+    // ensure not in db
+    repo.delete_author(test_author.clone()).await;
+
+    // insert works
+    repo.add_author(test_author.clone()).await.unwrap();
+    let from_db = repo.get_author(test_author.id.clone()).await.unwrap();
+    assert_eq!(from_db.id, test_author.id);
+    assert_eq!(from_db.name, test_author.name);
+    // do not compare created_at; db fucked
+
+    // edit works
+    let new_name = "new name".to_string();
+    let author_with_new_name = Author { name: new_name.clone(), ..test_author.clone() };
+    repo.edit_author(author_with_new_name).await.unwrap();
+    let from_db = repo.get_author(test_author.id.clone()).await.unwrap();
+    assert_eq!(from_db.name, new_name.clone());
+
+    // delete works
+    repo.delete_author(test_author.clone()).await.unwrap();
+    assert!(repo.get_author(test_author.id.clone()).await.is_err());
 }
