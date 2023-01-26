@@ -1,3 +1,4 @@
+mod adapters;
 pub mod eshop;
 
 pub mod grpc {

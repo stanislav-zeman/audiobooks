@@ -1,6 +1,8 @@
-use database::repositories::author_repository::AuthorRepo;
-use database::repositories::book_repository::BookRepo;
-use database::repositories::chapter_repository::ChapterRepo;
+use crate::handlers::adapters::{convert_author, convert_chapter};
+use database::repositories::{
+    author_repository::AuthorRepo, book_repository::BookRepo, chapter_repository::ChapterRepo,
+    tag_repository::TagRepo, user_repository::UserRepo,
+};
 use database::Library;
 use tonic::{Request, Response, Status};
 
@@ -140,20 +142,5 @@ impl eshop_service_server::EshopService for EshopHandler {
                 isbn: String::from("IIII I  II"),
             }],
         }))
-    }
-}
-
-fn convert_chapter(chapter: &database::models::Chapter) -> Chapter {
-    Chapter {
-        id: chapter.id.clone(),
-        chapter_name: chapter.name.clone(),
-        start: chapter.start as u32,
-    }
-}
-
-fn convert_author(author: &database::models::Author) -> Author {
-    Author {
-        id: author.id.clone(),
-        name: author.name.clone(),
     }
 }
