@@ -1,11 +1,11 @@
-use time::{Date, OffsetDateTime};
-use time::Weekday::Monday;
-use database::Library;
-use database::models::{User, Book, Author, Chapter};
-use database::repositories::user_repository::UserRepo;
-use database::repositories::book_repository::BookRepo;
+use database::models::{Author, Book, Chapter, User};
 use database::repositories::author_repository::AuthorRepo;
+use database::repositories::book_repository::BookRepo;
 use database::repositories::chapter_repository::ChapterRepo;
+use database::repositories::user_repository::UserRepo;
+use database::Library;
+use time::Weekday::Monday;
+use time::{Date, OffsetDateTime};
 
 #[tokio::test]
 async fn test_user_repo() -> anyhow::Result<()> {
@@ -159,8 +159,13 @@ async fn test_chapter_repo() {
     };
 
     // insert/get works
-    repo.add_chapter_to_book(test_chapter.clone()).await.unwrap();  // this might fail cuz db not cleaned; fix: change id
-    let mut from_db_vec = repo.get_chapters_of_book(test_chapter.book_id.clone()).await.unwrap();
+    repo.add_chapter_to_book(test_chapter.clone())
+        .await
+        .unwrap(); // this might fail cuz db not cleaned; fix: change id
+    let mut from_db_vec = repo
+        .get_chapters_of_book(test_chapter.book_id.clone())
+        .await
+        .unwrap();
     assert_eq!(1, from_db_vec.len());
     let from_db_item = from_db_vec.pop().unwrap();
     assert_eq!(from_db_item.id, test_chapter.id.clone());
@@ -171,5 +176,11 @@ async fn test_chapter_repo() {
 
     // delete works
     repo.delete_chapter(test_chapter.clone()).await.unwrap();
-    assert_eq!(0, repo.get_chapters_of_book(test_chapter.book_id.clone()).await.unwrap().len());
+    assert_eq!(
+        0,
+        repo.get_chapters_of_book(test_chapter.book_id.clone())
+            .await
+            .unwrap()
+            .len()
+    );
 }

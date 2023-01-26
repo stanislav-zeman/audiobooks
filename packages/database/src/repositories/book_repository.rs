@@ -6,8 +6,16 @@ use std::sync::Arc;
 #[async_trait]
 pub trait BookRepo {
     async fn get_book_by_id(&self, id: String) -> anyhow::Result<Book>;
-    async fn get_filtered_books(&self, filter: BookFilter, pagination: Pagination) -> anyhow::Result<Vec<Book>>;
-    async fn get_user_books(&self, user_id: i32, pagination: Pagination) -> anyhow::Result<Vec<Book>>;
+    async fn get_filtered_books(
+        &self,
+        filter: BookFilter,
+        pagination: Pagination,
+    ) -> anyhow::Result<Vec<Book>>;
+    async fn get_user_books(
+        &self,
+        user_id: i32,
+        pagination: Pagination,
+    ) -> anyhow::Result<Vec<Book>>;
     async fn add_book(&self, book: Book) -> anyhow::Result<()>;
     async fn add_author_to_book(&self, book: Book, author: Author) -> anyhow::Result<()>;
     async fn edit_book(&self, book: Book) -> anyhow::Result<()>;
@@ -34,12 +42,17 @@ impl BookRepo for BookRepository {
         Ok(book)
     }
 
-    async fn get_filtered_books(&self, filter: BookFilter, pagination: Pagination) -> anyhow::Result<Vec<Book>> {
+    async fn get_filtered_books(
+        &self,
+        filter: BookFilter,
+        pagination: Pagination,
+    ) -> anyhow::Result<Vec<Book>> {
         let author_name = format!("%{}%", filter.author_name.unwrap_or_default());
         let book_name = format!("%{}%", filter.book_name.unwrap_or_default());
         let tag = format!("%{}%", filter.tag.unwrap_or_default());
 
-        let books = sqlx::query_as!(Book,
+        let books = sqlx::query_as!(
+            Book,
             "SELECT bk.id, bk.name, bk.description, bk.tag, bk.published_at, bk.length,
                bk.file_url, bk.cover_url, bk.price, bk.isbn, bk.created_at
                FROM author at
@@ -58,15 +71,20 @@ impl BookRepo for BookRepository {
             filter.price_to.unwrap_or(u64::MAX),
             pagination.offset,
             pagination.limit
-            )
-            .fetch_all(&*self.mysql_pool)
-            .await?;
+        )
+        .fetch_all(&*self.mysql_pool)
+        .await?;
 
         Ok(books)
     }
 
-    async fn get_user_books(&self, user_id: i32, pagination: Pagination) -> anyhow::Result<Vec<Book>> {
-        let books = sqlx::query_as!(Book,
+    async fn get_user_books(
+        &self,
+        user_id: i32,
+        pagination: Pagination,
+    ) -> anyhow::Result<Vec<Book>> {
+        let books = sqlx::query_as!(
+            Book,
             "SELECT bk.id, bk.name, bk.description, bk.tag, bk.published_at, bk.length,
                bk.file_url, bk.cover_url, bk.price, bk.isbn, bk.created_at
                FROM book bk
@@ -78,15 +96,14 @@ impl BookRepo for BookRepository {
             user_id,
             pagination.offset,
             pagination.limit
-            )
-            .fetch_all(&*self.mysql_pool)
-            .await?;
+        )
+        .fetch_all(&*self.mysql_pool)
+        .await?;
 
         Ok(books)
     }
 
-
-        async fn add_book(&self, book: Book) -> anyhow::Result<()> {
+    async fn add_book(&self, book: Book) -> anyhow::Result<()> {
         sqlx::query!(
             "INSERT INTO book (id, name, description, tag, published_at, length, file_url, cover_url, price, isbn)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -114,8 +131,8 @@ impl BookRepo for BookRepository {
             author.id,
             book.id,
         )
-            .execute(&*self.mysql_pool)
-            .await?;
+        .execute(&*self.mysql_pool)
+        .await?;
 
         Ok(())
     }
