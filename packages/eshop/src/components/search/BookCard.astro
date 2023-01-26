@@ -1,5 +1,6 @@
 ---
-import Icon from "astro-icon";
+import Star from "@components/icons/Star.astro";
+import StarFilled from "@components/icons/StarFilled.astro";
 
 export type Props = {
   id: string;
@@ -32,12 +33,12 @@ const emptyStars = 5 - showStars;
     <div class="flex items-center mt-2.5 mb-5">
       {
         Array.from({ length: showStars }).map((_) => (
-          <Icon name="mdi:star" class="w-5 h-5 text-yellow-300" />
+          <StarFilled class="w-5 h-5 " />
         ))
       }
       {
         Array.from({ length: emptyStars }).map((_) => (
-          <Icon name="mdi:star-outline" class="w-5 h-5 text-gray-300" />
+          <Star name="mdi:star-outline" class="w-5 h-5 text-gray-300" />
         ))
       }
 

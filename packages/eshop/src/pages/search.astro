@@ -3,7 +3,7 @@ import BookCard from "@components/search/BookCard.astro";
 import Category from "@components/search/Category.astro";
 import Price from "@components/search/Price.astro";
 import Layout from "@layouts/SearchLayout.astro";
-import Icon from "astro-icon";
+import Search from "@components/icons/Search.astro";
 
 const categories = [
   {
@@ -88,10 +88,7 @@ const books = [
           <div
             class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
           >
-            <Icon
-              name="tabler:search"
-              class="w-5 h-5 text-gray-500 dark:text-gray-400"
-            />
+            <Search class="w-5 h-5 text-gray-500 dark:text-gray-400" />
           </div>
           <input
             type="search"

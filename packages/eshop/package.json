@@ -19,7 +19,6 @@
     "@fontsource/inter": "^4.5.15",
     "@grpc/grpc-js": "^1.8.0",
     "astro": "^1.6.13",
-    "astro-icon": "^0.8.0",
     "grpc-ts": "*",
     "postcss": "^8.4.19",
     "solid-js": "^1.4.3",

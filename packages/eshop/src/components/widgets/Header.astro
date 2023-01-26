@@ -1,9 +1,9 @@
 ---
-import { Icon } from "astro-icon";
 import Logo from "@components/common/Logo.astro";
 import CartButton from "@components/common/CartButton.astro";
 import ToggleMenu from "@components/common/ToggleMenu.astro";
 import SearchBar from "@components/widgets/SearchBar.astro";
+import ChevronDown from "@components/icons/ChevronDown.astro";
 
 export type Props = {
   showSearch?: boolean;
@@ -80,10 +80,7 @@ const { showSearch = false } = Astro.props as Props;
               <>
                 <button class="font-medium hover:text-gray-900 dark:hover:text-white px-4 py-3 flex items-center transition duration-150 ease-in-out">
                   {text}{" "}
-                  <Icon
-                    name="tabler:chevron-down"
-                    class="w-3.5 h-3.5 ml-0.5 hidden md:inline"
-                  />
+                  <ChevronDown class="w-3.5 h-3.5 ml-0.5 hidden md:inline" />
                 </button>
                 <ul class="dropdown-menu rounded md:absolute pl-4 md:pl-0 md:hidden font-medium md:bg-white md:min-w-[200px] dark:md:bg-slate-800 drop-shadow-xl">
                   {links.map(({ text: text2, href: href2 }) => (
