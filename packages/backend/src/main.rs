@@ -1,5 +1,5 @@
 use std::env;
-use sqlx::{MySql, MySqlPool};
+use sqlx::{MySqlPool};
 
 use tonic_web::GrpcWebLayer;
 
@@ -26,7 +26,7 @@ async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
     println!("Listening on {}", addr);
 
-    let service = EshopHandler::default();
+    let service = EshopHandler::new().await;
     let service = EshopServiceServer::new(service);
 
     tonic::transport::Server::builder()

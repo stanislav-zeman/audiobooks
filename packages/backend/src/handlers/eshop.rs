@@ -1,61 +1,52 @@
+use database::Library;
 use tonic::{Request, Response, Status};
+use database::repositories::book_repository::BookRepo;
+use database::repositories::author_repository::AuthorRepo;
+use database::repositories::chapter_repository::ChapterRepo;
 
 use super::grpc::*;
 
-#[derive(Default)]
-pub struct EshopHandler {}
+pub struct EshopHandler {
+    library: Library,
+}
+
+impl EshopHandler {
+    pub async fn new() -> EshopHandler {
+        EshopHandler {
+            library: Library::new().await,
+        }
+    }
+}
 
 #[tonic::async_trait]
 impl eshop_service_server::EshopService for EshopHandler {
     async fn get_book_by_id(
         &self,
-        _: Request<GetBookByIdRequest>,
+        request: Request<GetBookByIdRequest>,
     ) -> Result<Response<Book>, Status> {
-        let chapters = vec![
-            Chapter {
-                id: "jedna".to_string(),
-                chapter_name: "jedna".to_string(),
-                start: 0,
-            },
-            Chapter {
-                id: "dva".to_string(),
-                chapter_name: "dva".to_string(),
-                start: 1,
-            },
-            Chapter {
-                id: "tri".to_string(),
-                chapter_name: "tri".to_string(),
-                start: 2,
-            },
-        ];
+        let id = request.into_inner().id;
 
-        let authors = vec![
-            Author {
-                id: "jedna".to_string(),
-                name: "jedna".to_string(),
-            },
-            Author {
-                id: "dva".to_string(),
-                name: "dva".to_string(),
-            },
-            Author {
-                id: "tri".to_string(),
-                name: "tri".to_string(),
-            },
-        ];
+        // TODO: Clean unwraps
+        let book = match self.library.books.get_book_by_id(id.clone()).await {
+            Ok(b) => b,
+            Err(_) => return Err(Status::not_found("Book not found.")),
+        };
+
+        let chapters: Vec<_> = self.library.chapters.get_chapters_of_book(id.clone()).await.unwrap().iter().map(convert_chapter).collect();
+        let authors: Vec<_> = self.library.authors.get_book_authors(id.clone()).await.unwrap().iter().map(convert_author).collect();
 
         Ok(Response::new(Book {
-            id: String::from("prdel"),
+            id,
             is_owned: false,
             chapters,
             authors,
-            length: 420_u64,
-            name: String::from("epic book name"),
-            description: String::from("desc"),
-            file_url: String::from("file url"),
-            cover_url: String::from("cover url"),
-            price: 69_u64,
-            isbn: String::from("IIII I  II"),
+            length: book.length as u64,
+            name: book.name,
+            description: book.description,
+            file_url: book.file_url,
+            cover_url: book.cover_url,
+            price: book.price as u64,
+            isbn: book.isbn,
         }))
     }
 
@@ -129,5 +120,20 @@ impl eshop_service_server::EshopService for EshopHandler {
                 isbn: String::from("IIII I  II"),
             }],
         }))
+    }
+}
+
+fn convert_chapter(chapter: &database::models::Chapter) -> Chapter {
+    Chapter {
+        id: chapter.id.clone(),
+        chapter_name: chapter.name.clone(),
+        start: chapter.start as u32,
+    }
+}
+
+fn convert_author(author: &database::models::Author) -> Author {
+    Author {
+        id: author.id.clone(),
+        name: author.name.clone(),
     }
 }

@@ -18,6 +18,7 @@ tracing-subscriber = "0.3.16"
 mysql = "23.0.1"
 dotenvy = "0.15.6"
 sqlx = { version = "0.6.2", features = ["mysql", "runtime-tokio-rustls"] }
+database = { path = "../database" }
 
 [build-dependencies]
 tonic-build = "0.8"
