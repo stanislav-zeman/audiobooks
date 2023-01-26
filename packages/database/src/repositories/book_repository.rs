@@ -5,7 +5,7 @@ use std::sync::Arc;
 
 #[async_trait]
 pub trait BookRepo {
-    async fn get_book_by_id(&self, id: i32) -> anyhow::Result<Book>;
+    async fn get_book_by_id(&self, id: String) -> anyhow::Result<Book>;
     async fn add_book(&self, book: Book) -> anyhow::Result<()>;
     async fn edit_book(&self, book: Book) -> anyhow::Result<()>;
     async fn delete_book(&self, book: Book) -> anyhow::Result<()>;
@@ -23,7 +23,7 @@ impl BookRepository {
 
 #[async_trait]
 impl BookRepo for BookRepository {
-    async fn get_book_by_id(&self, id: i32) -> anyhow::Result<Book> {
+    async fn get_book_by_id(&self, id: String) -> anyhow::Result<Book> {
         let book = sqlx::query_as!(Book, "SELECT * FROM book WHERE id = ?", id,)
             .fetch_one(&*self.mysql_pool)
             .await?;
