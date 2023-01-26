@@ -7,6 +7,7 @@ use std::sync::Arc;
 pub trait BookRepo {
     async fn get_book_by_id(&self, id: String) -> anyhow::Result<Book>;
     async fn get_filtered_books(&self, filter: BookFilter, pagination: Pagination) -> anyhow::Result<Vec<Book>>;
+    async fn get_user_books(&self, user_id: i32, pagination: Pagination) -> anyhow::Result<Vec<Book>>;
     async fn add_book(&self, book: Book) -> anyhow::Result<()>;
     async fn add_author_to_book(&self, book: Book, author: Author) -> anyhow::Result<()>;
     async fn edit_book(&self, book: Book) -> anyhow::Result<()>;
@@ -60,11 +61,32 @@ impl BookRepo for BookRepository {
             )
             .fetch_all(&*self.mysql_pool)
             .await?;
+
+        Ok(books)
+    }
+
+    async fn get_user_books(&self, user_id: i32, pagination: Pagination) -> anyhow::Result<Vec<Book>> {
+        let books = sqlx::query_as!(Book,
+            "SELECT bk.id, bk.name, bk.description, bk.tag, bk.published_at, bk.length,
+               bk.file_url, bk.cover_url, bk.price, bk.isbn, bk.created_at
+               FROM book bk
+               INNER JOIN user_book ub
+               ON ub.book_id = bk.id
+               WHERE ub.user_id = ?
+               ORDER BY bk.created_at DESC
+               LIMIT ?, ?",
+            user_id,
+            pagination.offset,
+            pagination.limit
+            )
+            .fetch_all(&*self.mysql_pool)
+            .await?;
+
         Ok(books)
     }
 
 
-    async fn add_book(&self, book: Book) -> anyhow::Result<()> {
+        async fn add_book(&self, book: Book) -> anyhow::Result<()> {
         sqlx::query!(
             "INSERT INTO book (id, name, description, tag, published_at, length, file_url, cover_url, price, isbn)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
