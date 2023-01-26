@@ -1,5 +1,4 @@
 use crate::handlers::grpc::{Author, Chapter, User};
-use grpc_backend::handlers::grpc::{Author, Chapter};
 
 pub fn convert_chapter(chapter: &database::models::Chapter) -> Chapter {
     Chapter {

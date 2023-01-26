@@ -1,7 +1,7 @@
 use crate::handlers::adapters::{convert_author, convert_chapter, convert_user};
 use database::repositories::{
     author_repository::AuthorRepo, book_repository::BookRepo, chapter_repository::ChapterRepo,
-    tag_repository::TagRepo, user_repository::UserRepo,
+    user_repository::UserRepo,
 };
 use database::Library;
 use tonic::{Request, Response, Status};
@@ -34,24 +34,16 @@ impl eshop_service_server::EshopService for EshopHandler {
             Err(_) => return Err(Status::not_found("Book not found.")),
         };
 
-        let chapters: Vec<_> = self
-            .library
-            .chapters
-            .get_chapters_of_book(id.clone())
-            .await
-            .unwrap()
-            .iter()
-            .map(convert_chapter)
-            .collect();
-        let authors: Vec<_> = self
-            .library
-            .authors
-            .get_book_authors(id.clone())
-            .await
-            .unwrap()
-            .iter()
-            .map(convert_author)
-            .collect();
+        let chapters: Vec<Chapter> =
+            match self.library.chapters.get_chapters_of_book(id.clone()).await {
+                Ok(chapters) => chapters.iter().map(convert_chapter).collect(),
+                Err(_) => return Err(Status::internal("Failed getting chapters.")),
+            };
+
+        let authors: Vec<_> = match self.library.authors.get_book_authors(id.clone()).await {
+            Ok(authors) => authors.iter().map(convert_author).collect(),
+            Err(_) => return Err(Status::internal("Failed getting authors.")),
+        };
 
         Ok(Response::new(Book {
             id,
@@ -72,14 +64,15 @@ impl eshop_service_server::EshopService for EshopHandler {
         &self,
         request: Request<GetAuthorByIdRequest>,
     ) -> Result<Response<Author>, Status> {
-        Ok(Response::new(convert_author(
-            &self
-                .library
-                .authors
-                .get_author(request.into_inner().id)
-                .await
-                .unwrap(),
-        )))
+        Ok(Response::new(convert_author(&match self
+            .library
+            .authors
+            .get_author(request.into_inner().id)
+            .await
+        {
+            Ok(author) => author,
+            Err(_) => return Err(Status::not_found("Author not found.")),
+        })))
     }
 
     async fn get_user_by_id(
@@ -92,7 +85,10 @@ impl eshop_service_server::EshopService for EshopHandler {
         Ok(Response::new(convert_user(&user)))
     }
 
-    async fn get_books(&self, request: Request<GetBooksRequest>) -> Result<Response<Books>, Status> {
+    async fn get_books(
+        &self,
+        request: Request<GetBooksRequest>,
+    ) -> Result<Response<Books>, Status> {
         Ok(Response::new(Books {
             total: 1,
             books: vec![Book {
