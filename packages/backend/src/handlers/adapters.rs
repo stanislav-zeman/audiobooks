@@ -12,6 +12,18 @@ impl From<&models::Chapter> for Chapter {
     }
 }
 
+impl From<&Chapter> for models::Chapter {
+    fn from(value: &Chapter) -> Self {
+        Self {
+            id: value.id.clone(),
+            book_id: "".to_string(),
+            name: value.chapter_name.clone(),
+            start: value.start as i32,
+            created_at: None,
+        }
+    }
+}
+
 impl From<&models::Author> for Author {
     fn from(value: &models::Author) -> Self {
         Self {
