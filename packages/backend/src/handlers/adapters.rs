@@ -21,6 +21,16 @@ impl From<&models::Author> for Author {
     }
 }
 
+impl From<&Author> for models::Author {
+    fn from(value: &Author) -> Self {
+        Self {
+            id: value.id.clone(),
+            name: value.name.clone(),
+            created_at: None,
+        }
+    }
+}
+
 impl From<&models::User> for User {
     fn from(value: &models::User) -> Self {
         Self {
