@@ -174,39 +174,48 @@ impl eshop_service_server::EshopService for EshopHandler {
     async fn add_book(&self, request: Request<Book>) -> Result<Response<Void>, Status> {
         let book = request.into_inner();
 
-        self.library
-            .books
-            .add_book(models::Book::from(&book))
-            .await
-            .unwrap();
-        for author in book.authors {
-            self.library
-                .authors
-                .add_author(models::Author::from(&author))
-                .await
-                .unwrap();
-        }
-        for chapter in book.chapters {
-            self.library
-                .chapters
-                .add_chapter_to_book(models::Chapter::from(&chapter))
-                .await
-                .unwrap();
-        }
+        // self.library
+        //     .books
+        //     .add_book(models::Book::from(&book))
+        //     .await
+        //     .unwrap();
+        // for author in book.authors {
+        //     self.library
+        //         .authors
+        //         .add_author(models::Author::from(&author))
+        //         .await
+        //         .unwrap();
+        // }
+        // for chapter in book.chapters {
+        //     self.library
+        //         .chapters
+        //         .add_chapter_to_book(models::Chapter::from(&chapter))
+        //         .await
+        //         .unwrap();
+        // }
 
         Ok(Response::new(Void::default()))
     }
 
-    async fn update_book(&self, _request: Request<Book>) -> Result<Response<Void>, Status> {
-        todo!()
+    async fn update_book(&self, request: Request<Book>) -> Result<Response<Void>, Status> {
+        let updated_book = request.into_inner();
+        let chapters = updated_book.chapters.iter().map(models::Chapter::from).collect();
+        let authors = updated_book.authors.iter().map(models::Author::from).collect();
+        let book = models::Book::from(&updated_book);
+
+        if self.library.edit_book(book, chapters, authors).await.is_err() {
+            return Err(Status::not_found("Book not found"))
+        };
+
+        Ok(Response::new(Void::default()))
     }
 
     async fn add_author(&self, request: Request<Author>) -> Result<Response<Void>, Status> {
-        self.library
-            .authors
-            .add_author(models::Author::from(&request.into_inner()))
-            .await
-            .unwrap();
+        // self.library
+        //     .authors
+        //     .add_author(models::Author::from(&request.into_inner()))
+        //     .await
+        //     .unwrap();
 
         Ok(Response::new(Void::default()))
     }

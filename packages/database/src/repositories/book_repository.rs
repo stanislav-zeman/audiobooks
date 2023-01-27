@@ -1,6 +1,6 @@
-use crate::models::{Author, Book, BookFilter, Pagination};
+use crate::models::{Book, BookFilter, Pagination};
 use async_trait::async_trait;
-use sqlx::MySqlPool;
+use sqlx::{MySql, MySqlPool, Transaction};
 use std::sync::Arc;
 
 #[async_trait]
@@ -17,8 +17,7 @@ pub trait BookRepo {
         pagination: Pagination,
     ) -> anyhow::Result<Vec<Book>>;
     async fn add_book(&self, book: Book) -> anyhow::Result<()>;
-    async fn add_author_to_book(&self, book: Book, author: Author) -> anyhow::Result<()>;
-    async fn edit_book(&self, book: Book) -> anyhow::Result<()>;
+    async fn edit_book(&self, book: Book, transaction: &mut Transaction<MySql>) -> anyhow::Result<()>;
     async fn delete_book(&self, book: Book) -> anyhow::Result<()>;
 }
 
@@ -123,20 +122,7 @@ impl BookRepo for BookRepository {
         Ok(())
     }
 
-    async fn add_author_to_book(&self, book: Book, author: Author) -> anyhow::Result<()> {
-        sqlx::query!(
-            "INSERT INTO author_book (author_id, book_id)
-             VALUES (?, ?)",
-            author.id,
-            book.id,
-        )
-        .execute(&*self.mysql_pool)
-        .await?;
-
-        Ok(())
-    }
-
-    async fn edit_book(&self, book: Book) -> anyhow::Result<()> {
+    async fn edit_book(&self, book: Book, transaction: &mut Transaction<MySql>) -> anyhow::Result<()> {
         sqlx::query!(
             "UPDATE book SET name = ?, description = ?, tag = ?, length = ?, file_url = ?, cover_url = ?, price = ?, isbn = ?
              WHERE id = ?",
@@ -150,7 +136,7 @@ impl BookRepo for BookRepository {
             book.isbn,
             book.id,
         )
-            .execute(&*self.mysql_pool)
+            .execute(&mut *transaction)
             .await?;
 
         Ok(())
