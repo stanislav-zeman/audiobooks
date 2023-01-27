@@ -6,6 +6,8 @@ import Search from "@components/icons/Search.astro";
 import { grpcClient } from "@utils/grpc/client";
 import { promise } from "@utils/grpc/promise";
 import { searchFilters } from "@utils/filters/searchFilters";
+import { Void } from "grpc-ts/eshop_pb";
+import { toBookView } from "@utils/book";
 
 const prices = [
   {
@@ -18,47 +20,20 @@ const prices = [
   },
 ];
 
-const books = [
-  {
-    id: "1",
-    title: "The Adventures of Tom Sawyer",
-    price: "Free",
-    image: "https://placekitten.com/500/500",
-    rating: 4,
-  },
-  {
-    id: "2",
-    title: "All Quiet on the Western Front",
-    price: "Free",
-    image: "https://placekitten.com/600/600",
-    rating: 3.1,
-  },
-  {
-    id: "3",
-    title: "The Great Gatsby",
-    price: "$ 4.99",
-    image: "https://placekitten.com/400/400",
-    rating: 4.5,
-  },
-  {
-    id: "4",
-    title: "Algorithms and Data Structures II",
-    price: "$ 69.99",
-    image: "https://placekitten.com/600/600",
-    rating: 1.2,
-  },
-];
-
 const getTags = promise(grpcClient.getTags.bind(grpcClient));
-const request = searchFilters(Astro.url.searchParams);
-const tags = await getTags(request);
-
+const tags = await getTags(new Void());
 const categories = tags?.getTagsList().map((tag) => {
   return {
     name: tag,
     slug: tag,
   };
 });
+
+const request = searchFilters(Astro.url.searchParams);
+const getBooks = promise(grpcClient.getBooks.bind(grpcClient));
+const books = (await getBooks(request))?.getBooksList();
+const bookView = books?.map(toBookView);
+
 ---
 
 <Layout>
@@ -74,22 +49,8 @@ const categories = tags?.getTagsList().map((tag) => {
           </div>
           <input
             type="search"
-            id="search-book"
-            name="search-book"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Search"
-          />
-        </div>
-        <div class="relative">
-          <div
-            class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
-          >
-            <Search class="w-5 h-5 text-gray-500 dark:text-gray-400" />
-          </div>
-          <input
-            type="search"
-            id="search-author"
-            name="search-author"
+            id="search"
+            name="search"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="Search"
           />
@@ -130,7 +91,7 @@ const categories = tags?.getTagsList().map((tag) => {
       </form>
     </div>
     <div class="flex flex-auto w-full flex-wrap gap-5">
-      {books.map((book) => <BookCard {...book} />)}
+      {bookView?.map(book => <BookCard {...book} />)}
     </div>
   </div>
 </Layout>
