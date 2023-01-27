@@ -75,8 +75,8 @@ impl BookRepo for BookRepository {
             author_name,
             book_name,
             tag,
-            filter.price_from.unwrap_or(u64::MIN),
-            filter.price_to.unwrap_or(u64::MAX),
+            filter.price_from.unwrap_or(0),
+            filter.price_to.unwrap_or(u32::MAX as u64),
             pagination.offset,
             pagination.limit
         )
