@@ -16,8 +16,16 @@ pub trait BookRepo {
         user_id: String,
         pagination: Pagination,
     ) -> anyhow::Result<Vec<Book>>;
-    async fn add_book(&self, book: Book) -> anyhow::Result<()>;
-    async fn edit_book(&self, book: Book, transaction: &mut Transaction<MySql>) -> anyhow::Result<()>;
+    async fn add_book(
+        &self,
+        book: Book,
+        transaction: &mut Transaction<MySql>,
+    ) -> anyhow::Result<()>;
+    async fn edit_book(
+        &self,
+        book: Book,
+        transaction: &mut Transaction<MySql>,
+    ) -> anyhow::Result<()>;
     async fn delete_book(&self, book: Book) -> anyhow::Result<()>;
 }
 
@@ -102,7 +110,11 @@ impl BookRepo for BookRepository {
         Ok(books)
     }
 
-    async fn add_book(&self, book: Book) -> anyhow::Result<()> {
+    async fn add_book(
+        &self,
+        book: Book,
+        transaction: &mut Transaction<MySql>,
+    ) -> anyhow::Result<()> {
         sqlx::query!(
             "INSERT INTO book (id, name, description, tag, length, file_url, cover_url, price, isbn)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -116,13 +128,17 @@ impl BookRepo for BookRepository {
             book.price,
             book.isbn
         )
-        .execute(&*self.mysql_pool)
+        .execute(&mut *transaction)
         .await?;
 
         Ok(())
     }
 
-    async fn edit_book(&self, book: Book, transaction: &mut Transaction<MySql>) -> anyhow::Result<()> {
+    async fn edit_book(
+        &self,
+        book: Book,
+        transaction: &mut Transaction<MySql>,
+    ) -> anyhow::Result<()> {
         sqlx::query!(
             "UPDATE book SET name = ?, description = ?, tag = ?, length = ?, file_url = ?, cover_url = ?, price = ?, isbn = ?
              WHERE id = ?",

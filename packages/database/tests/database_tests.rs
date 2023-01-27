@@ -120,7 +120,9 @@ async fn test_author_repo() {
     };
 
     // insert/get works
-    repo.add_author(test_author.clone()).await.unwrap();
+    repo.add_author_with_transaction(test_author.clone())
+        .await
+        .unwrap();
     let from_db = repo.get_author_by_id(test_author.id.clone()).await.unwrap();
     assert_eq!(from_db.id, test_author.id);
     assert_eq!(from_db.name, test_author.name);

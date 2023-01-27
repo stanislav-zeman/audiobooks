@@ -1,14 +1,22 @@
 use crate::models::Chapter;
 use async_trait::async_trait;
 use sqlx;
-use std::sync::Arc;
 use sqlx::{MySql, Transaction};
+use std::sync::Arc;
 
 #[async_trait]
 pub trait ChapterRepo {
     async fn get_chapters_of_book(&self, book_id: String) -> anyhow::Result<Vec<Chapter>>;
-    async fn add_chapter_to_book(&self, chapter: Chapter, transaction: &mut Transaction<MySql>) -> anyhow::Result<()>;
-    async fn delete_chapters_from_book(&self, book_id: String, transaction: &mut Transaction<MySql>) -> anyhow::Result<()>;
+    async fn add_chapter_to_book(
+        &self,
+        chapter: Chapter,
+        transaction: &mut Transaction<MySql>,
+    ) -> anyhow::Result<()>;
+    async fn delete_chapters_from_book(
+        &self,
+        book_id: String,
+        transaction: &mut Transaction<MySql>,
+    ) -> anyhow::Result<()>;
 }
 
 pub struct ChapterRepository {
@@ -31,7 +39,11 @@ impl ChapterRepo for ChapterRepository {
         Ok(chapters)
     }
 
-    async fn add_chapter_to_book(&self, chapter: Chapter, transaction: &mut Transaction<MySql>) -> anyhow::Result<()> {
+    async fn add_chapter_to_book(
+        &self,
+        chapter: Chapter,
+        transaction: &mut Transaction<MySql>,
+    ) -> anyhow::Result<()> {
         sqlx::query!(
             "INSERT INTO chapter (id, book_id, name, start) VALUES (?, ?, ?, ?)",
             chapter.id,
@@ -45,11 +57,12 @@ impl ChapterRepo for ChapterRepository {
         Ok(())
     }
 
-    async fn delete_chapters_from_book(&self, book_id: String, transaction: &mut Transaction<MySql>) -> anyhow::Result<()> {
-        sqlx::query!(
-            "DELETE FROM chapter WHERE book_id = ?",
-            book_id,
-        )
+    async fn delete_chapters_from_book(
+        &self,
+        book_id: String,
+        transaction: &mut Transaction<MySql>,
+    ) -> anyhow::Result<()> {
+        sqlx::query!("DELETE FROM chapter WHERE book_id = ?", book_id,)
             .execute(&mut *transaction)
             .await?;
 

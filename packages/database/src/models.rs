@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use time::{OffsetDateTime};
+use time::OffsetDateTime;
 
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
 pub struct User {

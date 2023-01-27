@@ -12,9 +12,23 @@ pub trait AuthorRepo {
         pagination: Pagination,
     ) -> anyhow::Result<Vec<Author>>;
     async fn get_book_authors(&self, id: String) -> anyhow::Result<Vec<Author>>;
-    async fn delete_authors_from_book(&self, book_id: String, transaction: &mut Transaction<MySql>) -> anyhow::Result<()>;
-    async fn add_author(&self, author: Author, transaction: &mut Transaction<MySql>) -> anyhow::Result<()>;
-    async fn add_author_to_book(&self, book_id: String, author: Author, transaction: &mut Transaction<MySql>) -> anyhow::Result<()>;
+    async fn delete_authors_from_book(
+        &self,
+        book_id: String,
+        transaction: &mut Transaction<MySql>,
+    ) -> anyhow::Result<()>;
+    async fn add_author(&self, author: Author) -> anyhow::Result<()>;
+    async fn add_author_with_transaction(
+        &self,
+        author: Author,
+        transaction: &mut Transaction<MySql>,
+    ) -> anyhow::Result<()>;
+    async fn add_author_to_book(
+        &self,
+        book_id: String,
+        author: Author,
+        transaction: &mut Transaction<MySql>,
+    ) -> anyhow::Result<()>;
     async fn edit_author(&self, author: Author) -> anyhow::Result<()>;
     async fn delete_author(&self, author: Author) -> anyhow::Result<()>;
 }
@@ -76,38 +90,60 @@ impl AuthorRepo for AuthorRepository {
         Ok(authors)
     }
 
-    async fn delete_authors_from_book(&self, book_id: String, transaction: &mut Transaction<MySql>) -> anyhow::Result<()> {
-        sqlx::query!(
-            "DELETE FROM author_book WHERE book_id = ?",
-            book_id,
-        )
+    async fn delete_authors_from_book(
+        &self,
+        book_id: String,
+        transaction: &mut Transaction<MySql>,
+    ) -> anyhow::Result<()> {
+        sqlx::query!("DELETE FROM author_book WHERE book_id = ?", book_id,)
             .execute(&mut *transaction)
             .await?;
 
         Ok(())
     }
 
-    async fn add_author(&self, author: Author, transaction: &mut Transaction<MySql>) -> anyhow::Result<()> {
+    async fn add_author(&self, author: Author) -> anyhow::Result<()> {
         sqlx::query!(
             "INSERT INTO author (id, name) VALUES (?, ?)",
             author.id,
             author.name
         )
-            .execute(&mut *transaction)
-            .await?;
+        .execute(&*self.mysql_pool)
+        .await?;
 
         Ok(())
     }
 
-    async fn add_author_to_book(&self, book_id: String, author: Author, transaction: &mut Transaction<MySql>) -> anyhow::Result<()> {
+    async fn add_author_with_transaction(
+        &self,
+        author: Author,
+        transaction: &mut Transaction<MySql>,
+    ) -> anyhow::Result<()> {
+        sqlx::query!(
+            "INSERT INTO author (id, name) VALUES (?, ?)",
+            author.id,
+            author.name
+        )
+        .execute(&mut *transaction)
+        .await?;
+
+        Ok(())
+    }
+
+    async fn add_author_to_book(
+        &self,
+        book_id: String,
+        author: Author,
+        transaction: &mut Transaction<MySql>,
+    ) -> anyhow::Result<()> {
         sqlx::query!(
             "INSERT INTO author_book (author_id, book_id)
              VALUES (?, ?)",
             author.id,
             book_id,
         )
-            .execute(&mut *transaction)
-            .await?;
+        .execute(&mut *transaction)
+        .await?;
 
         Ok(())
     }
