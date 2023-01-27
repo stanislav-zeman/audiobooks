@@ -1,9 +1,7 @@
-import { CallOptions, Metadata, ServiceError } from "@grpc/grpc-js";
+import type { ServiceError } from "grpc-ts/eshop_pb_service";
 
 type RequestResponse<T> = T extends (
   request: infer R,
-  metadata: Metadata,
-  options: Partial<CallOptions>,
   callback: (err: ServiceError | null, response: infer S) => void
 ) => any
   ? [R, S]
@@ -13,20 +11,14 @@ export const promise =
   <
     T extends (
       request: any,
-      metadata: Metadata,
-      options: Partial<CallOptions>,
       callback: (err: ServiceError | null, response: any) => void
     ) => any
   >(
     fn: T
-  ): ((
-    request: RequestResponse<T>[0],
-    metadata?: Metadata,
-    options?: Partial<CallOptions>
-  ) => Promise<RequestResponse<T>[1]>) =>
-  (request, metadata = new Metadata(), options = {}) =>
+  ): ((request: RequestResponse<T>[0]) => Promise<RequestResponse<T>[1]>) =>
+  (request) =>
     new Promise((resolve, reject) => {
-      fn(request, metadata, options, (err, response) => {
+      fn(request, (err, response) => {
         if (err) reject(err);
         else resolve(response);
       });

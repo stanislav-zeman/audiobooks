@@ -4,13 +4,9 @@ import Category from "@components/search/Category.astro";
 import Price from "@components/search/Price.astro";
 import Layout from "@layouts/SearchLayout.astro";
 import Search from "@components/icons/Search.astro";
-import { EshopServiceClient } from "grpc-ts/eshop_pb_service";
-import { Tags, Void } from "grpc-ts/eshop_pb";
-import { FetchReadableStreamTransport } from "@utils/grpc/transport";
-
-const params = Astro.url.searchParams;
-
-console.error(params);
+import { Void } from "grpc-ts/eshop_pb";
+import { grpcClient } from "@utils/grpc/client";
+import { promise } from "@utils/grpc/promise";
 
 const prices = [
   {
@@ -54,21 +50,10 @@ const books = [
   },
 ];
 
-const transport = FetchReadableStreamTransport({});
-const client = new EshopServiceClient("http://0.0.0.0:9000", { transport });
-
 const req = new Void();
 
-const promise = new Promise<Tags | null>((resolve, reject) => {
-  client.getTags(req, (err, res) => {
-    if (err) return reject(err);
-    resolve(res);
-  });
-});
-
-const tags = await promise;
-
-console.log(tags?.getTagsList());
+const getTags = promise(grpcClient.getTags.bind(grpcClient));
+const tags = await getTags(req);
 
 const categories = tags?.getTagsList().map((tag) => {
   return {
