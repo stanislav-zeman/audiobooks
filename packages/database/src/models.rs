@@ -6,14 +6,14 @@ pub struct User {
     pub id: String,
     pub name: String,
     pub studio_access: i8, // but irl bool
-    pub created_at: OffsetDateTime,
+    pub created_at: Option<OffsetDateTime>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Author {
     pub id: String,
     pub name: String,
-    pub created_at: OffsetDateTime,
+    pub created_at: Option<OffsetDateTime>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
@@ -28,7 +28,7 @@ pub struct Book {
     pub cover_url: String,
     pub price: i32,
     pub isbn: String,
-    pub created_at: OffsetDateTime,
+    pub created_at: Option<OffsetDateTime>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -52,5 +52,5 @@ pub struct Chapter {
     pub book_id: String,
     pub name: String,
     pub start: i32,
-    pub created_at: OffsetDateTime,
+    pub created_at: Option<OffsetDateTime>,
 }
