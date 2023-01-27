@@ -64,6 +64,15 @@ EshopService.GetMyBooks = {
   responseType: eshop_pb.Books
 };
 
+EshopService.GetTags = {
+  methodName: "GetTags",
+  service: EshopService,
+  requestStream: false,
+  responseStream: false,
+  requestType: eshop_pb.Void,
+  responseType: eshop_pb.Tags
+};
+
 EshopService.AddBook = {
   methodName: "AddBook",
   service: EshopService,
@@ -258,6 +267,37 @@ EshopServiceClient.prototype.getMyBooks = function getMyBooks(requestMessage, me
     callback = arguments[1];
   }
   var client = grpc.unary(EshopService.GetMyBooks, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+EshopServiceClient.prototype.getTags = function getTags(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(EshopService.GetTags, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

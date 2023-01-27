@@ -449,3 +449,25 @@ export namespace GetMyBooksRequest {
   }
 }
 
+export class Tags extends jspb.Message {
+  clearTagsList(): void;
+  getTagsList(): Array<string>;
+  setTagsList(value: Array<string>): void;
+  addTags(value: string, index?: number): string;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Tags.AsObject;
+  static toObject(includeInstance: boolean, msg: Tags): Tags.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Tags, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Tags;
+  static deserializeBinaryFromReader(message: Tags, reader: jspb.BinaryReader): Tags;
+}
+
+export namespace Tags {
+  export type AsObject = {
+    tagsList: Array<string>,
+  }
+}
+

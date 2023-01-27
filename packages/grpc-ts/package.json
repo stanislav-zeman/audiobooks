@@ -8,7 +8,7 @@
     "*.d.ts"
   ],
   "scripts": {
-    "clean": "rimraf *.js *.ts",
+    "clean": "rimraf *.js *.ts && touch index.js",
     "build_old": "yarn clean && protoc --plugin=protoc-gen-grpc-web=./node_modules/.bin/protoc-gen-grpc-web --js_out=import_style=commonjs,binary:./ --grpc-web_out=import_style=commonjs+dts,mode=grpcweb:./ -I ../proto ../proto/*.proto",
     "build": "yarn clean && protoc --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:./ --ts_out=service=grpc-web:./ -I ../proto ../proto/*.proto",
     "dev": "nodemon --watch ../proto --exec \"yarn build\" --delay 1 --ext proto"

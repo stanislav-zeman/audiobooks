@@ -1,5 +1,5 @@
 import { defineConfig } from "astro/config";
-import adapter from "@astrojs/vercel/edge";
+import adapter from "@astrojs/vercel/serverless";
 
 // https://astro.build/config
 import tailwind from "@astrojs/tailwind";
@@ -13,7 +13,16 @@ export default defineConfig({
   output: "server",
   vite: {
     ssr: {
-      external: ["grpc-ts", "svgo"],
+      external: ["grpc-ts"],
+    },
+    optimizeDeps: {
+      include: ["grpc-ts"],
+    },
+    build: {
+      commonjsOptions: {
+        exclude: ["grpc-ts"],
+        include: [],
+      },
     },
   },
   adapter: adapter({

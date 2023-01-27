@@ -19,6 +19,7 @@ service EshopService {
   rpc GetBooks(GetBooksRequest) returns (Books) {}
   rpc GetAuthors(GetAuthorsRequest) returns (Authors) {}
   rpc GetMyBooks(GetMyBooksRequest) returns (Books) {}
+  rpc GetTags(Void) returns (Tags) {}
 
   // Author
   rpc AddBook(Book) returns (Void) {}
@@ -90,3 +91,4 @@ message GetAuthorsRequest {
   AuthorFilters filters = 2;
 }
 message GetMyBooksRequest { Pagination pagination = 1; }
+message Tags { repeated string tags = 1; }

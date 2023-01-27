@@ -58,6 +58,15 @@ type EshopServiceGetMyBooks = {
   readonly responseType: typeof eshop_pb.Books;
 };
 
+type EshopServiceGetTags = {
+  readonly methodName: string;
+  readonly service: typeof EshopService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof eshop_pb.Void;
+  readonly responseType: typeof eshop_pb.Tags;
+};
+
 type EshopServiceAddBook = {
   readonly methodName: string;
   readonly service: typeof EshopService;
@@ -93,6 +102,7 @@ export class EshopService {
   static readonly GetBooks: EshopServiceGetBooks;
   static readonly GetAuthors: EshopServiceGetAuthors;
   static readonly GetMyBooks: EshopServiceGetMyBooks;
+  static readonly GetTags: EshopServiceGetTags;
   static readonly AddBook: EshopServiceAddBook;
   static readonly UpdateBook: EshopServiceUpdateBook;
   static readonly AddAuthor: EshopServiceAddAuthor;
@@ -183,6 +193,15 @@ export class EshopServiceClient {
   getMyBooks(
     requestMessage: eshop_pb.GetMyBooksRequest,
     callback: (error: ServiceError|null, responseMessage: eshop_pb.Books|null) => void
+  ): UnaryResponse;
+  getTags(
+    requestMessage: eshop_pb.Void,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: eshop_pb.Tags|null) => void
+  ): UnaryResponse;
+  getTags(
+    requestMessage: eshop_pb.Void,
+    callback: (error: ServiceError|null, responseMessage: eshop_pb.Tags|null) => void
   ): UnaryResponse;
   addBook(
     requestMessage: eshop_pb.Book,

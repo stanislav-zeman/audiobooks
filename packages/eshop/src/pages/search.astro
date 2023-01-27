@@ -4,37 +4,13 @@ import Category from "@components/search/Category.astro";
 import Price from "@components/search/Price.astro";
 import Layout from "@layouts/SearchLayout.astro";
 import Search from "@components/icons/Search.astro";
+import { EshopServiceClient } from "grpc-ts/eshop_pb_service";
+import { Tags, Void } from "grpc-ts/eshop_pb";
+import { FetchReadableStreamTransport } from "@utils/grpc/transport";
 
-const categories = [
-  {
-    name: "Action",
-    slug: "action",
-  },
-  {
-    name: "Adventure",
-    slug: "adventure",
-  },
-  {
-    name: "Comedy",
-    slug: "comedy",
-  },
-  {
-    name: "Non-fiction",
-    slug: "non-fiction",
-  },
-  {
-    name: "Romance",
-    slug: "romance",
-  },
-  {
-    name: "Thriller",
-    slug: "thriller",
-  },
-  {
-    name: "Western",
-    slug: "western",
-  },
-];
+const params = Astro.url.searchParams;
+
+console.error(params);
 
 const prices = [
   {
@@ -59,7 +35,7 @@ const books = [
     id: "2",
     title: "All Quiet on the Western Front",
     price: "Free",
-    image: "https://placekitten.com/550/550",
+    image: "https://placekitten.com/600/600",
     rating: 3.1,
   },
   {
@@ -77,6 +53,29 @@ const books = [
     rating: 1.2,
   },
 ];
+
+const transport = FetchReadableStreamTransport({});
+const client = new EshopServiceClient("http://0.0.0.0:9000", { transport });
+
+const req = new Void();
+
+const promise = new Promise<Tags | null>((resolve, reject) => {
+  client.getTags(req, (err, res) => {
+    if (err) return reject(err);
+    resolve(res);
+  });
+});
+
+const tags = await promise;
+
+console.log(tags?.getTagsList());
+
+const categories = tags?.getTagsList().map((tag) => {
+  return {
+    name: tag,
+    slug: tag,
+  };
+});
 ---
 
 <Layout>

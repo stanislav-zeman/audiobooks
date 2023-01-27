@@ -228,6 +228,12 @@ impl eshop_service_server::EshopService for EshopHandler {
 
         Ok(Response::new(Void::default()))
     }
+
+    async fn get_tags(&self, _: Request<Void>) -> Result<Response<Tags>, Status> {
+        Ok(Response::new(Tags {
+            tags: vec!["kokot".into(), "omegalul".into(), "❌".into()],
+        }))
+    }
 }
 
 async fn map_books(library: &Library, books: Vec<models::Book>) -> Result<Vec<Book>, Status> {
