@@ -30,7 +30,7 @@ class Fetch implements grpc.Transport {
   cancelled: boolean = false;
   options: grpc.TransportOptions;
   init: FetchTransportInit;
-  reader: ReadableStreamReader<any>;
+  reader: ReadableStreamReader<any> | undefined;
   metadata: grpc.Metadata = new grpcweb.grpc.Metadata();
   controller: AbortController = new AbortController();
 
@@ -56,13 +56,13 @@ class Fetch implements grpc.Transport {
     }
     this.reader
       .read()
-      .then((result: { done: boolean; value: Uint8Array }) => {
+      .then((result: ReadableStreamReadResult<any>) => {
         if (result.done) {
           this.options.onEnd();
           return res;
         }
         this.options.onChunk(result.value);
-        this.pump(this.reader, res);
+        if (this.reader) this.pump(this.reader, res);
         return;
       })
       .catch((err) => {
