@@ -20,6 +20,7 @@
     "@grpc/grpc-js": "^1.8.0",
     "astro": "^1.6.13",
     "grpc-ts": "*",
+    "jwt-decode": "^3.1.2",
     "postcss": "^8.4.19",
     "solid-js": "^1.4.3",
     "tailwindcss": "^3.0.24"

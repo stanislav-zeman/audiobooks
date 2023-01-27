@@ -1,14 +1,7 @@
 import { AUTH0_META } from "@utils/auth/AUTH0_META";
 import { codeChallenge } from "@utils/auth/createCodeChallenge";
 import type { APIRoute } from "astro";
-
-type TokenResponse = {
-  access_token: string;
-  refresh_token: string;
-  id_token: string;
-  token_type: string;
-  expires_in: number;
-};
+import type { Token } from "@utils/auth/Token";
 
 export const get: APIRoute = async ({ url, redirect }) => {
   const code = url.searchParams.get("code");
@@ -39,18 +32,23 @@ export const get: APIRoute = async ({ url, redirect }) => {
     body,
   };
 
-  // Clear the code challenge, it is no longer needed
+  // Clear the challenge, it is no longer needed
+  codeChallenge.yeet();
 
   const req = await fetch(`https://${AUTH0_META.domain}/oauth/token`, reqInit);
 
-  codeChallenge.purge();
-  const res: TokenResponse = await req.json();
+  const res: Token = await req.json();
 
-  console.log(res);
+  const headers = new Headers();
+  headers.append("Set-Cookie", `token=${res.id_token}; Path=/; HttpOnly`);
+  headers.append(
+    "Set-Cookie",
+    `refresh=${res.refresh_token}; Path=/; HttpOnly`
+  );
+  headers.append("Location", "/");
 
-  return new Response(JSON.stringify(res), {
-    headers: {
-      "content-type": "application/json;charset=UTF-8",
-    },
+  return new Response(null, {
+    status: 302,
+    headers,
   });
 };

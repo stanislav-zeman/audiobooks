@@ -21,7 +21,7 @@ export class CodeChallenge {
     this.verifier = verifier;
   }
 
-  public purge() {
+  public yeet() {
     this.challenge = undefined;
     this.verifier = undefined;
   }
