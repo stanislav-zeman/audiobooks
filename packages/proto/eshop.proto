@@ -1,6 +1,8 @@
 syntax = "proto3";
 package eshop;
 
+message Void {}
+
 // ----- UTILS -----
 message Pagination {
   uint32 limit = 1;
@@ -10,12 +12,17 @@ message Pagination {
 // -----------------
 
 service EshopService {
+  // Getters
   rpc GetBookById(GetBookByIdRequest) returns (Book) {}
   rpc GetAuthorById(GetAuthorByIdRequest) returns (Author) {}
   rpc GetUserByID(GetUserByIdRequest) returns (User) {}
   rpc GetBooks(GetBooksRequest) returns (Books) {}
   rpc GetAuthors(GetAuthorsRequest) returns (Authors) {}
   rpc GetMyBooks(GetMyBooksRequest) returns (Books) {}
+
+  // Author
+  rpc AddBook(Book) returns (Void) {}
+  rpc UpdateBook(Book) returns (Void) {}
 }
 
 message Book {
