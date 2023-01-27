@@ -171,8 +171,30 @@ impl eshop_service_server::EshopService for EshopHandler {
         }))
     }
 
-    async fn add_book(&self, _request: Request<Book>) -> Result<Response<Void>, Status> {
-        todo!()
+    async fn add_book(&self, request: Request<Book>) -> Result<Response<Void>, Status> {
+        let book = request.into_inner();
+
+        self.library
+            .books
+            .add_book(models::Book::from(&book))
+            .await
+            .unwrap();
+        for author in book.authors {
+            self.library
+                .authors
+                .add_author(models::Author::from(&author))
+                .await
+                .unwrap();
+        }
+        for chapter in book.chapters {
+            self.library
+                .chapters
+                .add_chapter_to_book(models::Chapter::from(&chapter))
+                .await
+                .unwrap();
+        }
+
+        Ok(Response::new(Void::default()))
     }
 
     async fn update_book(&self, _request: Request<Book>) -> Result<Response<Void>, Status> {
