@@ -12,11 +12,9 @@ export const searchFilters = (input: URLSearchParams): GetBooksRequest => {
 
   for (const [key, value] of input.entries()) {
     switch (key) {
-      case "author_name":
-        filters.setAuthorName(value);
-        break;
-      case "book_name":
+      case "search":
         filters.setName(value);
+        filters.setAuthorName(value);
         break;
       case "category":
         filters.setTag(value);

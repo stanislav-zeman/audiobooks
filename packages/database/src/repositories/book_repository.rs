@@ -66,8 +66,8 @@ impl BookRepo for BookRepository {
                FROM author at
                INNER JOIN author_book ab on at.id = ab.author_id
                INNER JOIN book bk on ab.book_id = bk.id
-               WHERE at.name LIKE ?
-               AND bk.name LIKE ?
+               WHERE (at.name LIKE ?
+               OR bk.name LIKE ?)
                AND bk.tag LIKE ?
                AND price BETWEEN ? AND ?
                ORDER BY bk.created_at DESC
