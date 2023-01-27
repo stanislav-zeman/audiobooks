@@ -5,8 +5,9 @@ export const calculateOffset = (page_number: number, limit: number) => {
 }
 
 export const searchFilters = (input: URLSearchParams): GetBooksRequest => {
+  const request = new GetBooksRequest();
   const filters = new BookFilters();
-  const pagination = new Pagination();
+  request.setFilters(filters);
   const limit = 16;
 
   for (const [key, value] of input.entries()) {
@@ -27,16 +28,15 @@ export const searchFilters = (input: URLSearchParams): GetBooksRequest => {
         filters.setPricefrom(+value);
         break;
       case "page":
+        const pagination = new Pagination();
+        pagination.setLimit(limit);
         pagination.setOffset(calculateOffset(+value, limit));
+        request.setPagination(pagination);
         break;
       default:
         break;
     }
   }
-
-  const request = new GetBooksRequest();
-  request.setFilters(filters);
-  request.setPagination(pagination);
 
   return request;
 };
