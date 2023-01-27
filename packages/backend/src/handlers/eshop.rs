@@ -77,7 +77,7 @@ impl eshop_service_server::EshopService for EshopHandler {
 
         let pagination = match inner.pagination {
             None => models::Pagination {
-                limit: u32::MAX,
+                limit: i32::MAX as u32,
                 offset: 0,
             },
             Some(pagination) => models::Pagination::from(&pagination),
