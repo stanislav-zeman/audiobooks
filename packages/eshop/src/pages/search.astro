@@ -6,7 +6,7 @@ import Search from "@components/icons/Search.astro";
 import { grpcClient } from "@utils/grpc/client";
 import { promise } from "@utils/grpc/promise";
 import { searchFilters } from "@utils/filters/searchFilters";
-import { Void } from "grpc-ts/eshop_pb";
+import grpc from "grpc-ts/eshop_pb";
 import { toBookView } from "@utils/book";
 
 const prices = [
@@ -21,7 +21,7 @@ const prices = [
 ];
 
 const getTags = promise(grpcClient.getTags.bind(grpcClient));
-const tags = await getTags(new Void());
+const tags = await getTags(new grpc.Void());
 const categories = tags?.getTagsList().map((tag) => {
   return {
     name: tag,
@@ -39,7 +39,6 @@ const nextUrl = new URL(Astro.url);
 nextUrl.searchParams.set("page", `${pageNum + 1}`);
 const prevUrl = new URL(Astro.url);
 prevUrl.searchParams.set("page", `${pageNum - 1}`);
-
 ---
 
 <Layout>
@@ -69,7 +68,11 @@ prevUrl.searchParams.set("page", `${pageNum - 1}`);
         <ul
           class="text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
         >
-          {categories?.map((category) => <Radio radioName="category" {...category} />)}
+          {
+            categories?.map((category) => (
+              <Radio radioName="category" {...category} />
+            ))
+          }
         </ul>
 
         <h3 class="mt-4 mb-4 font-semibold text-gray-900 dark:text-white">
@@ -97,14 +100,41 @@ prevUrl.searchParams.set("page", `${pageNum - 1}`);
       </form>
     </div>
     <div class="flex flex-auto w-full flex-wrap gap-5">
-      {bookView?.map(book => <BookCard {...book} />)}
-      <a href={prevUrl} class="opacity-50 inline-flex items-center px-4 py-2 mr-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-        <svg aria-hidden="true" class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd"></path></svg>
+      {bookView?.map((book) => <BookCard {...book} />)}
+      <a
+        href={prevUrl}
+        class="opacity-50 inline-flex items-center px-4 py-2 mr-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+      >
+        <svg
+          aria-hidden="true"
+          class="w-5 h-5 mr-2"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+          ><path
+            fill-rule="evenodd"
+            d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+            clip-rule="evenodd"></path></svg
+        >
         Previous
       </a>
-      <a href={nextUrl} class="opacity-50 inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+      <a
+        href={nextUrl}
+        class="opacity-50 inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+      >
         Next
-        <svg aria-hidden="true" class="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+        <svg
+          aria-hidden="true"
+          class="w-5 h-5 ml-2"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+          ><path
+            fill-rule="evenodd"
+            d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+            clip-rule="evenodd"></path></svg
+        >
       </a>
+    </div>
   </div>
 </Layout>

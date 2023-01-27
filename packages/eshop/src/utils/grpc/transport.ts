@@ -1,6 +1,5 @@
-// @ts-nocheck
-import { grpc } from "@improbable-eng/grpc-web";
-
+import type { grpc } from "@improbable-eng/grpc-web";
+import grpcweb from "@improbable-eng/grpc-web";
 const debug = console.debug;
 
 export type FetchTransportInit = Omit<
@@ -32,7 +31,7 @@ class Fetch implements grpc.Transport {
   options: grpc.TransportOptions;
   init: FetchTransportInit;
   reader: ReadableStreamReader<any>;
-  metadata: grpc.Metadata = new grpc.Metadata();
+  metadata: grpc.Metadata = new grpcweb.grpc.Metadata();
   controller: AbortController = new AbortController();
 
   constructor(
@@ -88,7 +87,7 @@ class Fetch implements grpc.Transport {
       .then((res: Response) => {
         this.options.debug && debug("Fetch.response", res);
         this.options.onHeaders(
-          new grpc.Metadata(res.headers as any),
+          new grpcweb.grpc.Metadata(res.headers as any),
           res.status
         );
         if (res.body) {
