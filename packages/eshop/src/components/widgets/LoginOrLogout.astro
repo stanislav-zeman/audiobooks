@@ -1,0 +1,41 @@
+---
+import type { IdToken } from "@utils/auth/Token";
+import { validateJwt } from "@utils/auth/validateJwt";
+import { decodeJwt } from "jose";
+
+const token = Astro.cookies.get("token").value;
+
+let isLoggedIn = false;
+let parsed: IdToken | undefined;
+if (token) {
+  isLoggedIn = await validateJwt(token);
+  parsed = decodeJwt(token) as IdToken;
+}
+---
+
+<>
+  {
+    isLoggedIn && parsed ? (
+      <>
+        <img
+          class="w-10 h-10 p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500"
+          src={parsed.picture}
+          alt={parsed.name}
+        />
+        <a
+          class="btn w-full ml-3 py-2.5 px-5 font-semibold text-gray-600 shadow-none text-sm"
+          href="/auth/logout"
+        >
+          Logout
+        </a>
+      </>
+    ) : (
+      <a
+        class="btn w-full ml-3 py-2.5 px-5 font-semibold text-gray-600 shadow-none text-sm"
+        href="/auth/login"
+      >
+        Login
+      </a>
+    )
+  }
+</>

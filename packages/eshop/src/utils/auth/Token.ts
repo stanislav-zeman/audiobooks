@@ -5,3 +5,17 @@ export type Token = {
   token_type: string;
   expires_in: number;
 };
+
+export type IdToken = {
+  nickname: string;
+  name: string;
+  picture: string;
+  updated_at: string;
+  email: string;
+  iss: string;
+  aud: string;
+  iat: number;
+  exp: number;
+  sub: string;
+  sid: string;
+};

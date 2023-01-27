@@ -6,4 +6,5 @@ export const AUTH0_META = {
   scope: "openid profile email",
   redirectUri: "http://localhost:3000/auth/callback",
   state: STATE,
+  keychainUrl: "/.well-known/jwks.json",
 };

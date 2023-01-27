@@ -4,6 +4,7 @@ import CartButton from "@components/common/CartButton.astro";
 import ToggleMenu from "@components/common/ToggleMenu.astro";
 import SearchBar from "@components/widgets/SearchBar.astro";
 import ChevronDown from "@components/icons/ChevronDown.astro";
+import LoginOrLogout from "./LoginOrLogout.astro";
 
 export type Props = {
   showSearch?: boolean;
@@ -103,10 +104,7 @@ const { showSearch = false } = Astro.props as Props;
         <div class="hidden items-center md:flex">
           <CartButton />
         </div>
-        <a
-          class="btn w-full ml-3 py-2.5 px-5 font-semibold text-gray-600 shadow-none text-sm"
-          href="/auth/login">Login</a
-        >
+        <LoginOrLogout />
       </div>
     </nav>
   </div>
