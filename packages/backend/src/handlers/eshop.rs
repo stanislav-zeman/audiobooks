@@ -171,6 +171,14 @@ impl eshop_service_server::EshopService for EshopHandler {
         }))
     }
 
+    async fn get_tags(&self, _: Request<Void>) -> Result<Response<Tags>, Status> {
+        let Ok(tags) = self.library.books.get_tags().await else {
+            return Err(Status::internal("Failed getting tags."));
+        };
+
+        Ok(Response::new(Tags { tags }))
+    }
+
     async fn add_book(&self, request: Request<Book>) -> Result<Response<Void>, Status> {
         let new_book = request.into_inner();
         let chapters = new_book
@@ -227,12 +235,6 @@ impl eshop_service_server::EshopService for EshopHandler {
         }
 
         Ok(Response::new(Void::default()))
-    }
-
-    async fn get_tags(&self, _: Request<Void>) -> Result<Response<Tags>, Status> {
-        Ok(Response::new(Tags {
-            tags: vec!["kokot".into(), "omegalul".into(), "❌".into()],
-        }))
     }
 }
 

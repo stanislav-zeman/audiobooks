@@ -27,6 +27,7 @@ pub trait BookRepo {
         transaction: &mut Transaction<MySql>,
     ) -> anyhow::Result<()>;
     async fn delete_book(&self, book: Book) -> anyhow::Result<()>;
+    async fn get_tags(&self) -> anyhow::Result<Vec<String>>;
 }
 
 pub struct BookRepository {
@@ -168,5 +169,14 @@ impl BookRepo for BookRepository {
             .await?;
 
         Ok(())
+    }
+
+    async fn get_tags(&self) -> anyhow::Result<Vec<String>> {
+        Ok(sqlx::query!("SELECT DISTINCT tag FROM book")
+            .fetch_all(&*self.mysql_pool)
+            .await?
+            .iter()
+            .map(|x| x.tag.clone())
+            .collect())
     }
 }
