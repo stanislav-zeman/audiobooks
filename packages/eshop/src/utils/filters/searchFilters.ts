@@ -8,8 +8,6 @@ export const searchFilters = (input: URLSearchParams): GetBooksRequest => {
   const filters = new BookFilters();
   const pagination = new Pagination();
   const limit = 16;
-  pagination.setLimit(limit);
-  pagination.setOffset(0);
 
   for (const [key, value] of input.entries()) {
     switch (key) {
