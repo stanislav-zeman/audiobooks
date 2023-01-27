@@ -22,7 +22,6 @@ pub struct Book {
     pub name: String,
     pub description: String,
     pub tag: String,
-    pub published_at: Date,
     pub length: i32,
     pub file_url: String,
     pub cover_url: String,

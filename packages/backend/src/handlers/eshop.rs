@@ -170,6 +170,14 @@ impl eshop_service_server::EshopService for EshopHandler {
             books,
         }))
     }
+
+    async fn add_book(&self, _request: Request<Book>) -> Result<Response<Void>, Status> {
+        todo!()
+    }
+
+    async fn update_book(&self, _request: Request<Book>) -> Result<Response<Void>, Status> {
+        todo!()
+    }
 }
 
 async fn map_books(library: &Library, books: Vec<models::Book>) -> Result<Vec<Book>, Status> {
@@ -207,5 +215,6 @@ async fn get_book(library: &Library, book: &models::Book) -> Result<Book, Status
         cover_url: book.cover_url.clone(),
         price: book.price as u64,
         isbn: book.isbn.clone(),
+        tag: book.tag.clone(),
     })
 }

@@ -81,6 +81,9 @@ export class Book extends jspb.Message {
   getIsbn(): string;
   setIsbn(value: string): void;
 
+  getTag(): string;
+  setTag(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Book.AsObject;
   static toObject(includeInstance: boolean, msg: Book): Book.AsObject;
@@ -104,6 +107,7 @@ export namespace Book {
     coverUrl: string,
     price: number,
     isbn: string,
+    tag: string,
   }
 }
 

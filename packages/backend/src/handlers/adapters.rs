@@ -1,8 +1,9 @@
-use crate::handlers::grpc::{Author, BookFilters, Chapter, Pagination, User};
+use crate::handlers::grpc::{Author, Book, BookFilters, Chapter, Pagination, User};
+use database::models;
 
 // TODO: Convert to From traits
-impl From<&database::models::Chapter> for Chapter {
-    fn from(value: &database::models::Chapter) -> Self {
+impl From<&models::Chapter> for Chapter {
+    fn from(value: &models::Chapter) -> Self {
         Self {
             id: value.id.clone(),
             chapter_name: value.name.clone(),
@@ -11,8 +12,8 @@ impl From<&database::models::Chapter> for Chapter {
     }
 }
 
-impl From<&database::models::Author> for Author {
-    fn from(value: &database::models::Author) -> Self {
+impl From<&models::Author> for Author {
+    fn from(value: &models::Author) -> Self {
         Self {
             id: value.id.clone(),
             name: value.name.clone(),
@@ -20,8 +21,8 @@ impl From<&database::models::Author> for Author {
     }
 }
 
-impl From<&database::models::User> for User {
-    fn from(value: &database::models::User) -> Self {
+impl From<&models::User> for User {
+    fn from(value: &models::User) -> Self {
         Self {
             id: value.id.clone(),
             name: value.id.clone(),
@@ -30,8 +31,8 @@ impl From<&database::models::User> for User {
     }
 }
 
-impl From<&database::models::BookFilter> for BookFilters {
-    fn from(value: &database::models::BookFilter) -> Self {
+impl From<&models::BookFilter> for BookFilters {
+    fn from(value: &models::BookFilter) -> Self {
         Self {
             name: value.book_name.clone(),
             author_name: value.author_name.clone(),
@@ -42,7 +43,7 @@ impl From<&database::models::BookFilter> for BookFilters {
     }
 }
 
-impl From<&BookFilters> for database::models::BookFilter {
+impl From<&BookFilters> for models::BookFilter {
     fn from(value: &BookFilters) -> Self {
         Self {
             book_name: value.name.clone(),
@@ -54,8 +55,8 @@ impl From<&BookFilters> for database::models::BookFilter {
     }
 }
 
-impl From<&database::models::Pagination> for Pagination {
-    fn from(value: &database::models::Pagination) -> Self {
+impl From<&models::Pagination> for Pagination {
+    fn from(value: &models::Pagination) -> Self {
         Self {
             limit: value.limit,
             offset: value.offset,
@@ -63,11 +64,28 @@ impl From<&database::models::Pagination> for Pagination {
     }
 }
 
-impl From<&Pagination> for database::models::Pagination {
+impl From<&Pagination> for models::Pagination {
     fn from(value: &Pagination) -> Self {
         Self {
             limit: value.limit,
             offset: value.offset,
+        }
+    }
+}
+
+impl From<&Book> for models::Book {
+    fn from(value: &Book) -> Self {
+        Self {
+            id: value.id.clone(),
+            name: value.name.clone(),
+            description: value.description.clone(),
+            tag: value.tag.clone(),
+            length: value.length as i32,
+            file_url: value.file_url.clone(),
+            cover_url: value.cover_url.clone(),
+            price: value.price as i32,
+            isbn: value.isbn.clone(),
+            created_at: None,
         }
     }
 }

@@ -53,7 +53,7 @@ impl BookRepo for BookRepository {
 
         let books = sqlx::query_as!(
             Book,
-            "SELECT bk.id, bk.name, bk.description, bk.tag, bk.published_at, bk.length,
+            "SELECT bk.id, bk.name, bk.description, bk.tag, bk.length,
                bk.file_url, bk.cover_url, bk.price, bk.isbn, bk.created_at
                FROM author at
                INNER JOIN author_book ab on at.id = ab.author_id
@@ -85,7 +85,7 @@ impl BookRepo for BookRepository {
     ) -> anyhow::Result<Vec<Book>> {
         let books = sqlx::query_as!(
             Book,
-            "SELECT bk.id, bk.name, bk.description, bk.tag, bk.published_at, bk.length,
+            "SELECT bk.id, bk.name, bk.description, bk.tag, bk.length,
                bk.file_url, bk.cover_url, bk.price, bk.isbn, bk.created_at
                FROM book bk
                INNER JOIN user_book ub
@@ -105,21 +105,20 @@ impl BookRepo for BookRepository {
 
     async fn add_book(&self, book: Book) -> anyhow::Result<()> {
         sqlx::query!(
-            "INSERT INTO book (id, name, description, tag, published_at, length, file_url, cover_url, price, isbn)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO book (id, name, description, tag, length, file_url, cover_url, price, isbn)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
             book.id,
             book.name,
             book.description,
             book.tag,
-            book.published_at,
             book.length,
             book.file_url,
             book.cover_url,
             book.price,
             book.isbn
         )
-            .execute(&*self.mysql_pool)
-            .await?;
+        .execute(&*self.mysql_pool)
+        .await?;
 
         Ok(())
     }
@@ -139,12 +138,11 @@ impl BookRepo for BookRepository {
 
     async fn edit_book(&self, book: Book) -> anyhow::Result<()> {
         sqlx::query!(
-            "UPDATE book SET name = ?, description = ?, tag = ?, published_at = ?, length = ?, file_url = ?, cover_url = ?, price = ?, isbn = ?
+            "UPDATE book SET name = ?, description = ?, tag = ?, length = ?, file_url = ?, cover_url = ?, price = ?, isbn = ?
              WHERE id = ?",
             book.name,
             book.description,
             book.tag,
-            book.published_at,
             book.length,
             book.file_url,
             book.cover_url,

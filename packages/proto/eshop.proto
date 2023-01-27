@@ -37,6 +37,7 @@ message Book {
   string cover_url = 9;
   uint64 price = 10;
   string ISBN = 11;
+  string tag = 12;
 }
 
 message Author {

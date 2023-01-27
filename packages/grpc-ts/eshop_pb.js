@@ -13,13 +13,13 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = (function() {
-  if (this) { return this; }
-  if (typeof window !== 'undefined') { return window; }
-  if (typeof global !== 'undefined') { return global; }
-  if (typeof self !== 'undefined') { return self; }
-  return Function('return this')();
-}.call(null));
+var global =
+    (typeof globalThis !== 'undefined' && globalThis) ||
+    (typeof window !== 'undefined' && window) ||
+    (typeof global !== 'undefined' && global) ||
+    (typeof self !== 'undefined' && self) ||
+    (function () { return this; }).call(null) ||
+    Function('return this')();
 
 goog.exportSymbol('proto.eshop.Author', null, global);
 goog.exportSymbol('proto.eshop.AuthorFilters', null, global);
@@ -685,7 +685,8 @@ proto.eshop.Book.toObject = function(includeInstance, msg) {
     fileUrl: jspb.Message.getFieldWithDefault(msg, 8, ""),
     coverUrl: jspb.Message.getFieldWithDefault(msg, 9, ""),
     price: jspb.Message.getFieldWithDefault(msg, 10, 0),
-    isbn: jspb.Message.getFieldWithDefault(msg, 11, "")
+    isbn: jspb.Message.getFieldWithDefault(msg, 11, ""),
+    tag: jspb.Message.getFieldWithDefault(msg, 12, "")
   };
 
   if (includeInstance) {
@@ -767,6 +768,10 @@ proto.eshop.Book.deserializeBinaryFromReader = function(msg, reader) {
     case 11:
       var value = /** @type {string} */ (reader.readString());
       msg.setIsbn(value);
+      break;
+    case 12:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTag(value);
       break;
     default:
       reader.skipField();
@@ -873,6 +878,13 @@ proto.eshop.Book.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeString(
       11,
+      f
+    );
+  }
+  f = message.getTag();
+  if (f.length > 0) {
+    writer.writeString(
+      12,
       f
     );
   }
@@ -1114,6 +1126,24 @@ proto.eshop.Book.prototype.getIsbn = function() {
  */
 proto.eshop.Book.prototype.setIsbn = function(value) {
   return jspb.Message.setProto3StringField(this, 11, value);
+};
+
+
+/**
+ * optional string tag = 12;
+ * @return {string}
+ */
+proto.eshop.Book.prototype.getTag = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 12, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.eshop.Book} returns this
+ */
+proto.eshop.Book.prototype.setTag = function(value) {
+  return jspb.Message.setProto3StringField(this, 12, value);
 };
 
 
