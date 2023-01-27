@@ -1,12 +1,11 @@
 ---
 import BookCard from "@components/search/BookCard.astro";
-import Category from "@components/search/Category.astro";
-import Price from "@components/search/Price.astro";
+import Radio from "@components/search/Radio.astro";
 import Layout from "@layouts/SearchLayout.astro";
 import Search from "@components/icons/Search.astro";
-import { Void } from "grpc-ts/eshop_pb";
 import { grpcClient } from "@utils/grpc/client";
 import { promise } from "@utils/grpc/promise";
+import { searchFilters } from "@utils/filters/searchFilters";
 
 const prices = [
   {
@@ -50,10 +49,9 @@ const books = [
   },
 ];
 
-const req = new Void();
-
 const getTags = promise(grpcClient.getTags.bind(grpcClient));
-const tags = await getTags(req);
+const request = searchFilters(Astro.url.searchParams);
+const tags = await getTags(request);
 
 const categories = tags?.getTagsList().map((tag) => {
   return {
@@ -76,8 +74,22 @@ const categories = tags?.getTagsList().map((tag) => {
           </div>
           <input
             type="search"
-            id="search"
-            name="search"
+            id="search-book"
+            name="search-book"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="Search"
+          />
+        </div>
+        <div class="relative">
+          <div
+            class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+          >
+            <Search class="w-5 h-5 text-gray-500 dark:text-gray-400" />
+          </div>
+          <input
+            type="search"
+            id="search-author"
+            name="search-author"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="Search"
           />
@@ -90,7 +102,7 @@ const categories = tags?.getTagsList().map((tag) => {
         <ul
           class="text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
         >
-          {categories.map((category) => <Category {...category} />)}
+          {categories?.map((category) => <Radio radioName="category" {...category} />)}
         </ul>
 
         <h3 class="mt-4 mb-4 font-semibold text-gray-900 dark:text-white">
@@ -99,7 +111,7 @@ const categories = tags?.getTagsList().map((tag) => {
         <ul
           class="text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
         >
-          {prices.map((price) => <Price radioName="price" {...price} />)}
+          {prices.map((price) => <Radio radioName="price" {...price} />)}
         </ul>
         <div class="w-full mt-4">
           <button
