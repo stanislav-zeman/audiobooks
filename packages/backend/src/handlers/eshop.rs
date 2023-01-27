@@ -200,6 +200,16 @@ impl eshop_service_server::EshopService for EshopHandler {
     async fn update_book(&self, _request: Request<Book>) -> Result<Response<Void>, Status> {
         todo!()
     }
+
+    async fn add_author(&self, request: Request<Author>) -> Result<Response<Void>, Status> {
+        self.library
+            .authors
+            .add_author(models::Author::from(&request.into_inner()))
+            .await
+            .unwrap();
+
+        Ok(Response::new(Void::default()))
+    }
 }
 
 async fn map_books(library: &Library, books: Vec<models::Book>) -> Result<Vec<Book>, Status> {
