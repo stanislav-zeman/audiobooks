@@ -19,11 +19,17 @@ export const searchFilters = (input: URLSearchParams): grpc.GetBooksRequest => {
       case "category":
         filters.setTag(value);
         break;
-      case "price_to":
-        filters.setPriceto(+value);
+      case "price-to":
+        if (value === "") {
+          break;
+        }
+        filters.setPriceto(+(value) * 100);
         break;
-      case "price_from":
-        filters.setPricefrom(+value);
+      case "price-from":
+        if (value === "") {
+          break;
+        }
+        filters.setPricefrom(+(value) * 100);
         break;
       case "page":
         const pagination = new grpc.Pagination();

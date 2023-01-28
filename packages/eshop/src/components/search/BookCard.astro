@@ -1,5 +1,5 @@
 ---
-import type { BookView } from "@utils/book";
+import type { BookView } from "@utils/bookView";
 
 export type Props = BookView;
 
@@ -31,7 +31,7 @@ const book = Astro.props;
     </div>
     <div class="flex items-center justify-between">
       <span class="text-3xl font-bold text-gray-900 dark:text-white"
-        >{book.price}</span
+        >{book.price / 100} €</span
       >
       <a
         href="#"
