@@ -1,0 +1,45 @@
+---
+import BookCardHorizontal from "@components/search/BookCardHorizontal.astro";
+import PageLayout from "@layouts/PageLayout.astro";
+import { toBookView } from "@utils/book";
+import { grpcClient } from "@utils/grpc/client";
+import { promise } from "@utils/grpc/promise";
+import grpc from "grpc-ts/eshop_pb";
+
+// TODO: actually paginate this
+const pagination = new grpc.Pagination();
+pagination.setOffset(0);
+pagination.setLimit(2 ^ 16);
+
+const request = new grpc.GetBooksRequest();
+request.setPagination();
+
+const getBooks = promise(grpcClient.getBooks.bind(grpcClient));
+// const getBooks = promise(grpcClient.getMyBooks.bind(grpcClient));
+const books = (await getBooks(request))?.getBooksList();
+const view = books?.map(toBookView);
+---
+
+<PageLayout>
+  <div class="mx-auto text-center max-w-screen-lg my-24">
+    <h1
+      class="mb-4 text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
+    >
+      Your collection
+    </h1>
+  </div>
+  <section class="px-10 md:px-48 flex flex-wrap gap-5 my-10">
+    <div
+      class="hidden lg:block text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex-1"
+    >
+    </div>
+    {
+      view?.map((book) => (
+        <>
+          <BookCardHorizontal {...book} />
+          <div class="hidden lg:block text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex-1" />
+        </>
+      ))
+    }
+  </section>
+</PageLayout>

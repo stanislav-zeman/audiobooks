@@ -13,6 +13,9 @@ module.exports = {
       fontFamily: {
         sans: ["'InterVariable'", ...defaultTheme.fontFamily.sans],
       },
+      aspectRatio: {
+        "4/3": "4 / 3",
+      },
     },
   },
   plugins: [require("@tailwindcss/typography")],

@@ -5,7 +5,8 @@
     { "name": "backend", "path": "packages/backend" },
     { "name": "proto", "path": "packages/proto" },
     { "name": "grpc-ts", "path": "packages/grpc-ts" },
-    { "name": "database", "path": "packages/database" }
+    { "name": "database", "path": "packages/database" },
+    { "name": "player", "path": "packages/player" }
   ],
   "settings": {
     "prettier.documentSelectors": ["**/*.astro"],

@@ -1,22 +1,22 @@
 ---
-import Star from "@components/icons/Star.astro";
-import StarFilled from "@components/icons/StarFilled.astro";
 import type { BookView } from "@utils/book";
 
 export type Props = BookView;
 
 const book = Astro.props;
-const showStars = 0;
-const emptyStars = 5 - showStars;
 ---
 
 <div
   class="w-full md:max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
 >
   <a href="#" class="mx-auto">
-    <img class="p-8 rounded-t-lg mx-auto" src={book.cover_url} alt={book.name} />
+    <img
+      class="p-6 rounded-t-lg mx-auto aspect-4/3 object-cover"
+      src={book.cover_url}
+      alt={book.name}
+    />
   </a>
-  <div class="px-5 pb-5">
+  <div class="px-6 pb-5">
     <a href={`/product/${book.id}`}>
       <h5
         class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white"
@@ -24,23 +24,10 @@ const emptyStars = 5 - showStars;
         {book.name}
       </h5>
     </a>
-    <div class="flex items-center mt-2.5 mb-5">
-      {
-        Array.from({ length: showStars }).map((_) => (
-          <StarFilled class="w-5 h-5 " />
-        ))
-      }
-      {
-        Array.from({ length: emptyStars }).map((_) => (
-          <Star name="mdi:star-outline" class="w-5 h-5 text-gray-300" />
-        ))
-      }
-
-      <span
-        class="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ml-3"
-      >
-        {0}
-      </span>
+    <div class="flex items-center">
+      <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+        {book.authors.map((b) => b.name).join(", ")}
+      </p>
     </div>
     <div class="flex items-center justify-between">
       <span class="text-3xl font-bold text-gray-900 dark:text-white"
@@ -48,8 +35,12 @@ const emptyStars = 5 - showStars;
       >
       <a
         href="#"
-        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >Add to cart</a
+        class:list={[
+          "text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center",
+          book.is_owned
+            ? "bg-green-700 hover:bg-green-800 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+            : "bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800",
+        ]}>{book.is_owned ? "Open" : "Add to cart"}</a
       >
     </div>
   </div>

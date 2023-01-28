@@ -1,0 +1,14 @@
+---
+import { AudioPlayer } from "@components/widgets/AudioPlayer";
+import PageLayout from "@layouts/PageLayout.astro";
+
+export type Params = {
+  id: string;
+};
+
+const { id } = Astro.params as Params;
+---
+
+<PageLayout>
+  <AudioPlayer client:idle id={id} />
+</PageLayout>
