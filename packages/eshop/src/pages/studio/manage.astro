@@ -25,7 +25,7 @@ const view = books?.map(toBookView);
     <h1
       class="mb-4 text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
     >
-      Your collection
+      Your publications
     </h1>
   </div>
   <section class="px-10 md:px-48 flex flex-wrap gap-5 my-10">
@@ -36,7 +36,7 @@ const view = books?.map(toBookView);
     {
       view?.map((book) => (
         <>
-          <BookCardHorizontal linkBase="/player" {...book} />
+          <BookCardHorizontal linkBase="/studio" {...book} />
           <div class="hidden lg:block text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex-1" />
         </>
       ))

@@ -1,13 +1,15 @@
 ---
 import type { BookView } from "@utils/book";
 
-export type Props = BookView;
+export type Props = BookView & {
+  linkBase: string;
+};
 
-const book = Astro.props;
+const { linkBase, ...book } = Astro.props;
 ---
 
 <a
-  href={`/player/${book.id}`}
+  href={`${linkBase}/${book.id}`}
   class="flex flex-3 flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
 >
   <img

@@ -1,0 +1,13 @@
+---
+import PageLayout from "@layouts/PageLayout.astro";
+
+export type Params = {
+  id: string;
+};
+
+const { id } = Astro.params as Params;
+---
+
+<PageLayout>
+  Publication ID: {id}
+</PageLayout>
