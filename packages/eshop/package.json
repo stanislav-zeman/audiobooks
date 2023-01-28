@@ -16,6 +16,7 @@
     "@astrojs/vercel": "^2.4.0",
     "@astrolib/analytics": "^0.3.0",
     "@astrolib/seo": "^0.3.0",
+    "@aws-sdk/client-s3": "^3.259.0",
     "@fontsource/inter": "^4.5.15",
     "@grpc/grpc-js": "^1.8.0",
     "astro": "^1.6.13",
