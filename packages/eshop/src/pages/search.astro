@@ -8,6 +8,7 @@ import { promise } from "@utils/grpc/promise";
 import { searchFilters } from "@utils/filters/searchFilters";
 import grpc from "grpc-ts/eshop_pb";
 import { toBookView } from "@utils/book";
+import { includeToken } from "@utils/grpc/token";
 
 const prices = [
   {
@@ -30,7 +31,10 @@ const categories = tags?.getTagsList().map((tag) => {
 });
 
 const request = searchFilters(Astro.url.searchParams);
-const getBooks = promise(grpcClient.getBooks.bind(grpcClient));
+const getBooks = promise(
+  grpcClient.getBooks.bind(grpcClient),
+  includeToken(Astro.cookies.get("token").value)
+);
 const books = (await getBooks(request))?.getBooksList();
 const bookView = books?.map(toBookView);
 

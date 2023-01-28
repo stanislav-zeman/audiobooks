@@ -62,6 +62,11 @@ impl eshop_service_server::EshopService for EshopHandler {
         &self,
         request: Request<GetBooksRequest>,
     ) -> Result<Response<Books>, Status> {
+        // ! TODO: remove this example
+        let metadata = request.metadata();
+        println!("{:?}", metadata);
+        // !-----
+
         let inner = request.into_inner();
 
         let filters = match inner.filters {
