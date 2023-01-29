@@ -1,3 +1,4 @@
+use crate::handlers::helpers::jwt::validate;
 use database::models;
 use database::repositories::{
     author_repository::AuthorRepo, book_repository::BookRepo, chapter_repository::ChapterRepo,
@@ -62,11 +63,6 @@ impl eshop_service_server::EshopService for EshopHandler {
         &self,
         request: Request<GetBooksRequest>,
     ) -> Result<Response<Books>, Status> {
-        // ! TODO: remove this example
-        let metadata = request.metadata();
-        println!("{:?}", metadata);
-        // !-----
-
         let inner = request.into_inner();
 
         let filters = match inner.filters {
@@ -145,6 +141,11 @@ impl eshop_service_server::EshopService for EshopHandler {
         &self,
         request: Request<GetMyBooksRequest>,
     ) -> Result<Response<Books>, Status> {
+        let Ok(claims) = validate(request.metadata()) else {
+            return Err(Status::unauthenticated("User not authenticated."));
+        };
+        let id = claims.sub;
+
         let inner = request.into_inner();
 
         let pagination = match inner.pagination {
@@ -159,7 +160,7 @@ impl eshop_service_server::EshopService for EshopHandler {
             .library
             .books
             .get_user_books(
-                "".to_string(), // TODO: Add when we have identities
+                id,
                 pagination,
             )
             .await else {
