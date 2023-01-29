@@ -9,6 +9,7 @@ pub trait UserRepo {
     async fn add_user(&self, user: User) -> anyhow::Result<()>;
     async fn edit_user(&self, user: User) -> anyhow::Result<()>;
     async fn delete_user(&self, user: User) -> anyhow::Result<()>;
+    async fn user_owns_book(&self, user_id: String, book_id: String) -> anyhow::Result<bool>;
 }
 
 pub struct UserRepository {
@@ -63,5 +64,17 @@ impl UserRepo for UserRepository {
             .await?;
 
         Ok(())
+    }
+
+    async fn user_owns_book(&self, user_id: String, book_id: String) -> anyhow::Result<bool> {
+        let x = sqlx::query!(
+            "SELECT * FROM user_book WHERE user_id = ? AND book_id = ?",
+            user_id,
+            book_id
+        )
+        .fetch_optional(&*self.mysql_pool)
+        .await?;
+
+        Ok(x.is_some())
     }
 }

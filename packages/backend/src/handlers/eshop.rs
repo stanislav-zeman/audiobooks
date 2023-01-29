@@ -32,7 +32,7 @@ impl eshop_service_server::EshopService for EshopHandler {
             return Err(Status::not_found("Book not found!"))
         };
 
-        Ok(Response::new(get_book(&self.library, &book).await?))
+        Ok(Response::new(get_book(&self.library, &book, None).await?))
     }
 
     async fn get_author_by_id(
@@ -63,6 +63,11 @@ impl eshop_service_server::EshopService for EshopHandler {
         &self,
         request: Request<GetBooksRequest>,
     ) -> Result<Response<Books>, Status> {
+        let user_id = match validate(request.metadata()) {
+            Ok(claims) => Some(claims.sub),
+            Err(_) => None,
+        };
+
         let inner = request.into_inner();
 
         let filters = match inner.filters {
@@ -92,7 +97,7 @@ impl eshop_service_server::EshopService for EshopHandler {
             return Err(Status::internal("Failed filtering books!"))
         };
 
-        let Ok(books) = map_books(&self.library, books).await else {
+        let Ok(books) = map_books(&self.library, books, user_id).await else {
             return Err(Status::internal("Failed mapping books!"))
         };
 
@@ -141,10 +146,10 @@ impl eshop_service_server::EshopService for EshopHandler {
         &self,
         request: Request<GetMyBooksRequest>,
     ) -> Result<Response<Books>, Status> {
-        let Ok(claims) = validate(request.metadata()) else {
-            return Err(Status::unauthenticated("User not authenticated."));
+        let user_id = match validate(request.metadata()) {
+            Ok(claims) => claims.sub,
+            Err(_) => return Err(Status::unauthenticated("User not authenticated.")),
         };
-        let id = claims.sub;
 
         let inner = request.into_inner();
 
@@ -160,14 +165,14 @@ impl eshop_service_server::EshopService for EshopHandler {
             .library
             .books
             .get_user_books(
-                id,
+                user_id.clone(),
                 pagination,
             )
             .await else {
             return Err(Status::internal("Failed getting user books!"))
         };
 
-        let Ok(books) = map_books(&self.library, books).await else {
+        let Ok(books) = map_books(&self.library, books, Some(user_id)).await else {
             return Err(Status::internal("Failed mapping books!"))
         };
 
@@ -244,18 +249,26 @@ impl eshop_service_server::EshopService for EshopHandler {
     }
 }
 
-async fn map_books(library: &Library, books: Vec<models::Book>) -> Result<Vec<Book>, Status> {
+async fn map_books(
+    library: &Library,
+    books: Vec<models::Book>,
+    user_id: Option<String>,
+) -> Result<Vec<Book>, Status> {
     let mut result = Vec::new();
 
     for book in books {
-        let book = get_book(library, &book).await?;
+        let book = get_book(library, &book, user_id.clone()).await?;
         result.push(book);
     }
 
     Ok(result)
 }
 
-async fn get_book(library: &Library, book: &models::Book) -> Result<Book, Status> {
+async fn get_book(
+    library: &Library,
+    book: &models::Book,
+    user_id: Option<String>,
+) -> Result<Book, Status> {
     let Ok(chapters) = library.chapters.get_chapters_of_book(book.id.clone()).await else
     {
         return Err(Status::internal("Failed getting chapters."));
@@ -267,9 +280,9 @@ async fn get_book(library: &Library, book: &models::Book) -> Result<Book, Status
     };
     let authors = authors.iter().map(Author::from).collect();
 
-    Ok(Book {
+    let mut book = Book {
         id: book.id.clone(),
-        is_owned: false, // TODO: Change when we have identities
+        is_owned: false,
         chapters,
         authors,
         length: book.length as u64,
@@ -280,5 +293,14 @@ async fn get_book(library: &Library, book: &models::Book) -> Result<Book, Status
         price: book.price as u64,
         isbn: book.isbn.clone(),
         tag: book.tag.clone(),
-    })
+    };
+
+    if let Some(user_id) = user_id {
+        book.is_owned = match library.users.user_owns_book(user_id, book.id.clone()).await {
+            Ok(b) => b,
+            Err(_) => return Err(Status::internal("Failed checking ownership.")),
+        };
+    }
+
+    Ok(book)
 }
