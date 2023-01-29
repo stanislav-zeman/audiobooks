@@ -1,0 +1,33 @@
+---
+import Layout from "@layouts/SearchLayout.astro";
+import { grpcClient } from "@utils/grpc/client";
+import { promise } from "@utils/grpc/promise";
+import { GetBookByIdRequest } from "grpc-ts/eshop_pb";
+
+const productId = Astro.params.productId || "";
+const request = new GetBookByIdRequest();
+request.setId(productId);
+
+const getBook = promise(grpcClient.getBookById.bind(grpcClient));
+const book = await getBook(request);
+
+---
+
+<Layout>
+  <div class="w-full">
+    <div class="p-6 md:px-12 md:mt-[76px] mx-auto flex gap-10 flex-wrap md:flex-nowrap">
+      <div>
+        {book?.getName()}
+      </div>
+      <div>
+        {book?.getAuthorsList()}
+      </div>
+      <div>
+        {book?.getFileUrl()}
+      </div>
+      <div class="flex-auto w-1/3 md:max-w-xs">
+        {book?.getChaptersList()}
+      </div>
+    </div>
+  </div>
+</Layout>
