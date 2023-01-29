@@ -61,7 +61,7 @@ impl BookRepo for BookRepository {
 
         let books = sqlx::query_as!(
             Book,
-            "SELECT bk.id, bk.name, bk.description, bk.tag, bk.length,
+            "SELECT DISTINCT bk.id, bk.name, bk.description, bk.tag, bk.length,
                bk.file_url, bk.cover_url, bk.price, bk.isbn, bk.created_at
                FROM author at
                INNER JOIN author_book ab on at.id = ab.author_id
