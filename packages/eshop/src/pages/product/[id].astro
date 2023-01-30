@@ -24,19 +24,21 @@ const playerUrl = Astro.url.toString().replace("product", "player");
 ---
 
 <Layout>
-  <div class="w-full">
-    <div class="p-6 md:px-12 md:mt-[76px] mx-auto flex gap-10 flex-wrap md:flex-nowrap">
-      <div>
-        {book?.getName()}
+  <div class="w-full flex flex-wrap justify-center px-10 gap-5 my-20">
+      <div class="max-w-xs">
+        <h2 class="mb-4 text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
+        >{book?.getName()}</h2>
+        <p class="mb-4 text-xl font-bold leading-none tracking-tight text-gray-900 dark:text-white"
+        >
+          {book?.getAuthorsList().map(a => a.getName()).join(", ")}
+        </p>
+        <img class="mx-auto mt-10 h-auto max-w-xl rounded-lg shadow-xl dark:shadow-gray-800"
+        src={book?.getCoverUrl()}>
       </div>
-      <div>
-        {book?.getAuthorsList().map(a => a.getName()).join(", ")}
-      </div>
-      <img src={book?.getCoverUrl()}>
-      <div>
-        {book?.getDescription()}
-      </div>
-      <div>
+      <div class="max-w-xs flex flex-col justify-between gap-10">
+        <div>
+          {book?.getDescription()}
+        </div>
         <a
         href={book?.getIsOwned() ? playerUrl : `/api/purchase/${book?.getId()}`}
         class:list={[
@@ -47,6 +49,5 @@ const playerUrl = Astro.url.toString().replace("product", "player");
         ]}>{book?.getIsOwned() ? "Open" : "Purchase"}</a
       >
       </div>
-    </div>
   </div>
 </Layout>
