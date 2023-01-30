@@ -3,8 +3,6 @@ title: "Contact us!"
 layout: "@layouts/MarkdownLayout.astro"
 ---
 
-_Last updated_: January 31, 2023
-
 At AudioBooks, we are always here to help. If you have any questions or concerns, please don't hesitate to reach out to us.
 
 ## Address:
