@@ -165,7 +165,7 @@ impl BookRepo for BookRepository {
         transaction: &mut Transaction<MySql>,
     ) -> anyhow::Result<()> {
         sqlx::query!(
-            "UPDATE book SET name = ?, description = ?, tag = ?, cover_url = ?, price = ?, isbn = ?
+            "UPDATE book SET name = ?, description = ?, tag = ?, cover_url = ?, price = ?, isbn = ?, author = ?
              WHERE id = ?",
             book.name,
             book.description,
@@ -174,6 +174,7 @@ impl BookRepo for BookRepository {
             book.price,
             book.isbn,
             book.id,
+            book.author
         )
         .execute(&mut *transaction)
         .await?;
