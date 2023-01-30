@@ -10,7 +10,7 @@ const book = Astro.props;
 <div
   class="w-full md:max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
 >
-  <a href="#" class="mx-auto">
+  <a href={`/product/${book.id}`} class="mx-auto">
     <img
       class="p-6 rounded-t-lg mx-auto aspect-4/3 object-cover"
       src={book.cover_url}
