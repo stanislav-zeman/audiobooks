@@ -21,7 +21,7 @@ export const Meta: MetaType = ({ categories }) => {
       name: formData.get("name")?.toString() ?? "",
       description: formData.get("description")?.toString() ?? "",
       isbn: formData.get("isbn")?.toString() ?? "",
-      price: +(formData.get("price")?.toString() ?? 0),
+      price: +(formData.get("price")?.toString() ?? 0) * 100,
       tag: formData.get("tag")?.toString() ?? "",
     }));
 
