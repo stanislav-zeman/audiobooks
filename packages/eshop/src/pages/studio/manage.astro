@@ -10,7 +10,7 @@ import grpc from "grpc-ts/eshop_pb";
 // TODO: actually paginate this
 const pagination = new grpc.Pagination();
 pagination.setOffset(0);
-pagination.setLimit(2 ^ 16);
+pagination.setLimit(2 ^ 8);
 
 const request = new grpc.GetBooksRequest();
 request.setPagination();
