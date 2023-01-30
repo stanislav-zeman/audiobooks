@@ -9,26 +9,7 @@ export type AudioPlayerType = Component<AudioPlayerProps>;
 export const AudioPlayer: AudioPlayerType = ({ book }) => {
   const [currectSource, setCurrentSource] = createSignal(book.file_url);
 
-  const chapters = book.chapters.sort((a, b) => a.start - b.start).map((chapter, i) => {
-    let link: string = "";
-
-      if (book.file_url.startsWith("https://www.archive.org")) {
-        const url = book.file_url;
-        if (url.includes("_00_")) {
-          link = url.replace("_00_", i <= 9 ? "_0" + i + "_" : "_" + i + "_")
-        } else if (url.includes("_0_")) {
-          link = url.replace("_0_", i <= 9 ? "_0" + i + "_" : "_" + i + "_")
-        } else if (url.includes("_01_")) {
-          link = url.replace("_01_", i <= 8 ? "_0" + (i + 1) + "_" : "_" + (i + 1) + "_")
-        } else if (url.includes("_1_")) {
-          link = url.replace("_1_", "_" + (i + 1) + "_")
-        }
-      } else {
-        // S3
-      }
-      
-    return {chapter, link};
-  });
+  const chapters = undefined
 
   const changeSource = (link: string) => {
     setCurrentSource(link);

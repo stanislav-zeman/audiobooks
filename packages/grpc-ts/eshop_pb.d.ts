@@ -50,11 +50,6 @@ export class Book extends jspb.Message {
   getIsOwned(): boolean;
   setIsOwned(value: boolean): void;
 
-  clearChaptersList(): void;
-  getChaptersList(): Array<Chapter>;
-  setChaptersList(value: Array<Chapter>): void;
-  addChapters(value?: Chapter, index?: number): Chapter;
-
   clearAuthorsList(): void;
   getAuthorsList(): Array<Author>;
   setAuthorsList(value: Array<Author>): void;
@@ -98,7 +93,6 @@ export namespace Book {
   export type AsObject = {
     id: string,
     isOwned: boolean,
-    chaptersList: Array<Chapter.AsObject>,
     authorsList: Array<Author.AsObject>,
     length: number,
     name: string,
@@ -132,34 +126,6 @@ export namespace Author {
   export type AsObject = {
     id: string,
     name: string,
-  }
-}
-
-export class Chapter extends jspb.Message {
-  getId(): string;
-  setId(value: string): void;
-
-  getChapterName(): string;
-  setChapterName(value: string): void;
-
-  getStart(): number;
-  setStart(value: number): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): Chapter.AsObject;
-  static toObject(includeInstance: boolean, msg: Chapter): Chapter.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Chapter, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): Chapter;
-  static deserializeBinaryFromReader(message: Chapter, reader: jspb.BinaryReader): Chapter;
-}
-
-export namespace Chapter {
-  export type AsObject = {
-    id: string,
-    chapterName: string,
-    start: number,
   }
 }
 

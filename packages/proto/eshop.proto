@@ -31,7 +31,6 @@ service EshopService {
 message Book {
   string id = 1;
   bool is_owned = 2;
-  repeated Chapter chapters = 3;
   repeated Author authors = 4;
   uint64 length = 5;
   string name = 6;
@@ -46,12 +45,6 @@ message Book {
 message Author {
   string id = 1;
   string name = 2;
-}
-
-message Chapter {
-  string id = 1;
-  string chapter_name = 2;
-  uint32 start = 3;
 }
 
 message User {

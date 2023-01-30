@@ -1,7 +1,6 @@
-use crate::models::{Author, Book, Chapter};
+use crate::models::{Author, Book};
 use crate::repositories::author_repository::{AuthorRepo, AuthorRepository};
 use crate::repositories::book_repository::{BookRepo, BookRepository};
-use crate::repositories::chapter_repository::{ChapterRepo, ChapterRepository};
 use crate::repositories::user_repository::UserRepository;
 use sqlx::{MySql, MySqlPool, Pool};
 use std::env;
@@ -14,7 +13,6 @@ pub struct Library {
     pub users: UserRepository,
     pub authors: AuthorRepository,
     pub books: BookRepository,
-    pub chapters: ChapterRepository,
     pool: Arc<Pool<MySql>>,
 }
 
@@ -25,32 +23,17 @@ impl Library {
             users: UserRepository::new(pool.clone()),
             authors: AuthorRepository::new(pool.clone()),
             books: BookRepository::new(pool.clone()),
-            chapters: ChapterRepository::new(pool.clone()),
             pool,
         }
     }
 
-    pub async fn edit_book(
-        &self,
-        book: Book,
-        chapters: Vec<Chapter>,
-        authors: Vec<Author>,
-    ) -> anyhow::Result<()> {
+    pub async fn edit_book(&self, book: Book, authors: Vec<Author>) -> anyhow::Result<()> {
         let mut transaction = self.pool.begin().await?;
 
-        self.chapters
-            .delete_chapters_from_book(book.id.clone(), &mut transaction)
-            .await?;
         self.authors
             .delete_authors_from_book(book.id.clone(), &mut transaction)
             .await?;
         self.books.edit_book(book.clone(), &mut transaction).await?;
-
-        for chapter in chapters {
-            self.chapters
-                .add_chapter_to_book(chapter, &mut transaction)
-                .await?;
-        }
 
         for author in authors {
             self.authors
@@ -63,21 +46,10 @@ impl Library {
         Ok(())
     }
 
-    pub async fn add_book(
-        &self,
-        book: Book,
-        chapters: Vec<Chapter>,
-        authors: Vec<Author>,
-    ) -> anyhow::Result<()> {
+    pub async fn add_book(&self, book: Book, authors: Vec<Author>) -> anyhow::Result<()> {
         let mut transaction = self.pool.begin().await?;
 
         self.books.add_book(book.clone(), &mut transaction).await?;
-
-        for chapter in chapters {
-            self.chapters
-                .add_chapter_to_book(chapter, &mut transaction)
-                .await?;
-        }
 
         for author in authors {
             self.authors

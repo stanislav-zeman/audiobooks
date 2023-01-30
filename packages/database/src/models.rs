@@ -44,12 +44,3 @@ pub struct Pagination {
     pub limit: u32,
     pub offset: u32,
 }
-
-#[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
-pub struct Chapter {
-    pub id: String,
-    pub book_id: String,
-    pub name: String,
-    pub start: i32,
-    pub created_at: Option<OffsetDateTime>,
-}

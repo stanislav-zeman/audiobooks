@@ -1,8 +1,7 @@
 use crate::handlers::helpers::jwt::validate;
 use database::models;
 use database::repositories::{
-    author_repository::AuthorRepo, book_repository::BookRepo, chapter_repository::ChapterRepo,
-    user_repository::UserRepo,
+    author_repository::AuthorRepo, book_repository::BookRepo, user_repository::UserRepo,
 };
 use database::Library;
 use tonic::{Request, Response, Status};
@@ -192,20 +191,10 @@ impl eshop_service_server::EshopService for EshopHandler {
 
     async fn add_book(&self, request: Request<Book>) -> Result<Response<Void>, Status> {
         let new_book = request.into_inner();
-        let chapters = new_book
-            .chapters
-            .iter()
-            .map(models::Chapter::from)
-            .collect();
         let authors = new_book.authors.iter().map(models::Author::from).collect();
         let book = models::Book::from(&new_book);
 
-        if self
-            .library
-            .add_book(book, chapters, authors)
-            .await
-            .is_err()
-        {
+        if self.library.add_book(book, authors).await.is_err() {
             return Err(Status::not_found("Book not found"));
         };
 
@@ -214,11 +203,6 @@ impl eshop_service_server::EshopService for EshopHandler {
 
     async fn update_book(&self, request: Request<Book>) -> Result<Response<Void>, Status> {
         let updated_book = request.into_inner();
-        let chapters = updated_book
-            .chapters
-            .iter()
-            .map(models::Chapter::from)
-            .collect();
         let authors = updated_book
             .authors
             .iter()
@@ -226,12 +210,7 @@ impl eshop_service_server::EshopService for EshopHandler {
             .collect();
         let book = models::Book::from(&updated_book);
 
-        if self
-            .library
-            .edit_book(book, chapters, authors)
-            .await
-            .is_err()
-        {
+        if self.library.edit_book(book, authors).await.is_err() {
             return Err(Status::not_found("Book not found"));
         };
 
@@ -286,12 +265,6 @@ async fn get_book(
     book: &models::Book,
     user_id: Option<String>,
 ) -> Result<Book, Status> {
-    let Ok(chapters) = library.chapters.get_chapters_of_book(book.id.clone()).await else
-    {
-        return Err(Status::internal("Failed getting chapters."));
-    };
-    let chapters = chapters.iter().map(Chapter::from).collect();
-
     let Ok(authors) = library.authors.get_book_authors(book.id.clone()).await else {
         return Err(Status::internal("Failed getting authors."))
     };
@@ -300,7 +273,6 @@ async fn get_book(
     let mut book = Book {
         id: book.id.clone(),
         is_owned: false,
-        chapters,
         authors,
         length: book.length as u64,
         name: book.name.clone(),

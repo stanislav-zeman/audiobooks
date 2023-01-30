@@ -27,12 +27,6 @@ export type BookView = {
 };
 
 export const toBookView = (book: Book): BookView => {
-    const chapters: ChapterView[] = book.getChaptersList().map(book => ({
-        chapter_name: book.getChapterName(),
-        id: book.getId(),
-        start: book.getStart(),
-    }))
-
     const authors: AuthorView[] = book.getAuthorsList().map(author => ({
         id: author.getId(),
         name: author.getName(),
@@ -42,7 +36,6 @@ export const toBookView = (book: Book): BookView => {
         id: book.getId(),
         name: book.getName(),
         authors,
-        chapters,
         cover_url: book.getCoverUrl(),
         file_url: book.getFileUrl(),
         description: book.getDescription(),

@@ -1,28 +1,5 @@
-use crate::handlers::grpc::{Author, Book, BookFilters, Chapter, Pagination, User};
+use crate::handlers::grpc::{Author, Book, BookFilters, Pagination, User};
 use database::models;
-
-// TODO: Convert to From traits
-impl From<&models::Chapter> for Chapter {
-    fn from(value: &models::Chapter) -> Self {
-        Self {
-            id: value.id.clone(),
-            chapter_name: value.name.clone(),
-            start: value.start as u32,
-        }
-    }
-}
-
-impl From<&Chapter> for models::Chapter {
-    fn from(value: &Chapter) -> Self {
-        Self {
-            id: value.id.clone(),
-            book_id: "".to_string(),
-            name: value.chapter_name.clone(),
-            start: value.start as i32,
-            created_at: None,
-        }
-    }
-}
 
 impl From<&models::Author> for Author {
     fn from(value: &models::Author) -> Self {

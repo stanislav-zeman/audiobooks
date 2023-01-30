@@ -36,9 +36,6 @@ const playerUrl = Astro.url.toString().replace("product", "player");
       <div>
         {book?.getDescription()}
       </div>
-      <div class="flex-auto w-1/3 md:max-w-xs">
-        {book?.getChaptersList().map(c => c.getChapterName()).join("\n")}
-      </div>
       <div>
         <a
         href={book?.getIsOwned() ? playerUrl : `/api/purchase/${book?.getId()}`}
