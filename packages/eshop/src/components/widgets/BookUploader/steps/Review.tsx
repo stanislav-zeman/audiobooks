@@ -1,4 +1,3 @@
-import { Books } from "grpc-ts/eshop_pb";
 import { Component, createSignal } from "solid-js";
 import { newBookStore } from "../state";
 
@@ -17,8 +16,9 @@ export const Review: ReviewType = () => {
     const id = await newId.text();
 
     const requests = book.files?.map((file) =>
-      fetch(`/api/upload/${file.name}`, {
+      fetch(`/api/upload/${id}/${file.name}`, {
         method: "POST",
+        body: file,
       })
     );
 

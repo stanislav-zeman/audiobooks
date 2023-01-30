@@ -11,25 +11,22 @@ export const post: APIRoute = async ({ cookies, params, request }) => {
   const isAuthorized = await validateJwt(token);
 
   if (!isAuthorized) {
-    return {
+    return new Response("Unauthorized", {
       status: 401,
-      body: "Unauthorized",
-    };
+    });
   }
   if (!request.body) {
-    return {
+    return new Response("No file provided", {
       status: 400,
-      body: "No file",
-    };
+    });
   }
 
   try {
     const parallelUploads3 = new Upload({
       client,
       params: {
-        Bucket: "audiobooks-development",
-
-        Key: `books/${book_id}/${chapter_id}.mp3`,
+        Bucket: "audiobook-development",
+        Key: `books/${book_id}/${chapter_id}`,
         Body: request.body,
       },
 
@@ -39,17 +36,18 @@ export const post: APIRoute = async ({ cookies, params, request }) => {
       leavePartsOnError: false,
     });
 
-    await parallelUploads3.done();
+    const res = await parallelUploads3.done();
+    if (res.$metadata.httpStatusCode !== 200) {
+      throw new Error("Upload failed");
+    }
   } catch (e: unknown) {
     console.error(e);
-    return {
+    return new Response("Upload failed", {
       status: 500,
-      body: "Upload failed",
-    };
+    });
   }
 
-  return {
+  return new Response("Upload successful", {
     status: 200,
-    body: "Upload successful",
-  };
+  });
 };
