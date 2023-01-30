@@ -12,7 +12,7 @@ export const Review: ReviewType = () => {
   const handleConfirm = async () => {
     setLoading(true);
 
-    console.log(book);
+    console.log({ ...book });
   };
 
   // TODO: Markup

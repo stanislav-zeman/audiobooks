@@ -25,6 +25,7 @@ service EshopService {
   rpc AddBook(Book) returns (Void) {}
   rpc UpdateBook(Book) returns (Void) {}
   rpc AddAuthor(Author) returns (Void) {}
+  rpc BuyBook(BuyBookRequest) returns (Void) {}
 }
 
 message Book {
@@ -92,3 +93,4 @@ message GetAuthorsRequest {
 }
 message GetMyBooksRequest { Pagination pagination = 1; }
 message Tags { repeated string tags = 1; }
+message BuyBookRequest { string book_id = 1; }

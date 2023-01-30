@@ -20,4 +20,4 @@ export const newBookStore = createStore<
   length: 0,
 });
 
-export const newBookStep = createSignal(1);
+export const newBookStep = createSignal(0);
