@@ -1,5 +1,6 @@
+import { Books } from "grpc-ts/eshop_pb";
 import { Component, createSignal } from "solid-js";
-import { newBookStep, newBookStore } from "../state";
+import { newBookStore } from "../state";
 
 export interface ReviewProps {}
 export type ReviewType = Component<ReviewProps>;
@@ -12,7 +13,20 @@ export const Review: ReviewType = () => {
   const handleConfirm = async () => {
     setLoading(true);
 
-    console.log({ ...book });
+    const newId = await fetch("/api/get_id");
+    const id = await newId.text();
+
+    const requests = book.files?.map((file) =>
+      fetch(`/api/upload/${file.name}`, {
+        method: "POST",
+      })
+    );
+
+    const responses = requests && (await Promise.all(requests));
+
+    console.log(responses);
+
+    // console.log({ ...book });
   };
 
   // TODO: Markup
