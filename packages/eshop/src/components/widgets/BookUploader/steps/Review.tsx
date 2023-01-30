@@ -49,7 +49,7 @@ export const Review: ReviewType = () => {
     }
 
     setLoading(false);
-    window.location.href = "/studio";
+    window.location.href = `/product/${id}`;
   };
 
   // TODO: Markup
