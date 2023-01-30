@@ -34,11 +34,7 @@ impl Library {
             bail!("User didn't upload the book.");
         }
 
-        let mut transaction = self.pool.begin().await?;
-
-        self.books.edit_book(book.clone(), &mut transaction).await?;
-
-        transaction.commit().await?;
+        self.books.edit_book(book.clone()).await?;
 
         Ok(())
     }

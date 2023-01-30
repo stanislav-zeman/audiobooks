@@ -26,11 +26,7 @@ pub trait BookRepo {
         book: Book,
         transaction: &mut Transaction<MySql>,
     ) -> anyhow::Result<()>;
-    async fn edit_book(
-        &self,
-        book: Book,
-        transaction: &mut Transaction<MySql>,
-    ) -> anyhow::Result<()>;
+    async fn edit_book(&self, book: Book) -> anyhow::Result<()>;
     async fn delete_book(&self, book: Book) -> anyhow::Result<()>;
     async fn get_tags(&self) -> anyhow::Result<Vec<String>>;
 }
@@ -159,11 +155,7 @@ impl BookRepo for BookRepository {
         Ok(())
     }
 
-    async fn edit_book(
-        &self,
-        book: Book,
-        transaction: &mut Transaction<MySql>,
-    ) -> anyhow::Result<()> {
+    async fn edit_book(&self, book: Book) -> anyhow::Result<()> {
         sqlx::query!(
             "UPDATE book SET name = ?, description = ?, tag = ?, cover_url = ?, price = ?, isbn = ?, author = ?
              WHERE id = ?",
