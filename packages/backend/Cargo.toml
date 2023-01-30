@@ -20,6 +20,7 @@ dotenvy = "0.15.6"
 sqlx = { version = "0.6.2", features = ["mysql", "runtime-tokio-rustls"] }
 database = { path = "../database" }
 jsonwebtoken = "8.2.0"
+reqwest = "0.11.14"
 
 [build-dependencies]
 tonic-build = "0.8"

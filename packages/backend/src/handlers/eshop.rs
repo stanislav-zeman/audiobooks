@@ -63,7 +63,7 @@ impl eshop_service_server::EshopService for EshopHandler {
         &self,
         request: Request<GetBooksRequest>,
     ) -> Result<Response<Books>, Status> {
-        let user_id = match validate(request.metadata()) {
+        let user_id = match validate(request.metadata()).await {
             Ok(claims) => Some(claims.sub),
             Err(_) => None,
         };
@@ -146,7 +146,7 @@ impl eshop_service_server::EshopService for EshopHandler {
         &self,
         request: Request<GetMyBooksRequest>,
     ) -> Result<Response<Books>, Status> {
-        let user_id = match validate(request.metadata()) {
+        let user_id = match validate(request.metadata()).await {
             Ok(claims) => claims.sub,
             Err(_) => return Err(Status::unauthenticated("User not authenticated.")),
         };
@@ -249,7 +249,7 @@ impl eshop_service_server::EshopService for EshopHandler {
     }
 
     async fn buy_book(&self, request: Request<BuyBookRequest>) -> Result<Response<Void>, Status> {
-        let user_id = match validate(request.metadata()) {
+        let user_id = match validate(request.metadata()).await {
             Ok(claims) => claims.sub,
             Err(_) => return Err(Status::unauthenticated("User not authenticated.")),
         };
