@@ -1,13 +1,131 @@
 ---
 import PageLayout from "@layouts/PageLayout.astro";
+import { grpcClient } from "@utils/grpc/client";
+import { promise } from "@utils/grpc/promise";
+import { includeToken } from "@utils/grpc/token";
+import { GetBookByIdRequest } from "grpc-ts/eshop_pb";
+import grpc from "grpc-ts/eshop_pb";
 
 export type Params = {
   id: string;
 };
 
+const getTags = promise(grpcClient.getTags.bind(grpcClient));
+const tags = await getTags(new grpc.Void());
+const categories = tags?.getTagsList();
+
 const { id } = Astro.params as Params;
+const getBook = promise(grpcClient.getBookById.bind(grpcClient));
+const request = new GetBookByIdRequest();
+request.setId(id);
+const book = await getBook(request);
+
+const params = Astro.url.searchParams;
+if (book 
+    && params.has("name") 
+    && params.has("description") 
+    && params.has("isbn") 
+    && params.has("price") 
+    && params.has("tag")) 
+    {
+  book?.setId(id);
+  book?.setName(params.get("name") ?? "");
+  book?.setDescription(params.get("description") ?? "");
+  book?.setIsbn(params.get("isbn") ?? "");
+  book?.setPrice(+(params.get("price") ?? 0) * 100);
+  book?.setTag(params.get("tag") ?? "");
+
+  const updateBook = promise(
+    grpcClient.updateBook.bind(grpcClient),
+    includeToken(Astro.cookies.get("token").value)
+  );
+  await updateBook(book);
+}
+
 ---
 
 <PageLayout>
-  Publication ID: {id}
+  <div class="mx-auto max-w-screen-lg my-24 px-10">
+    <section class="mt-10">
+    <form action={`/studio/${id}`}>
+      <div class="relative z-0 w-full mb-6 group">
+        <input
+          id="name"
+          name="name"
+          value={book?.getName()}
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+          required
+        />
+        <label
+          for="name"
+          class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+        >
+          Book name
+        </label>
+      </div>
+      <div class="relative z-0 w-full mb-6 group">
+        <textarea
+          id="description"
+          name="description"
+          rows="4"
+          class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          placeholder="Write a book description..."
+        >{book?.getDescription()}</textarea>
+      </div>
+      <div class="relative z-0 w-full mb-6 group">
+        <input
+          id="isbn"
+          name="isbn"
+          value={book?.getIsbn()}
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+          required
+          />
+        <label
+          for="isbn"
+          class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+        >
+          ISBN
+        </label>
+      </div>
+      <div class="grid md:grid-cols-2 md:gap-6">
+        <div class="relative z-0 w-full mb-6 group">
+          <input
+            id="price"
+            name="price"
+            type="number"
+            value={(book?.getPrice() || 0) / 100}
+            min="0"
+            step="0.01"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+            placeholder=" "
+            required
+          />
+          <label
+            for="price"
+            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+          >
+            Price (EUR)
+          </label>
+        </div>
+        <div class="relative z-0 w-full mb-6 group">
+          <select
+            id="tag"
+            name="tag"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          >
+            {categories?.map((category) => (
+              <option value={category.toLowerCase()}>{category}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <button
+        type="submit"
+        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      >
+        Edit
+      </button>
+    </form>
+  </section>
+</div>
 </PageLayout>
