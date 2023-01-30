@@ -1249,8 +1249,7 @@ proto.eshop.User.prototype.toObject = function(opt_includeInstance) {
 proto.eshop.User.toObject = function(includeInstance, msg) {
   var f, obj = {
     id: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    name: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    studioAccess: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
+    name: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
   if (includeInstance) {
@@ -1295,10 +1294,6 @@ proto.eshop.User.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {string} */ (reader.readString());
       msg.setName(value);
       break;
-    case 3:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setStudioAccess(value);
-      break;
     default:
       reader.skipField();
       break;
@@ -1342,13 +1337,6 @@ proto.eshop.User.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getStudioAccess();
-  if (f) {
-    writer.writeBool(
-      3,
-      f
-    );
-  }
 };
 
 
@@ -1385,24 +1373,6 @@ proto.eshop.User.prototype.getName = function() {
  */
 proto.eshop.User.prototype.setName = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
-};
-
-
-/**
- * optional bool studio_access = 3;
- * @return {boolean}
- */
-proto.eshop.User.prototype.getStudioAccess = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.eshop.User} returns this
- */
-proto.eshop.User.prototype.setStudioAccess = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
 

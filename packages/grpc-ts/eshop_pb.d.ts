@@ -128,9 +128,6 @@ export class User extends jspb.Message {
   getName(): string;
   setName(value: string): void;
 
-  getStudioAccess(): boolean;
-  setStudioAccess(value: boolean): void;
-
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): User.AsObject;
   static toObject(includeInstance: boolean, msg: User): User.AsObject;
@@ -145,7 +142,6 @@ export namespace User {
   export type AsObject = {
     id: string,
     name: string,
-    studioAccess: boolean,
   }
 }
 

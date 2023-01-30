@@ -192,10 +192,13 @@ impl eshop_service_server::EshopService for EshopHandler {
         &self,
         request: Request<GetMyBooksRequest>,
     ) -> Result<Response<Books>, Status> {
-        let user_id = match validate(request.metadata()).await {
-            Ok(claims) => claims.sub,
-            Err(_) => return Err(Status::unauthenticated("User not authenticated.")),
+        let Ok(claims) = validate(request.metadata()).await else {
+            return Err(Status::unauthenticated("User not authenticated."));
         };
+
+        if !claims.app_permissions.contains(&"author".into()) {
+            return Err(Status::unauthenticated("User not authenticated."));
+        }
 
         let inner = request.into_inner();
 
@@ -211,14 +214,14 @@ impl eshop_service_server::EshopService for EshopHandler {
             .library
             .books
             .get_published_books(
-                user_id.clone(),
+                claims.sub.clone(),
                 pagination,
             )
             .await else {
             return Err(Status::internal("Failed getting user books."))
         };
 
-        let Ok(books) = map_books(&self.library, books, Some(user_id)).await else {
+        let Ok(books) = map_books(&self.library, books, Some(claims.sub)).await else {
             return Err(Status::internal("Failed mapping books."))
         };
 
@@ -237,25 +240,24 @@ impl eshop_service_server::EshopService for EshopHandler {
     }
 
     async fn add_book(&self, request: Request<Book>) -> Result<Response<Void>, Status> {
-        let user_id = match validate(request.metadata()).await {
-            Ok(claims) => claims.sub,
-            Err(_) => return Err(Status::unauthenticated("User not authenticated.")),
+        let Ok(claims) = validate(request.metadata()).await else {
+            return Err(Status::unauthenticated("User not authenticated."));
         };
 
-        let Ok(user) = self.library.users.get_user_by_id(user_id.clone()).await else {
-            return Err(Status::internal("Failed getting user."));
-        };
-        if user.studio_access == 0 {
-            return Err(Status::permission_denied(
-                "User not allowed to upload books.",
-            ));
+        if !claims.app_permissions.contains(&"author".into()) {
+            return Err(Status::unauthenticated("Permission denied."));
         }
 
         let new_book = request.into_inner();
         let authors = new_book.authors.iter().map(models::Author::from).collect();
         let book = models::Book::from(&new_book);
 
-        if self.library.add_book(book, authors, user_id).await.is_err() {
+        if self
+            .library
+            .add_book(book, authors, claims.sub)
+            .await
+            .is_err()
+        {
             return Err(Status::not_found("Book not found"));
         };
 
@@ -263,10 +265,13 @@ impl eshop_service_server::EshopService for EshopHandler {
     }
 
     async fn update_book(&self, request: Request<Book>) -> Result<Response<Void>, Status> {
-        let user_id = match validate(request.metadata()).await {
-            Ok(claims) => claims.sub,
-            Err(_) => return Err(Status::unauthenticated("User not authenticated.")),
+        let Ok(claims) = validate(request.metadata()).await else {
+            return Err(Status::unauthenticated("User not authenticated."));
         };
+
+        if !claims.app_permissions.contains(&"author".into()) {
+            return Err(Status::permission_denied("Permission denied."));
+        }
 
         let updated_book = request.into_inner();
         let authors = updated_book
@@ -278,7 +283,7 @@ impl eshop_service_server::EshopService for EshopHandler {
 
         if self
             .library
-            .edit_book(book, authors, user_id)
+            .edit_book(book, authors, claims.sub)
             .await
             .is_err()
         {

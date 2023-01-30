@@ -25,7 +25,6 @@ impl From<&models::User> for User {
         Self {
             id: value.id.clone(),
             name: value.id.clone(),
-            studio_access: value.studio_access != 0,
         }
     }
 }

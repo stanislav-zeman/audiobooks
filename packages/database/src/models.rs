@@ -5,7 +5,6 @@ use time::OffsetDateTime;
 pub struct User {
     pub id: String,
     pub name: String,
-    pub studio_access: i8, // but irl bool
     pub created_at: Option<OffsetDateTime>,
 }
 

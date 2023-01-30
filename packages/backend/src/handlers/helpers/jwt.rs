@@ -18,6 +18,7 @@ pub struct Claims {
     pub picture: String,
     pub email: String,
     pub nickname: String,
+    pub app_permissions: Vec<String>,
 }
 
 pub async fn validate(metadata: &MetadataMap) -> Result<Claims> {

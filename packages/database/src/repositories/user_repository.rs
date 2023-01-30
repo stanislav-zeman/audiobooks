@@ -43,10 +43,9 @@ impl UserRepo for UserRepository {
 
     async fn add_user(&self, user: User) -> anyhow::Result<()> {
         sqlx::query!(
-            "INSERT INTO user (id, name, studio_access) VALUES (?, ?, ?);",
+            "INSERT INTO user (id, name) VALUES (?, ?);",
             user.id,
             user.name,
-            user.studio_access
         )
         .execute(&*self.mysql_pool)
         .await?;
@@ -55,14 +54,9 @@ impl UserRepo for UserRepository {
     }
 
     async fn edit_user(&self, user: User) -> anyhow::Result<()> {
-        sqlx::query!(
-            "UPDATE user SET name = ?, studio_access = ? WHERE id = ?;",
-            user.name,
-            user.studio_access,
-            user.id
-        )
-        .execute(&*self.mysql_pool)
-        .await?;
+        sqlx::query!("UPDATE user SET name = ? WHERE id = ?;", user.name, user.id)
+            .execute(&*self.mysql_pool)
+            .await?;
 
         Ok(())
     }
