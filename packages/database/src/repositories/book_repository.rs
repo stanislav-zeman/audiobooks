@@ -165,10 +165,10 @@ impl BookRepo for BookRepository {
             book.cover_url,
             book.price,
             book.isbn,
-            book.id,
-            book.author
+            book.author,
+            book.id
         )
-        .execute(&mut *transaction)
+        .execute(&*self.mysql_pool)
         .await?;
 
         Ok(())
