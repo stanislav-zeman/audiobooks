@@ -42,6 +42,7 @@ if (book
     includeToken(Astro.cookies.get("token").value)
   );
   await updateBook(book);
+  return Astro.redirect("/product/" + id);
 }
 
 ---
