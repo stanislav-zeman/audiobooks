@@ -1,0 +1,57 @@
+---
+import Layout from "@layouts/SearchLayout.astro";
+import { toBookView } from "@utils/bookView";
+import { grpcClient } from "@utils/grpc/client";
+import { promise } from "@utils/grpc/promise";
+import { includeToken } from "@utils/grpc/token";
+import { GetBookByIdRequest } from "grpc-ts/eshop_pb";
+
+export type Params = {
+  id: string;
+};
+
+const { id } = Astro.params as Params;
+
+const request = new GetBookByIdRequest();
+request.setId(id)
+
+const getBook = promise(
+  grpcClient.getBookById.bind(grpcClient),
+  includeToken(Astro.cookies.get("token").value)
+);
+const book = (await getBook(request)) ;
+const bookView = book && toBookView(book);
+
+const playerUrl = Astro.url.toString().replace("product", "player");
+---
+
+<Layout>
+  <div class="w-full">
+    <div class="p-6 md:px-12 md:mt-[76px] mx-auto flex gap-10 flex-wrap md:flex-nowrap">
+      <div>
+        {bookView?.name}
+      </div>
+      <div>
+        {bookView?.authors.map(a => a.name).join(", ")}
+      </div>
+      <img src={bookView?.cover_url}>
+      <div>
+        {bookView?.description}
+      </div>
+      <div class="flex-auto w-1/3 md:max-w-xs">
+        {bookView?.chapters.map(ch => ch.chapter_name).join("\n")}
+      </div>
+      <div>
+        <!-- <a
+        href={playerUrl}
+        class:list={[
+          "text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center",
+          book.is
+            ? "bg-green-700 hover:bg-green-800 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+            : "bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800",
+        ]}>{book.is_owned ? "Open" : "Add to cart"}</a
+      > -->
+      </div>
+    </div>
+  </div>
+</Layout>

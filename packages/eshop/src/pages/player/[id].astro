@@ -1,14 +1,30 @@
 ---
 import { AudioPlayer } from "@components/widgets/AudioPlayer";
 import PageLayout from "@layouts/PageLayout.astro";
+import { toBookView } from "@utils/bookView";
+import { grpcClient } from "@utils/grpc/client";
+import { promise } from "@utils/grpc/promise";
+import { includeToken } from "@utils/grpc/token";
+import { GetBookByIdRequest } from "grpc-ts/eshop_pb";
 
 export type Params = {
   id: string;
 };
 
 const { id } = Astro.params as Params;
+
+const request = new GetBookByIdRequest();
+request.setId(id)
+
+const getBook = promise(
+  grpcClient.getBookById.bind(grpcClient),
+  includeToken(Astro.cookies.get("token").value)
+);
+const book = (await getBook(request)) ;
+const bookView = book && toBookView(book);
+
 ---
 
 <PageLayout>
-  <AudioPlayer client:idle id={id} />
+  { bookView ? <AudioPlayer client:idle book={bookView} /> : <div>Book not found</div>}
 </PageLayout>
