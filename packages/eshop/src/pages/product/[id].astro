@@ -36,7 +36,7 @@ const playerUrl = Astro.url.toString().replace("product", "player");
         src={book?.getCoverUrl()}>
       </div>
       <div class="max-w-xs flex flex-col justify-between gap-10">
-        <div>
+        <div class="text-justify">
           {book?.getDescription()}
         </div>
         <a
