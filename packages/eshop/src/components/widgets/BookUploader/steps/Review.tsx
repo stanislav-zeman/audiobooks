@@ -1,5 +1,5 @@
 import type { BookView } from "@utils/bookView";
-import { Component, createSignal } from "solid-js";
+import { Component, For, createSignal } from "solid-js";
 import { newBookStore } from "../state";
 
 export interface ReviewProps {}
@@ -52,10 +52,32 @@ export const Review: ReviewType = () => {
     window.location.href = `/product/${id}`;
   };
 
-  // TODO: Markup
-
   return (
     <div>
+      <div class="w-full flex flex-wrap justify-center px-10 gap-5 my-20">
+      <div class="max-w-xs">
+        <h2 class="mb-4 text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
+        >{book.name}</h2>
+        <p class="mb-4 text-xl font-bold leading-none tracking-tight text-gray-900 dark:text-white"
+        >
+          {book.authors}
+        </p>
+        <img class="mx-auto mt-10 h-auto max-w-xl rounded-lg shadow-xl dark:shadow-gray-800"
+        src={book.cover_url || ""} alt="Book image"></img>
+      </div>
+      <div class="max-w-xs flex flex-col justify-between gap-10">
+        <div class="text-justify">
+          {book.description}
+        </div>
+        <For each={book.files}>
+            {(file) => (
+              <li class="flex items-center space-x-3 hover:bg-gray-100">
+                <div class="flex-1">{file?.toString()}</div>
+              </li>
+            )}
+        </For>
+      </div>
+    </div>
       <button
         onClick={handleConfirm}
         type="submit"

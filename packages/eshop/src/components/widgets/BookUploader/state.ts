@@ -8,7 +8,7 @@ export const newBookStore = createStore<
     files?: File[];
   }
 >({
-  authors: [],
+  authors: "",
   description: "",
   price: 0,
   cover_url: "",
