@@ -1,6 +1,6 @@
 // import jwt from "jose";
 
-export const validateJwt = async (token: string) => {
+export const validateJwt = async (token?: string) => {
   // TODO: cryptographically validate the JWT using jwt keychain
   //   try {
   //     const decoded = await jwt.jwtVerify(token, );
