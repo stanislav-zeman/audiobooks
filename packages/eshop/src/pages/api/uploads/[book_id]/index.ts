@@ -1,6 +1,8 @@
 import type { APIRoute } from "astro";
 import { validateJwt } from "@utils/auth/validateJwt";
 import { client } from "@utils/s3/client";
+import { ListObjectsCommand } from "@aws-sdk/client-s3";
+// import { bucket } from "@utils/s3 "
 
 /**
  * Lists all the media in the uploads folder for a given book.
@@ -18,20 +20,24 @@ export const get: APIRoute = async ({ cookies, params, request }) => {
       status: 401,
     });
   }
-  if (!request.body) {
-    return new Response("No file provided", {
-      status: 400,
-    });
-  }
+
+  const command = new ListObjectsCommand({
+    Bucket: "audiobook-development",
+    Prefix: `books/${book_id}`,
+  });
 
   try {
-  } catch (e: unknown) {}
+    const res = await client.send(command);
 
-  return new Response(
-    // TODO: result
-    {},
-    {
+    const keys = res.Contents?.map((c) => c.Key);
+    if (!keys) return new Response(undefined, { status: 404 });
+
+    return new Response(JSON.stringify(keys), {
       status: 200,
-    }
-  );
+    });
+  } catch (e: unknown) {
+    return new Response(undefined, {
+      status: 500,
+    });
+  }
 };
