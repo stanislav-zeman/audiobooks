@@ -16,7 +16,7 @@ export const Review: ReviewType = () => {
     const id = await newId.text();
 
     const requests = book.files?.map((file) =>
-      fetch(`/api/upload/${id}/${file.name}`, {
+      fetch(`/api/uploads/${id}/${file.name}`, {
         method: "POST",
         body: file,
       })
