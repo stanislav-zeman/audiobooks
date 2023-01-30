@@ -4,18 +4,14 @@ import PageLayout from "@layouts/PageLayout.astro";
 import { toBookView } from "@utils/bookView";
 import { grpcClient } from "@utils/grpc/client";
 import { promise } from "@utils/grpc/promise";
+import { includeToken } from "@utils/grpc/token";
 import grpc from "grpc-ts/eshop_pb";
 
-// TODO: actually paginate this
-const pagination = new grpc.Pagination();
-pagination.setOffset(0);
-pagination.setLimit(2 ^ 16);
-
 const request = new grpc.GetBooksRequest();
-request.setPagination();
-
-const getBooks = promise(grpcClient.getBooks.bind(grpcClient));
-// const getBooks = promise(grpcClient.getMyBooks.bind(grpcClient));
+const getBooks = promise(
+  grpcClient.getMyBooks.bind(grpcClient),
+  includeToken(Astro.cookies.get("token").value)
+);
 const books = (await getBooks(request))?.getBooksList();
 const view = books?.map(toBookView);
 ---
