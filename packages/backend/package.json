@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "RUST_LOG=tower_http=trace cargo watch -x run || cargo watch -x run",
+    "dev": "",
     "build": "cargo build --release",
-    "start": "cargo run --release"
+    "start": ""
   },
   "dependencies": {
     "grpc-proto": "*",

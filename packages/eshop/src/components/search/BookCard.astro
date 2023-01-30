@@ -36,7 +36,7 @@ const logged_in = Astro.cookies.get("token").value !== undefined
         >{book.price / 100} €</span
       >
       <a
-        href={logged_in ? `/api/purchase/${book.id}` : "/auth/login"}
+        href={logged_in ? (book.is_owned ? `/product/${book.id}` : `/api/purchase/${book.id}`) : "/auth/login"}
         class:list={[
           "text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center",
           book.is_owned

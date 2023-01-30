@@ -26,12 +26,19 @@ impl eshop_service_server::EshopService for EshopHandler {
         &self,
         request: Request<GetBookByIdRequest>,
     ) -> Result<Response<Book>, Status> {
+        let user_id = match validate(request.metadata()).await {
+            Ok(claims) => Some(claims.sub),
+            Err(_) => None,
+        };
+
         let id = request.into_inner().id;
         let Ok(book) = self.library.books.get_book_by_id(id.clone()).await else {
             return Err(Status::not_found("Book not found!"))
         };
 
-        Ok(Response::new(get_book(&self.library, &book, None).await?))
+        Ok(Response::new(
+            get_book(&self.library, &book, user_id).await?,
+        ))
     }
 
     async fn get_author_by_id(
