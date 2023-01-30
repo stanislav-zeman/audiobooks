@@ -55,17 +55,11 @@ export class Book extends jspb.Message {
   setAuthorsList(value: Array<Author>): void;
   addAuthors(value?: Author, index?: number): Author;
 
-  getLength(): number;
-  setLength(value: number): void;
-
   getName(): string;
   setName(value: string): void;
 
   getDescription(): string;
   setDescription(value: string): void;
-
-  getFileUrl(): string;
-  setFileUrl(value: string): void;
 
   getCoverUrl(): string;
   setCoverUrl(value: string): void;
@@ -94,10 +88,8 @@ export namespace Book {
     id: string,
     isOwned: boolean,
     authorsList: Array<Author.AsObject>,
-    length: number,
     name: string,
     description: string,
-    fileUrl: string,
     coverUrl: string,
     price: number,
     isbn: string,

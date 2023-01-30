@@ -699,10 +699,8 @@ proto.eshop.Book.toObject = function(includeInstance, msg) {
     isOwned: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
     authorsList: jspb.Message.toObjectList(msg.getAuthorsList(),
     proto.eshop.Author.toObject, includeInstance),
-    length: jspb.Message.getFieldWithDefault(msg, 5, 0),
     name: jspb.Message.getFieldWithDefault(msg, 6, ""),
     description: jspb.Message.getFieldWithDefault(msg, 7, ""),
-    fileUrl: jspb.Message.getFieldWithDefault(msg, 8, ""),
     coverUrl: jspb.Message.getFieldWithDefault(msg, 9, ""),
     price: jspb.Message.getFieldWithDefault(msg, 10, 0),
     isbn: jspb.Message.getFieldWithDefault(msg, 11, ""),
@@ -756,10 +754,6 @@ proto.eshop.Book.deserializeBinaryFromReader = function(msg, reader) {
       reader.readMessage(value,proto.eshop.Author.deserializeBinaryFromReader);
       msg.addAuthors(value);
       break;
-    case 5:
-      var value = /** @type {number} */ (reader.readUint64());
-      msg.setLength(value);
-      break;
     case 6:
       var value = /** @type {string} */ (reader.readString());
       msg.setName(value);
@@ -767,10 +761,6 @@ proto.eshop.Book.deserializeBinaryFromReader = function(msg, reader) {
     case 7:
       var value = /** @type {string} */ (reader.readString());
       msg.setDescription(value);
-      break;
-    case 8:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setFileUrl(value);
       break;
     case 9:
       var value = /** @type {string} */ (reader.readString());
@@ -839,13 +829,6 @@ proto.eshop.Book.serializeBinaryToWriter = function(message, writer) {
       proto.eshop.Author.serializeBinaryToWriter
     );
   }
-  f = message.getLength();
-  if (f !== 0) {
-    writer.writeUint64(
-      5,
-      f
-    );
-  }
   f = message.getName();
   if (f.length > 0) {
     writer.writeString(
@@ -857,13 +840,6 @@ proto.eshop.Book.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeString(
       7,
-      f
-    );
-  }
-  f = message.getFileUrl();
-  if (f.length > 0) {
-    writer.writeString(
-      8,
       f
     );
   }
@@ -973,24 +949,6 @@ proto.eshop.Book.prototype.clearAuthorsList = function() {
 
 
 /**
- * optional uint64 length = 5;
- * @return {number}
- */
-proto.eshop.Book.prototype.getLength = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
-};
-
-
-/**
- * @param {number} value
- * @return {!proto.eshop.Book} returns this
- */
-proto.eshop.Book.prototype.setLength = function(value) {
-  return jspb.Message.setProto3IntField(this, 5, value);
-};
-
-
-/**
  * optional string name = 6;
  * @return {string}
  */
@@ -1023,24 +981,6 @@ proto.eshop.Book.prototype.getDescription = function() {
  */
 proto.eshop.Book.prototype.setDescription = function(value) {
   return jspb.Message.setProto3StringField(this, 7, value);
-};
-
-
-/**
- * optional string file_url = 8;
- * @return {string}
- */
-proto.eshop.Book.prototype.getFileUrl = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 8, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.eshop.Book} returns this
- */
-proto.eshop.Book.prototype.setFileUrl = function(value) {
-  return jspb.Message.setProto3StringField(this, 8, value);
 };
 
 

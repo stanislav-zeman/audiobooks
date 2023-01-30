@@ -9,10 +9,8 @@ export type BookView = {
   id: string;
   is_owned: boolean;
   authors: AuthorView[];
-  length: number;
   name: string;
   description: string;
-  file_url: string;
   cover_url: string;
   price: number;
   isbn: string;
@@ -30,11 +28,9 @@ export const toBookView = (book: grpc.Book): BookView => {
     name: book.getName(),
     authors,
     cover_url: book.getCoverUrl(),
-    file_url: book.getFileUrl(),
     description: book.getDescription(),
     isbn: book.getIsbn(),
     is_owned: book.getIsOwned(),
-    length: book.getLength(),
     price: book.getPrice(),
     tag: book.getTag(),
   };
@@ -53,11 +49,9 @@ export const fromBookView = (book: BookView): grpc.Book => {
   b.setName(book.name);
   b.setAuthorsList(authors);
   b.setCoverUrl(book.cover_url);
-  b.setFileUrl(book.file_url);
   b.setDescription(book.description);
   b.setIsbn(book.isbn);
   b.setIsOwned(book.is_owned);
-  b.setLength(book.length);
   b.setPrice(book.price);
   b.setTag(book.tag);
   return b;

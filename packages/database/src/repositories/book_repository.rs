@@ -66,8 +66,7 @@ impl BookRepo for BookRepository {
 
         let books = sqlx::query_as!(
             Book,
-            "SELECT DISTINCT bk.id, bk.name, bk.description, bk.tag, bk.length,
-               bk.file_url, bk.cover_url, bk.price, bk.isbn, bk.created_at
+            "SELECT DISTINCT bk.id, bk.name, bk.description, bk.tag, bk.cover_url, bk.price, bk.isbn, bk.created_at
                FROM author at
                INNER JOIN author_book ab on at.id = ab.author_id
                INNER JOIN book bk on ab.book_id = bk.id
@@ -98,8 +97,7 @@ impl BookRepo for BookRepository {
     ) -> anyhow::Result<Vec<Book>> {
         let books = sqlx::query_as!(
             Book,
-            "SELECT bk.id, bk.name, bk.description, bk.tag, bk.length,
-               bk.file_url, bk.cover_url, bk.price, bk.isbn, bk.created_at
+            "SELECT bk.id, bk.name, bk.description, bk.tag, bk.cover_url, bk.price, bk.isbn, bk.created_at
                FROM book bk
                INNER JOIN user_book ub
                ON ub.book_id = bk.id
@@ -123,8 +121,7 @@ impl BookRepo for BookRepository {
     ) -> anyhow::Result<Vec<Book>> {
         let books = sqlx::query_as!(
             Book,
-            "SELECT bk.id, bk.name, bk.description, bk.tag, bk.length,
-               bk.file_url, bk.cover_url, bk.price, bk.isbn, bk.created_at
+            "SELECT bk.id, bk.name, bk.description, bk.tag, bk.cover_url, bk.price, bk.isbn, bk.created_at
                FROM book bk
                INNER JOIN upload ub
                ON ub.book_id = bk.id
@@ -147,14 +144,12 @@ impl BookRepo for BookRepository {
         transaction: &mut Transaction<MySql>,
     ) -> anyhow::Result<()> {
         sqlx::query!(
-            "INSERT INTO book (id, name, description, tag, length, file_url, cover_url, price, isbn)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO book (id, name, description, tag, cover_url, price, isbn)
+             VALUES (?, ?, ?, ?, ?, ?, ?)",
             book.id,
             book.name,
             book.description,
             book.tag,
-            book.length,
-            book.file_url,
             book.cover_url,
             book.price,
             book.isbn
@@ -171,20 +166,18 @@ impl BookRepo for BookRepository {
         transaction: &mut Transaction<MySql>,
     ) -> anyhow::Result<()> {
         sqlx::query!(
-            "UPDATE book SET name = ?, description = ?, tag = ?, length = ?, file_url = ?, cover_url = ?, price = ?, isbn = ?
+            "UPDATE book SET name = ?, description = ?, tag = ?, cover_url = ?, price = ?, isbn = ?
              WHERE id = ?",
             book.name,
             book.description,
             book.tag,
-            book.length,
-            book.file_url,
             book.cover_url,
             book.price,
             book.isbn,
             book.id,
         )
-            .execute(&mut *transaction)
-            .await?;
+        .execute(&mut *transaction)
+        .await?;
 
         Ok(())
     }

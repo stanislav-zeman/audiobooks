@@ -79,8 +79,6 @@ impl From<&Book> for models::Book {
             name: value.name.clone(),
             description: value.description.clone(),
             tag: value.tag.clone(),
-            length: value.length as i32,
-            file_url: value.file_url.clone(),
             cover_url: value.cover_url.clone(),
             price: value.price as i32,
             isbn: value.isbn.clone(),
