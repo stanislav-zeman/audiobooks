@@ -4,19 +4,18 @@ import ToggleMenu from "@components/common/ToggleMenu.astro";
 import SearchBar from "@components/widgets/SearchBar.astro";
 import ChevronDown from "@components/icons/ChevronDown.astro";
 import LoginOrLogout from "./LoginOrLogout.astro";
+import type { IdToken } from "@utils/auth/Token";
+import { validateJwt } from "@utils/auth/validateJwt";
+import { decodeJwt } from "jose";
 
 export type Props = {
   showSearch?: boolean;
 };
 
-const links = [
+const menu = [
   {
     text: "Pages",
     links: [
-      {
-        text: "My Books",
-        href: "/player",
-      },
       {
         text: "Search",
         href: "/search",
@@ -37,9 +36,33 @@ const links = [
         text: "Privacy policy",
         href: "/privacy",
       },
-    ],
+    ]
   },
 ];
+
+const token = Astro.cookies.get("token").value;
+let isLoggedIn = false;
+let parsed: IdToken | undefined;
+if (token) {
+  isLoggedIn = await validateJwt(token);
+  parsed = decodeJwt(token) as IdToken;
+};
+
+if (isLoggedIn) {
+  const links = menu.at(0)?.links;
+  links?.unshift({
+    text: "My Collection",
+    href: "/player",
+  })
+}
+
+if (isLoggedIn && parsed?.app_permissions?.includes("author")) {
+  const links = menu.at(0)?.links;
+  links?.unshift({
+    text: "My Studio",
+    href: "/studio",
+  })
+}
 
 const { showSearch = false } = Astro.props as Props;
 ---
@@ -81,7 +104,7 @@ const { showSearch = false } = Astro.props as Props;
         class="flex flex-col pt-8 md:pt-0 md:flex-row md:self-center w-full md:w-auto text-xl md:text-base"
       >
         {
-          links.map(({ text, links }) => (
+          menu.map(({ text, links }) => (
             <li class={links?.length ? "dropdown" : ""}>
               <>
                 <button class="font-medium hover:text-gray-900 dark:hover:text-white px-4 py-3 flex items-center transition duration-150 ease-in-out">

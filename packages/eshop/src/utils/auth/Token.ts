@@ -7,6 +7,7 @@ export type Token = {
 };
 
 export type IdToken = {
+  app_permissions: ("author")[];
   nickname: string;
   name: string;
   picture: string;
