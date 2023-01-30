@@ -66,18 +66,16 @@ impl BookRepo for BookRepository {
 
         let books = sqlx::query_as!(
             Book,
-            "SELECT DISTINCT bk.id, bk.name, bk.description, bk.tag, bk.cover_url, bk.price, bk.isbn, bk.created_at
-               FROM author at
-               INNER JOIN author_book ab on at.id = ab.author_id
-               INNER JOIN book bk on ab.book_id = bk.id
-               WHERE (at.name LIKE ?
-               OR bk.name LIKE ?)
-               AND bk.tag LIKE ?
+            "SELECT DISTINCT *
+               FROM book
+               WHERE (name LIKE ?
+               OR author LIKE ?)
+               AND tag LIKE ?
                AND price BETWEEN ? AND ?
-               ORDER BY bk.created_at DESC
+               ORDER BY created_at DESC
                LIMIT ?, ?",
-            author_name,
             book_name,
+            author_name,
             tag,
             filter.price_from.unwrap_or(0),
             filter.price_to.unwrap_or(i64::MAX as u64),
@@ -97,7 +95,7 @@ impl BookRepo for BookRepository {
     ) -> anyhow::Result<Vec<Book>> {
         let books = sqlx::query_as!(
             Book,
-            "SELECT bk.id, bk.name, bk.description, bk.tag, bk.cover_url, bk.price, bk.isbn, bk.created_at
+            "SELECT bk.id, bk.name, bk.description, bk.tag, bk.cover_url, bk.price, bk.isbn, bk.author, bk.created_at
                FROM book bk
                INNER JOIN user_book ub
                ON ub.book_id = bk.id
@@ -121,7 +119,7 @@ impl BookRepo for BookRepository {
     ) -> anyhow::Result<Vec<Book>> {
         let books = sqlx::query_as!(
             Book,
-            "SELECT bk.id, bk.name, bk.description, bk.tag, bk.cover_url, bk.price, bk.isbn, bk.created_at
+            "SELECT bk.id, bk.name, bk.description, bk.tag, bk.cover_url, bk.price, bk.isbn, bk.author, bk.created_at
                FROM book bk
                INNER JOIN upload ub
                ON ub.book_id = bk.id
@@ -144,15 +142,16 @@ impl BookRepo for BookRepository {
         transaction: &mut Transaction<MySql>,
     ) -> anyhow::Result<()> {
         sqlx::query!(
-            "INSERT INTO book (id, name, description, tag, cover_url, price, isbn)
-             VALUES (?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO book (id, name, description, tag, cover_url, price, isbn, author)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             book.id,
             book.name,
             book.description,
             book.tag,
             book.cover_url,
             book.price,
-            book.isbn
+            book.isbn,
+            book.author
         )
         .execute(&mut *transaction)
         .await?;

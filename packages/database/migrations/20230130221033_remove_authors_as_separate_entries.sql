@@ -1,0 +1,4 @@
+ALTER TABLE book ADD author VARCHAR(128) NOT NULL;
+
+DROP TABLE author_book;
+DROP TABLE author;

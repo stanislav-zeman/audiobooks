@@ -1,24 +1,5 @@
-use crate::handlers::grpc::{Author, Book, BookFilters, Pagination, User};
+use crate::handlers::grpc::{Book, BookFilters, Pagination, User};
 use database::models;
-
-impl From<&models::Author> for Author {
-    fn from(value: &models::Author) -> Self {
-        Self {
-            id: value.id.clone(),
-            name: value.name.clone(),
-        }
-    }
-}
-
-impl From<&Author> for models::Author {
-    fn from(value: &Author) -> Self {
-        Self {
-            id: value.id.clone(),
-            name: value.name.clone(),
-            created_at: None,
-        }
-    }
-}
 
 impl From<&models::User> for User {
     fn from(value: &models::User) -> Self {
@@ -81,6 +62,7 @@ impl From<&Book> for models::Book {
             cover_url: value.cover_url.clone(),
             price: value.price as i32,
             isbn: value.isbn.clone(),
+            author: value.authors.clone(),
             created_at: None,
         }
     }

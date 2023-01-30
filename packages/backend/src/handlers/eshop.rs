@@ -1,8 +1,6 @@
 use crate::handlers::helpers::jwt::validate;
 use database::models;
-use database::repositories::{
-    author_repository::AuthorRepo, book_repository::BookRepo, user_repository::UserRepo,
-};
+use database::repositories::{book_repository::BookRepo, user_repository::UserRepo};
 use database::Library;
 use tonic::{Request, Response, Status};
 
@@ -39,18 +37,6 @@ impl eshop_service_server::EshopService for EshopHandler {
         Ok(Response::new(
             get_book(&self.library, &book, user_id).await?,
         ))
-    }
-
-    async fn get_author_by_id(
-        &self,
-        request: Request<GetAuthorByIdRequest>,
-    ) -> Result<Response<Author>, Status> {
-        let id = request.into_inner().id;
-        let Ok(author) = self.library.authors.get_author_by_id(id.clone()).await else {
-            return Err(Status::not_found("Author not found!"))
-        };
-
-        Ok(Response::new(Author::from(&author)))
     }
 
     async fn get_user_by_id(
@@ -111,41 +97,6 @@ impl eshop_service_server::EshopService for EshopHandler {
             total: books.len() as u32,
             books,
         }))
-    }
-
-    async fn get_authors(
-        &self,
-        request: Request<GetAuthorsRequest>,
-    ) -> Result<Response<Authors>, Status> {
-        let inner = request.into_inner();
-
-        let author_name = match inner.filters {
-            None => None,
-            Some(filters) => filters.name,
-        };
-
-        let pagination = match inner.pagination {
-            None => models::Pagination {
-                limit: u32::MAX,
-                offset: 0,
-            },
-            Some(pagination) => models::Pagination::from(&pagination),
-        };
-
-        let Ok(authors) = self
-            .library
-            .authors
-            .get_authors_by_name(
-                author_name,
-                pagination,
-            )
-            .await else {
-            return Err(Status::internal("Failed filtering authors"))
-        };
-
-        let authors = authors.iter().map(Author::from).collect();
-
-        Ok(Response::new(Authors { total: 0, authors }))
     }
 
     async fn get_my_books(
@@ -249,15 +200,9 @@ impl eshop_service_server::EshopService for EshopHandler {
         }
 
         let new_book = request.into_inner();
-        let authors = new_book.authors.iter().map(models::Author::from).collect();
         let book = models::Book::from(&new_book);
 
-        if self
-            .library
-            .add_book(book, authors, claims.sub)
-            .await
-            .is_err()
-        {
+        if self.library.add_book(book, claims.sub).await.is_err() {
             return Err(Status::not_found("Book not found"));
         };
 
@@ -274,31 +219,11 @@ impl eshop_service_server::EshopService for EshopHandler {
         }
 
         let updated_book = request.into_inner();
-        let authors = updated_book
-            .authors
-            .iter()
-            .map(models::Author::from)
-            .collect();
         let book = models::Book::from(&updated_book);
 
-        if self
-            .library
-            .edit_book(book, authors, claims.sub)
-            .await
-            .is_err()
-        {
+        if self.library.edit_book(book, claims.sub).await.is_err() {
             return Err(Status::not_found("Book not found"));
         };
-
-        Ok(Response::new(Void::default()))
-    }
-
-    async fn add_author(&self, request: Request<Author>) -> Result<Response<Void>, Status> {
-        let author = models::Author::from(&request.into_inner());
-
-        if self.library.authors.add_author(author).await.is_err() {
-            return Err(Status::internal("Failed adding author"));
-        }
 
         Ok(Response::new(Void::default()))
     }
@@ -341,15 +266,10 @@ async fn get_book(
     book: &models::Book,
     user_id: Option<String>,
 ) -> Result<Book, Status> {
-    let Ok(authors) = library.authors.get_book_authors(book.id.clone()).await else {
-        return Err(Status::internal("Failed getting authors."))
-    };
-    let authors = authors.iter().map(Author::from).collect();
-
     let mut book = Book {
         id: book.id.clone(),
         is_owned: false,
-        authors,
+        authors: book.author.clone(),
         name: book.name.clone(),
         description: book.description.clone(),
         cover_url: book.cover_url.clone(),

@@ -9,13 +9,6 @@ pub struct User {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
-pub struct Author {
-    pub id: String,
-    pub name: String,
-    pub created_at: Option<OffsetDateTime>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Book {
     pub id: String,
     pub name: String,
@@ -24,6 +17,7 @@ pub struct Book {
     pub cover_url: String,
     pub price: i32,
     pub isbn: String,
+    pub author: String,
     pub created_at: Option<OffsetDateTime>,
 }
 
