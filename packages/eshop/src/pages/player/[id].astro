@@ -12,7 +12,7 @@ import {
   toBookView,
   toChapterView,
 } from "@utils/bookView";
-import env from "@utils/env";
+import env, { getCoverUrl } from "@utils/env";
 import { grpcClient } from "@utils/grpc/client";
 import { promise } from "@utils/grpc/promise";
 import { includeToken } from "@utils/grpc/token";
@@ -49,6 +49,8 @@ let chapters: ChapterView[] | undefined;
 
 try {
   const result = await getBook(getBookRequest);
+  result?.setCoverUrl(getCoverUrl(book_id));
+
   if (!result) return new Response("Book not found", { status: 404 });
   if (!result.getIsOwned())
     return new Response("You do not own this book", { status: 401 });

@@ -27,6 +27,11 @@ export const Review: ReviewType = () => {
       return console.error("No files were uploaded. This should never happen.");
 
     try {
+      await fetch(`/api/uploads/${id}/cover`, {
+        method: "POST",
+        body: book.cover || null,
+      });
+
       await Promise.all(requests);
 
       await fetch("/api/create_book", {
@@ -36,7 +41,7 @@ export const Review: ReviewType = () => {
           authors: book.authors,
           name: book.name,
           description: book.description,
-          cover_url: book.cover_url,
+          cover_url: ``,
           isbn: book.isbn,
           price: book.price,
           tag: book.tag,
@@ -49,7 +54,7 @@ export const Review: ReviewType = () => {
     }
 
     setLoading(false);
-    window.location.href = `/product/${id}`;
+    window.location.href = `/studio`;
   };
 
   return (

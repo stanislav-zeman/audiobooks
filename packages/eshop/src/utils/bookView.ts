@@ -1,5 +1,5 @@
 import grpc from "grpc-ts/eshop_pb.js";
-import env from "./env";
+import env, { getCoverUrl } from "./env";
 
 export type ChapterView = {
   name: string;
@@ -30,7 +30,7 @@ export const toBookView = (book: grpc.Book): BookView => {
     id: book.getId(),
     name: book.getName(),
     authors: book.getAuthors(),
-    cover_url: book.getCoverUrl(),
+    cover_url: getCoverUrl(book.getId()),
     description: book.getDescription(),
     isbn: book.getIsbn(),
     is_owned: book.getIsOwned(),

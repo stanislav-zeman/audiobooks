@@ -1,13 +1,5 @@
 import type { BookView, ChapterView } from "@utils/bookView";
-import {
-  Component,
-  For,
-  createSignal,
-  JSXElement,
-  Match,
-  Switch,
-  Show,
-} from "solid-js";
+import { Component, createSignal, JSXElement, Show } from "solid-js";
 
 export type Slots = {
   rotateIcon: JSXElement;
