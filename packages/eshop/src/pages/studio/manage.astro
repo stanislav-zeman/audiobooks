@@ -1,11 +1,17 @@
 ---
 import BookCardHorizontal from "@components/search/BookCardHorizontal.astro";
 import PageLayout from "@layouts/PageLayout.astro";
+import { validateStudioAccess } from "@utils/auth/validateStudioAccess";
 import { toBookView } from "@utils/bookView";
 import { grpcClient } from "@utils/grpc/client";
 import { promise } from "@utils/grpc/promise";
 import { includeToken } from "@utils/grpc/token";
 import grpc from "grpc-ts/eshop_pb";
+
+const token = Astro.cookies.get("token").value;
+if (!await validateStudioAccess(token)) {
+  return Astro.redirect("/404");
+}
 
 // TODO: actually paginate this
 const pagination = new grpc.Pagination();

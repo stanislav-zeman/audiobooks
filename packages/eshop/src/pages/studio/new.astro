@@ -1,9 +1,15 @@
 ---
 import { BookUploader } from "@components/widgets/BookUploader";
 import PageLayout from "@layouts/PageLayout.astro";
+import { validateStudioAccess } from "@utils/auth/validateStudioAccess";
 import { grpcClient } from "@utils/grpc/client";
 import { promise } from "@utils/grpc/promise";
 import grpc from "grpc-ts/eshop_pb";
+
+const token = Astro.cookies.get("token").value;
+if (!await validateStudioAccess(token)) {
+  return Astro.redirect("/404");
+}
 
 const getTags = promise(grpcClient.getTags.bind(grpcClient));
 const tags = await getTags(new grpc.Void());

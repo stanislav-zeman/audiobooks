@@ -5,6 +5,12 @@ import { promise } from "@utils/grpc/promise";
 import { includeToken } from "@utils/grpc/token";
 import { GetBookByIdRequest } from "grpc-ts/eshop_pb";
 import grpc from "grpc-ts/eshop_pb";
+import { validateStudioAccess } from "@utils/auth/validateStudioAccess";
+
+const token = Astro.cookies.get("token").value;
+if (!await validateStudioAccess(token)) {
+  return Astro.redirect("/404");
+}
 
 export type Params = {
   id: string;

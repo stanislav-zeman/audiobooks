@@ -1,18 +1,9 @@
 ---
 import PageLayout from "@layouts/PageLayout.astro";
-import type { IdToken } from "@utils/auth/Token";
-import { validateJwt } from "@utils/auth/validateJwt";
-import { decodeJwt } from "jose";
+import { validateStudioAccess } from "@utils/auth/validateStudioAccess";
 
 const token = Astro.cookies.get("token").value;
-let isLoggedIn = false;
-let parsed: IdToken | undefined;
-if (token) {
-  isLoggedIn = await validateJwt(token);
-  parsed = decodeJwt(token) as IdToken;
-};
-
-if (isLoggedIn && parsed?.app_permissions && !parsed.app_permissions.includes("author")) {
+if (!await validateStudioAccess(token)) {
   return Astro.redirect("/404");
 }
 
