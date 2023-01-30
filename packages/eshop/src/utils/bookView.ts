@@ -1,4 +1,10 @@
 import grpc from "grpc-ts/eshop_pb.js";
+import env from "./env";
+
+export type ChapterView = {
+  name: string;
+  url: string;
+};
 
 export type BookView = {
   id: string;
@@ -11,6 +17,13 @@ export type BookView = {
   isbn: string;
   tag: string;
 };
+
+export const toChapterView =
+  (bookId: string) =>
+  (objectName: string): ChapterView => ({
+    name: objectName,
+    url: `https://${env.AWS_CLOUDFRONT_DISTRIBUTION_DOMAIN}/books/${bookId}/${objectName}`,
+  });
 
 export const toBookView = (book: grpc.Book): BookView => {
   return {
@@ -28,7 +41,7 @@ export const toBookView = (book: grpc.Book): BookView => {
 
 export const fromBookView = (book: BookView): grpc.Book => {
   const b = new grpc.Book();
-  
+
   b.setId(book.id);
   b.setName(book.name);
   b.setAuthors(book.authors);

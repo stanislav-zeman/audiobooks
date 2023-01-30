@@ -1,30 +1,93 @@
 ---
+import { ListObjectsV2Command } from "@aws-sdk/client-s3";
+import { getSignedCookies } from "@aws-sdk/cloudfront-signer";
+import Play from "@components/icons/Play.astro";
+import Rotate from "@components/icons/Rotate.astro";
 import { AudioPlayer } from "@components/widgets/AudioPlayer";
 import PageLayout from "@layouts/PageLayout.astro";
-import { toBookView } from "@utils/bookView";
+import { validateJwt } from "@utils/auth/validateJwt";
+import {
+  BookView,
+  ChapterView,
+  toBookView,
+  toChapterView,
+} from "@utils/bookView";
+import env from "@utils/env";
 import { grpcClient } from "@utils/grpc/client";
 import { promise } from "@utils/grpc/promise";
 import { includeToken } from "@utils/grpc/token";
-import { GetBookByIdRequest } from "grpc-ts/eshop_pb";
+import { client } from "@utils/s3/client";
+import grpc from "grpc-ts/eshop_pb";
 
 export type Params = {
   id: string;
 };
 
-const { id } = Astro.params as Params;
+const { id: book_id } = Astro.params as Params;
 
-const request = new GetBookByIdRequest();
-request.setId(id)
+const token = Astro.cookies.get("token").value;
+const isAuthorized = await validateJwt(token);
+
+if (!book_id) {
+  Astro.redirect("/404");
+}
+
+if (!isAuthorized) {
+  Astro.redirect("/404");
+}
 
 const getBook = promise(
   grpcClient.getBookById.bind(grpcClient),
-  includeToken(Astro.cookies.get("token").value)
+  includeToken(token)
 );
-const book = (await getBook(request)) ;
-const bookView = book && toBookView(book);
 
+const getBookRequest = new grpc.GetBookByIdRequest();
+getBookRequest.setId(book_id);
+
+let bookView: BookView | undefined;
+let chapters: ChapterView[] | undefined;
+
+try {
+  const result = await getBook(getBookRequest);
+  if (!result) return new Response("Book not found", { status: 404 });
+  if (!result.getIsOwned())
+    return new Response("You do not own this book", { status: 401 });
+
+  const command = new ListObjectsV2Command({
+    Bucket: "audiobook-development",
+    Prefix: `books/${book_id}`,
+  });
+
+  const res = await client.send(command);
+  const keys = res.Contents?.map((c) => c.Key?.split("/").at(-1) || "");
+  if (!keys) return new Response("Audio files not found", { status: 404 });
+
+  const cfCookies = getSignedCookies({
+    keyPairId: env.AWS_CLOUDFRONT_KEYPAIR_ID!,
+    privateKey: env.AWS_CLOUDFRONT_PRIVATE_KEY!,
+    url: `https://${env.AWS_CLOUDFRONT_DISTRIBUTION_DOMAIN!}/books/${book_id}`,
+    dateLessThan: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString(),
+  });
+
+  for (const [key, value] of Object.entries(cfCookies)) {
+    Astro.cookies.set(key, value);
+  }
+
+  bookView = toBookView(result);
+  chapters = keys.map(toChapterView(book_id));
+} catch (e) {
+  console.error(e);
+  return new Response("Internal server error", { status: 500 });
+}
 ---
 
 <PageLayout>
-  { bookView ? <AudioPlayer client:idle book={bookView} /> : <div>Book not found</div>}
+  {
+    bookView && chapters && (
+      <AudioPlayer client:idle book={bookView} chapters={chapters}>
+        <Rotate slot="rotate-icon" />
+        <Play slot="play-icon" />
+      </AudioPlayer>
+    )
+  }
 </PageLayout>
