@@ -11,5 +11,5 @@ export const get: APIRoute = async ({ params, redirect,cookies }) => {
   request.setBookId(params.book_id as string);
   await buyBook(request);
 
-  return redirect(`/products/${params.book_id}`);
+  return redirect(`/product/${params.book_id}`);
 };

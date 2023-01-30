@@ -16,7 +16,7 @@ const request = new grpc.GetBooksRequest();
 request.setPagination();
 
 const getBooks = promise(
-  grpcClient.getMyBooks.bind(grpcClient),
+  grpcClient.getPublishedBooks.bind(grpcClient),
   includeToken(Astro.cookies.get("token").value)
 );
 const books = (await getBooks(request))?.getBooksList();
