@@ -190,11 +190,25 @@ impl eshop_service_server::EshopService for EshopHandler {
     }
 
     async fn add_book(&self, request: Request<Book>) -> Result<Response<Void>, Status> {
+        let user_id = match validate(request.metadata()).await {
+            Ok(claims) => claims.sub,
+            Err(_) => return Err(Status::unauthenticated("User not authenticated.")),
+        };
+
+        let Ok(user) = self.library.users.get_user_by_id(user_id.clone()).await else {
+            return Err(Status::internal("Failed getting user."));
+        };
+        if user.studio_access == 0 {
+            return Err(Status::permission_denied(
+                "User not allowed to upload books.",
+            ));
+        }
+
         let new_book = request.into_inner();
         let authors = new_book.authors.iter().map(models::Author::from).collect();
         let book = models::Book::from(&new_book);
 
-        if self.library.add_book(book, authors).await.is_err() {
+        if self.library.add_book(book, authors, user_id).await.is_err() {
             return Err(Status::not_found("Book not found"));
         };
 
@@ -202,6 +216,11 @@ impl eshop_service_server::EshopService for EshopHandler {
     }
 
     async fn update_book(&self, request: Request<Book>) -> Result<Response<Void>, Status> {
+        let user_id = match validate(request.metadata()).await {
+            Ok(claims) => claims.sub,
+            Err(_) => return Err(Status::unauthenticated("User not authenticated.")),
+        };
+
         let updated_book = request.into_inner();
         let authors = updated_book
             .authors
@@ -210,7 +229,12 @@ impl eshop_service_server::EshopService for EshopHandler {
             .collect();
         let book = models::Book::from(&updated_book);
 
-        if self.library.edit_book(book, authors).await.is_err() {
+        if self
+            .library
+            .edit_book(book, authors, user_id)
+            .await
+            .is_err()
+        {
             return Err(Status::not_found("Book not found"));
         };
 

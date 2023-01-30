@@ -1,7 +1,8 @@
 use crate::models::{Author, Book};
 use crate::repositories::author_repository::{AuthorRepo, AuthorRepository};
 use crate::repositories::book_repository::{BookRepo, BookRepository};
-use crate::repositories::user_repository::UserRepository;
+use crate::repositories::user_repository::{UserRepo, UserRepository};
+use anyhow::bail;
 use sqlx::{MySql, MySqlPool, Pool};
 use std::env;
 use std::sync::Arc;
@@ -27,7 +28,20 @@ impl Library {
         }
     }
 
-    pub async fn edit_book(&self, book: Book, authors: Vec<Author>) -> anyhow::Result<()> {
+    pub async fn edit_book(
+        &self,
+        book: Book,
+        authors: Vec<Author>,
+        user_id: String,
+    ) -> anyhow::Result<()> {
+        if !self
+            .users
+            .user_uploaded_book(user_id, book.id.clone())
+            .await?
+        {
+            bail!("User didn't upload the book.");
+        }
+
         let mut transaction = self.pool.begin().await?;
 
         self.authors
@@ -46,10 +60,18 @@ impl Library {
         Ok(())
     }
 
-    pub async fn add_book(&self, book: Book, authors: Vec<Author>) -> anyhow::Result<()> {
+    pub async fn add_book(
+        &self,
+        book: Book,
+        authors: Vec<Author>,
+        user_id: String,
+    ) -> anyhow::Result<()> {
         let mut transaction = self.pool.begin().await?;
 
         self.books.add_book(book.clone(), &mut transaction).await?;
+        self.users
+            .assign_upload_user(user_id, book.id.clone(), &mut transaction)
+            .await?;
 
         for author in authors {
             self.authors

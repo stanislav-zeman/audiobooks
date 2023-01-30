@@ -1,6 +1,7 @@
 use crate::models::User;
 use async_trait::async_trait;
 use sqlx;
+use sqlx::{MySql, Transaction};
 use std::sync::Arc;
 
 #[async_trait]
@@ -11,6 +12,13 @@ pub trait UserRepo {
     async fn delete_user(&self, user: User) -> anyhow::Result<()>;
     async fn user_owns_book(&self, user_id: String, book_id: String) -> anyhow::Result<bool>;
     async fn add_book_to_user(&self, user_id: String, book_id: String) -> anyhow::Result<()>;
+    async fn assign_upload_user(
+        &self,
+        user_id: String,
+        book_id: String,
+        transaction: &mut Transaction<MySql>,
+    ) -> anyhow::Result<()>;
+    async fn user_uploaded_book(&self, user_id: String, book_id: String) -> anyhow::Result<bool>;
 }
 
 pub struct UserRepository {
@@ -89,5 +97,34 @@ impl UserRepo for UserRepository {
         .await?;
 
         Ok(())
+    }
+
+    async fn assign_upload_user(
+        &self,
+        user_id: String,
+        book_id: String,
+        transaction: &mut Transaction<MySql>,
+    ) -> anyhow::Result<()> {
+        sqlx::query!(
+            "INSERT INTO upload (user_id, book_id) VALUES (?, ?)",
+            user_id,
+            book_id
+        )
+        .execute(transaction)
+        .await?;
+
+        Ok(())
+    }
+
+    async fn user_uploaded_book(&self, user_id: String, book_id: String) -> anyhow::Result<bool> {
+        let x = sqlx::query!(
+            "SELECT * FROM upload WHERE user_id = ? AND book_id = ?",
+            user_id,
+            book_id
+        )
+        .fetch_optional(&*self.mysql_pool)
+        .await?;
+
+        Ok(x.is_some())
     }
 }
