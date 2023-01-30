@@ -15,9 +15,9 @@ export function promise<R, S>(
   ) => void;
 
   const fn2 = fn as any as Fn;
-  return (request: R): Promise<S> =>
+  return (request: R, _metadata?: grpc.Metadata): Promise<S> =>
     new Promise((resolve, reject) =>
-      fn2(request, metadata, (err, response) => {
+      fn2(request, _metadata || metadata, (err, response) => {
         if (err) reject(err);
         else resolve(response);
       })

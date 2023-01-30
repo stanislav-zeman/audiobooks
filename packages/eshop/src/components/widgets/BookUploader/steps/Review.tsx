@@ -1,3 +1,4 @@
+import type { BookView } from "@utils/bookView";
 import { Component, createSignal } from "solid-js";
 import { newBookStore } from "../state";
 
@@ -22,11 +23,34 @@ export const Review: ReviewType = () => {
       })
     );
 
-    const responses = requests && (await Promise.all(requests));
+    if (!requests)
+      return console.error("No files were uploaded. This should never happen.");
 
-    console.log(responses);
+    try {
+      await Promise.all(requests);
 
-    // console.log({ ...book });
+      await fetch("/api/create_book", {
+        method: "POST",
+        body: JSON.stringify({
+          id,
+          authors: book.authors,
+          name: book.name,
+          description: book.description,
+          cover_url: book.cover_url,
+          file_url: book.file_url,
+          isbn: book.isbn,
+          price: book.price,
+          tag: book.tag,
+          is_owned: false,
+          length: 0,
+        } as BookView),
+      });
+    } catch (err) {
+      console.error(err);
+    }
+
+    setLoading(false);
+    window.location.href = "/studio";
   };
 
   // TODO: Markup
