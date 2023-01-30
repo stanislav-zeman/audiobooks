@@ -14,10 +14,8 @@ message Pagination {
 service EshopService {
   // Getters
   rpc GetBookById(GetBookByIdRequest) returns (Book) {}
-  rpc GetAuthorById(GetAuthorByIdRequest) returns (Author) {}
   rpc GetUserByID(GetUserByIdRequest) returns (User) {}
   rpc GetBooks(GetBooksRequest) returns (Books) {}
-  rpc GetAuthors(GetAuthorsRequest) returns (Authors) {}
   rpc GetMyBooks(GetMyBooksRequest) returns (Books) {}
   rpc GetPublishedBooks(GetMyBooksRequest) returns (Books) {}
   rpc GetTags(Void) returns (Tags) {}
@@ -32,18 +30,13 @@ service EshopService {
 message Book {
   string id = 1;
   bool is_owned = 2;
-  repeated Author authors = 4;
+  string authors = 4;
   string name = 6;
   string description = 7;
   string cover_url = 9;
   uint64 price = 10;
   string ISBN = 11;
   string tag = 12;
-}
-
-message Author {
-  string id = 1;
-  string name = 2;
 }
 
 message User {
@@ -56,11 +49,6 @@ message Books {
   repeated Book books = 2;
 }
 
-message Authors {
-  uint32 total = 1;
-  repeated Author authors = 2;
-}
-
 message BookFilters {
   optional string name = 1;
   optional string author_name = 2;
@@ -69,18 +57,11 @@ message BookFilters {
   optional string tag = 5;
 }
 
-message AuthorFilters { optional string name = 1; }
-
 message GetBookByIdRequest { string id = 1; }
-message GetAuthorByIdRequest { string id = 1; }
 message GetUserByIdRequest { string id = 1; }
 message GetBooksRequest {
   Pagination pagination = 1;
   BookFilters filters = 2;
-}
-message GetAuthorsRequest {
-  Pagination pagination = 1;
-  AuthorFilters filters = 2;
 }
 message GetMyBooksRequest { Pagination pagination = 1; }
 message Tags { repeated string tags = 1; }
