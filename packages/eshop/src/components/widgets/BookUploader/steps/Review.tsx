@@ -37,7 +37,6 @@ export const Review: ReviewType = () => {
           name: book.name,
           description: book.description,
           cover_url: book.cover_url,
-          file_url: book.file_url,
           isbn: book.isbn,
           price: book.price,
           tag: book.tag,

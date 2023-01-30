@@ -11,13 +11,10 @@ export const newBookStore = createStore<
   authors: [],
   description: "",
   price: 0,
-  chapters: [],
   cover_url: "",
-  file_url: "",
   isbn: "",
   name: "",
   tag: "",
-  length: 0,
 });
 
 export const newBookStep = createSignal(0);
