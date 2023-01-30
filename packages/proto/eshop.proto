@@ -23,7 +23,6 @@ service EshopService {
   // Author
   rpc AddBook(Book) returns (Void) {}
   rpc UpdateBook(Book) returns (Void) {}
-  rpc AddAuthor(Author) returns (Void) {}
   rpc BuyBook(BuyBookRequest) returns (Void) {}
 }
 
