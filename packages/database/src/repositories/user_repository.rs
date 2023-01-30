@@ -10,6 +10,7 @@ pub trait UserRepo {
     async fn edit_user(&self, user: User) -> anyhow::Result<()>;
     async fn delete_user(&self, user: User) -> anyhow::Result<()>;
     async fn user_owns_book(&self, user_id: String, book_id: String) -> anyhow::Result<bool>;
+    async fn add_book_to_user(&self, user_id: String, book_id: String) -> anyhow::Result<()>;
 }
 
 pub struct UserRepository {
@@ -76,5 +77,17 @@ impl UserRepo for UserRepository {
         .await?;
 
         Ok(x.is_some())
+    }
+
+    async fn add_book_to_user(&self, user_id: String, book_id: String) -> anyhow::Result<()> {
+        sqlx::query!(
+            "INSERT INTO user_book (user_id, book_id) VALUES (?, ?)",
+            user_id,
+            book_id
+        )
+        .execute(&*self.mysql_pool)
+        .await?;
+
+        Ok(())
     }
 }

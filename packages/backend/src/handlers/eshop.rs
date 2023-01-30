@@ -247,6 +247,23 @@ impl eshop_service_server::EshopService for EshopHandler {
 
         Ok(Response::new(Void::default()))
     }
+
+    async fn buy_book(&self, request: Request<BuyBookRequest>) -> Result<Response<Void>, Status> {
+        let user_id = match validate(request.metadata()) {
+            Ok(claims) => claims.sub,
+            Err(_) => return Err(Status::unauthenticated("User not authenticated.")),
+        };
+
+        match self
+            .library
+            .users
+            .add_book_to_user(user_id, request.into_inner().book_id)
+            .await
+        {
+            Ok(_) => Ok(Response::new(Void::default())),
+            Err(_) => Err(Status::internal("Failed buying book.")),
+        }
+    }
 }
 
 async fn map_books(

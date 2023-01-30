@@ -471,3 +471,23 @@ export namespace Tags {
   }
 }
 
+export class BuyBookRequest extends jspb.Message {
+  getBookId(): string;
+  setBookId(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): BuyBookRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: BuyBookRequest): BuyBookRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: BuyBookRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): BuyBookRequest;
+  static deserializeBinaryFromReader(message: BuyBookRequest, reader: jspb.BinaryReader): BuyBookRequest;
+}
+
+export namespace BuyBookRequest {
+  export type AsObject = {
+    bookId: string,
+  }
+}
+
