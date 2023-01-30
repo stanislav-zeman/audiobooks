@@ -192,7 +192,40 @@ impl eshop_service_server::EshopService for EshopHandler {
         &self,
         request: Request<GetMyBooksRequest>,
     ) -> Result<Response<Books>, Status> {
-        todo!()
+        let user_id = match validate(request.metadata()).await {
+            Ok(claims) => claims.sub,
+            Err(_) => return Err(Status::unauthenticated("User not authenticated.")),
+        };
+
+        let inner = request.into_inner();
+
+        let pagination = match inner.pagination {
+            None => models::Pagination {
+                limit: i32::MAX as u32,
+                offset: 0,
+            },
+            Some(pagination) => models::Pagination::from(&pagination),
+        };
+
+        let Ok(books) = self
+            .library
+            .books
+            .get_published_books(
+                user_id.clone(),
+                pagination,
+            )
+            .await else {
+            return Err(Status::internal("Failed getting user books."))
+        };
+
+        let Ok(books) = map_books(&self.library, books, Some(user_id)).await else {
+            return Err(Status::internal("Failed mapping books."))
+        };
+
+        Ok(Response::new(Books {
+            total: books.len() as u32,
+            books,
+        }))
     }
 
     async fn get_tags(&self, _: Request<Void>) -> Result<Response<Tags>, Status> {

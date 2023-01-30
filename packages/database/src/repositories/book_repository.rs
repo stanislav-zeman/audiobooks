@@ -16,6 +16,11 @@ pub trait BookRepo {
         user_id: String,
         pagination: Pagination,
     ) -> anyhow::Result<Vec<Book>>;
+    async fn get_published_books(
+        &self,
+        user_id: String,
+        pagination: Pagination,
+    ) -> anyhow::Result<Vec<Book>>;
     async fn add_book(
         &self,
         book: Book,
@@ -97,6 +102,31 @@ impl BookRepo for BookRepository {
                bk.file_url, bk.cover_url, bk.price, bk.isbn, bk.created_at
                FROM book bk
                INNER JOIN user_book ub
+               ON ub.book_id = bk.id
+               WHERE ub.user_id = ?
+               ORDER BY bk.created_at DESC
+               LIMIT ?, ?",
+            user_id,
+            pagination.offset,
+            pagination.limit
+        )
+        .fetch_all(&*self.mysql_pool)
+        .await?;
+
+        Ok(books)
+    }
+
+    async fn get_published_books(
+        &self,
+        user_id: String,
+        pagination: Pagination,
+    ) -> anyhow::Result<Vec<Book>> {
+        let books = sqlx::query_as!(
+            Book,
+            "SELECT bk.id, bk.name, bk.description, bk.tag, bk.length,
+               bk.file_url, bk.cover_url, bk.price, bk.isbn, bk.created_at
+               FROM book bk
+               INNER JOIN upload ub
                ON ub.book_id = bk.id
                WHERE ub.user_id = ?
                ORDER BY bk.created_at DESC
