@@ -4,6 +4,7 @@ import type { BookView } from "@utils/bookView";
 export type Props = BookView;
 
 const book = Astro.props;
+
 ---
 
 <div
@@ -34,13 +35,13 @@ const book = Astro.props;
         >{book.price / 100} €</span
       >
       <a
-        href="#"
+        href={`/api/purchase/${book.id}`}
         class:list={[
           "text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center",
           book.is_owned
             ? "bg-green-700 hover:bg-green-800 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
             : "bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800",
-        ]}>{book.is_owned ? "Open" : "Add to cart"}</a
+        ]}>{book.is_owned ? "Open" : "Purchase"}</a
       >
     </div>
   </div>
