@@ -1,7 +1,7 @@
 import grpc from "grpc-ts/eshop_pb";
 
 export const calculateOffset = (page_number: number, limit: number) => {
-  return page_number * limit;
+  return (page_number - 1) * limit;
 };
 
 export const searchFilters = (input: URLSearchParams): grpc.GetBooksRequest => {
@@ -9,6 +9,12 @@ export const searchFilters = (input: URLSearchParams): grpc.GetBooksRequest => {
   const filters = new grpc.BookFilters();
   request.setFilters(filters);
   const limit = 16;
+
+  const pagination = new grpc.Pagination();
+  request.setPagination(pagination);
+
+  pagination.setLimit(limit);
+  pagination.setOffset(calculateOffset(1, limit));
 
   for (const [key, value] of input.entries()) {
     switch (key) {
@@ -23,19 +29,16 @@ export const searchFilters = (input: URLSearchParams): grpc.GetBooksRequest => {
         if (value === "") {
           break;
         }
-        filters.setPriceto(+(value) * 100);
+        filters.setPriceto(+value * 100);
         break;
       case "price-from":
         if (value === "") {
           break;
         }
-        filters.setPricefrom(+(value) * 100);
+        filters.setPricefrom(+value * 100);
         break;
       case "page":
-        const pagination = new grpc.Pagination();
-        pagination.setLimit(limit);
         pagination.setOffset(calculateOffset(+value, limit));
-        request.setPagination(pagination);
         break;
       default:
         break;
