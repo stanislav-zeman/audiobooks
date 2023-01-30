@@ -13,15 +13,6 @@ type EshopServiceGetBookById = {
   readonly responseType: typeof eshop_pb.Book;
 };
 
-type EshopServiceGetAuthorById = {
-  readonly methodName: string;
-  readonly service: typeof EshopService;
-  readonly requestStream: false;
-  readonly responseStream: false;
-  readonly requestType: typeof eshop_pb.GetAuthorByIdRequest;
-  readonly responseType: typeof eshop_pb.Author;
-};
-
 type EshopServiceGetUserByID = {
   readonly methodName: string;
   readonly service: typeof EshopService;
@@ -38,15 +29,6 @@ type EshopServiceGetBooks = {
   readonly responseStream: false;
   readonly requestType: typeof eshop_pb.GetBooksRequest;
   readonly responseType: typeof eshop_pb.Books;
-};
-
-type EshopServiceGetAuthors = {
-  readonly methodName: string;
-  readonly service: typeof EshopService;
-  readonly requestStream: false;
-  readonly responseStream: false;
-  readonly requestType: typeof eshop_pb.GetAuthorsRequest;
-  readonly responseType: typeof eshop_pb.Authors;
 };
 
 type EshopServiceGetMyBooks = {
@@ -94,15 +76,6 @@ type EshopServiceUpdateBook = {
   readonly responseType: typeof eshop_pb.Void;
 };
 
-type EshopServiceAddAuthor = {
-  readonly methodName: string;
-  readonly service: typeof EshopService;
-  readonly requestStream: false;
-  readonly responseStream: false;
-  readonly requestType: typeof eshop_pb.Author;
-  readonly responseType: typeof eshop_pb.Void;
-};
-
 type EshopServiceBuyBook = {
   readonly methodName: string;
   readonly service: typeof EshopService;
@@ -115,16 +88,13 @@ type EshopServiceBuyBook = {
 export class EshopService {
   static readonly serviceName: string;
   static readonly GetBookById: EshopServiceGetBookById;
-  static readonly GetAuthorById: EshopServiceGetAuthorById;
   static readonly GetUserByID: EshopServiceGetUserByID;
   static readonly GetBooks: EshopServiceGetBooks;
-  static readonly GetAuthors: EshopServiceGetAuthors;
   static readonly GetMyBooks: EshopServiceGetMyBooks;
   static readonly GetPublishedBooks: EshopServiceGetPublishedBooks;
   static readonly GetTags: EshopServiceGetTags;
   static readonly AddBook: EshopServiceAddBook;
   static readonly UpdateBook: EshopServiceUpdateBook;
-  static readonly AddAuthor: EshopServiceAddAuthor;
   static readonly BuyBook: EshopServiceBuyBook;
 }
 
@@ -169,15 +139,6 @@ export class EshopServiceClient {
     requestMessage: eshop_pb.GetBookByIdRequest,
     callback: (error: ServiceError|null, responseMessage: eshop_pb.Book|null) => void
   ): UnaryResponse;
-  getAuthorById(
-    requestMessage: eshop_pb.GetAuthorByIdRequest,
-    metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: eshop_pb.Author|null) => void
-  ): UnaryResponse;
-  getAuthorById(
-    requestMessage: eshop_pb.GetAuthorByIdRequest,
-    callback: (error: ServiceError|null, responseMessage: eshop_pb.Author|null) => void
-  ): UnaryResponse;
   getUserByID(
     requestMessage: eshop_pb.GetUserByIdRequest,
     metadata: grpc.Metadata,
@@ -195,15 +156,6 @@ export class EshopServiceClient {
   getBooks(
     requestMessage: eshop_pb.GetBooksRequest,
     callback: (error: ServiceError|null, responseMessage: eshop_pb.Books|null) => void
-  ): UnaryResponse;
-  getAuthors(
-    requestMessage: eshop_pb.GetAuthorsRequest,
-    metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: eshop_pb.Authors|null) => void
-  ): UnaryResponse;
-  getAuthors(
-    requestMessage: eshop_pb.GetAuthorsRequest,
-    callback: (error: ServiceError|null, responseMessage: eshop_pb.Authors|null) => void
   ): UnaryResponse;
   getMyBooks(
     requestMessage: eshop_pb.GetMyBooksRequest,
@@ -248,15 +200,6 @@ export class EshopServiceClient {
   ): UnaryResponse;
   updateBook(
     requestMessage: eshop_pb.Book,
-    callback: (error: ServiceError|null, responseMessage: eshop_pb.Void|null) => void
-  ): UnaryResponse;
-  addAuthor(
-    requestMessage: eshop_pb.Author,
-    metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: eshop_pb.Void|null) => void
-  ): UnaryResponse;
-  addAuthor(
-    requestMessage: eshop_pb.Author,
     callback: (error: ServiceError|null, responseMessage: eshop_pb.Void|null) => void
   ): UnaryResponse;
   buyBook(

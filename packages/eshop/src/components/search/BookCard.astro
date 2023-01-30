@@ -28,7 +28,7 @@ const logged_in = Astro.cookies.get("token").value !== undefined
     </a>
     <div class="flex items-center">
       <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-        {book.authors.map((b) => b.name).join(", ")}
+        {book.authors}
       </p>
     </div>
     <div class="flex items-center justify-between">

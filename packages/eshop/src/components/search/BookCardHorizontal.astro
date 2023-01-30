@@ -1,5 +1,5 @@
 ---
-import type { BookView } from "@utils/book";
+import type { BookView } from "@utils/bookView";
 
 export type Props = BookView & {
   linkBase: string;
@@ -22,7 +22,7 @@ const { linkBase, ...book } = Astro.props;
       {book.name}
     </h5>
     <p class="font-normal text-gray-700 dark:text-gray-400">
-      {book.authors.map((b) => b.name).join(", ")}
+      {book.authors}
     </p>
   </div>
 </a>
