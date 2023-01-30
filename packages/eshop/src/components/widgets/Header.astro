@@ -52,12 +52,11 @@ const { showSearch = false } = Astro.props as Props;
   <div
     class="py-3 px-3 md:py-3.5 md:px-4 mx-auto w-full md:flex md:justify-between max-w-6xl"
   >
-    <div class="flex justify-between">
+    <div class="w-48 flex justify-between">
       <a class="flex items-center" href={"/"}>
         <Logo />
       </a>
       <div class="flex items-center md:hidden">
-        <CartButton />
         <ToggleMenu />
       </div>
     </div>
@@ -69,7 +68,7 @@ const { showSearch = false } = Astro.props as Props;
       )
     }
     <nav
-      class="items-center w-full md:w-auto hidden md:flex text-gray-600 dark:text-slate-200 h-[calc(100vh-72px)] md:h-auto overflow-y-auto md:overflow-visible"
+      class="w-48 items-center md:w-auto hidden md:flex text-gray-600 dark:text-slate-200 h-[calc(100vh-72px)] md:h-auto overflow-y-auto md:overflow-visible"
       aria-label="Main navigation"
     >
       {
@@ -110,9 +109,6 @@ const { showSearch = false } = Astro.props as Props;
       <div
         class="md:self-center flex items-center md:mb-0 mt-8 px-4 md:mt-0 md:px-0"
       >
-        <div class="hidden items-center md:flex md:mr-2">
-          <CartButton />
-        </div>
         <LoginOrLogout />
       </div>
     </nav>
