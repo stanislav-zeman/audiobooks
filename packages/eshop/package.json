@@ -17,6 +17,7 @@
     "@astrolib/analytics": "^0.3.0",
     "@astrolib/seo": "^0.3.0",
     "@aws-sdk/client-s3": "^3.259.0",
+    "@aws-sdk/cloudfront-signer": "^3.257.0",
     "@aws-sdk/lib-storage": "^3.259.0",
     "@aws-sdk/s3-request-presigner": "^3.259.0",
     "@fontsource/inter": "^4.5.15",

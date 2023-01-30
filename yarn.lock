@@ -427,6 +427,13 @@
     fast-xml-parser "4.0.11"
     tslib "^2.3.1"
 
+"@aws-sdk/cloudfront-signer@^3.257.0":
+  version "3.257.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/cloudfront-signer/-/cloudfront-signer-3.257.0.tgz#e1ae8de3495a99d606232f54411f0c5db6c77a58"
+  integrity sha512-DU9HzSE1oTs6Gps1fvCAB3FL3A2SiVW772KXjsOyFyvKYjo8Wb2bDlBMfaidv7y3+qvY466ZOxySw22j0vFsJA==
+  dependencies:
+    "@aws-sdk/url-parser" "3.257.0"
+
 "@aws-sdk/config-resolver@3.259.0":
   version "3.259.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/config-resolver/-/config-resolver-3.259.0.tgz#b2c17b681f890dbe31bc1670da41ae653a734c84"

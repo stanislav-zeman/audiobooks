@@ -2,6 +2,9 @@ import type { APIRoute } from "astro";
 import { Upload } from "@aws-sdk/lib-storage";
 import { validateJwt } from "@utils/auth/validateJwt";
 import { client } from "@utils/s3/client";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl, getSignedCookies } from "@aws-sdk/cloudfront-signer";
+import env from "@utils/env";
 
 export const post: APIRoute = async ({ cookies, params, request }) => {
   const token = cookies.get("token").value;
