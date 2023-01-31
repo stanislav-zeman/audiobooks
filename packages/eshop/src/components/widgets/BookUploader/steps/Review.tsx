@@ -68,7 +68,7 @@ export const Review: ReviewType = () => {
             {book.authors}
           </p>
           <img
-            class="mx-auto mt-10 h-auto max-w-xl rounded-lg shadow-xl dark:shadow-gray-800"
+            class="p-6 rounded-t-lg mx-auto aspect-4/3 object-cover"
             src={book.cover_url || ""}
             alt="Book image"
           ></img>
