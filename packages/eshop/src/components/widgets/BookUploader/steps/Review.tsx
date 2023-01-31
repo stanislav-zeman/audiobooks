@@ -77,7 +77,7 @@ export const Review: ReviewType = () => {
           <div class="text-justify">{book.description}</div>
           <For each={book.files}>
             {(file) => (
-              <li class="flex items-center space-x-3 hover:bg-gray-100">
+              <li class="flex items-center space-x-3">
                 <div class="flex-1">{file?.name}</div>
               </li>
             )}
