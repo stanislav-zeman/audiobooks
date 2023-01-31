@@ -187,7 +187,7 @@ impl BookRepo for BookRepository {
     }
 
     async fn get_tags(&self) -> anyhow::Result<Vec<String>> {
-        Ok(sqlx::query!("SELECT DISTINCT tag FROM book")
+        Ok(sqlx::query!("SELECT DISTINCT tag FROM book ORDER BY tag ASC")
             .fetch_all(&*self.mysql_pool)
             .await?
             .iter()
