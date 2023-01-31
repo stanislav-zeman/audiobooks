@@ -4,7 +4,7 @@ import { getCoverUrl } from "@utils/env";
 import { grpcClient } from "@utils/grpc/client";
 import { promise } from "@utils/grpc/promise";
 import { includeToken } from "@utils/grpc/token";
-import { GetBookByIdRequest } from "grpc-ts/eshop_pb";
+import grpc from "grpc-ts/eshop_pb";
 
 export type Params = {
   id: string;
@@ -12,7 +12,7 @@ export type Params = {
 
 const { id } = Astro.params as Params;
 
-const request = new GetBookByIdRequest();
+const request = new grpc.GetBookByIdRequest();
 request.setId(id);
 
 const getBook = promise(
