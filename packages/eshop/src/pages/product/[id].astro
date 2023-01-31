@@ -1,5 +1,6 @@
 ---
 import Layout from "@layouts/SearchLayout.astro";
+import { getCoverUrl } from "@utils/env";
 import { grpcClient } from "@utils/grpc/client";
 import { promise } from "@utils/grpc/promise";
 import { includeToken } from "@utils/grpc/token";
@@ -12,36 +13,47 @@ export type Params = {
 const { id } = Astro.params as Params;
 
 const request = new GetBookByIdRequest();
-request.setId(id)
+request.setId(id);
 
 const getBook = promise(
   grpcClient.getBookById.bind(grpcClient),
   includeToken(Astro.cookies.get("token").value)
 );
-const book = (await getBook(request)) ;
+const book = await getBook(request);
 const playerUrl = Astro.url.toString().replace("product", "player");
 
-const logged_in = Astro.cookies.get("token").value !== undefined
+const logged_in = Astro.cookies.get("token").value !== undefined;
+const coverUrl = getCoverUrl(id);
 ---
 
 <Layout>
   <div class="w-full flex flex-wrap justify-center px-10 gap-5 my-20">
-      <div class="max-w-xs">
-        <h2 class="mb-4 text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
-        >{book?.getName()}</h2>
-        <p class="mb-4 text-xl font-bold leading-none tracking-tight text-gray-900 dark:text-white"
-        >
-          {book?.getAuthors()}
-        </p>
-        <img class="mx-auto mt-10 h-auto max-w-xl rounded-lg shadow-xl dark:shadow-gray-800"
-        src={book?.getCoverUrl()}>
+    <div class="max-w-xs">
+      <h2
+        class="mb-4 text-4xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
+      >
+        {book?.getName()}
+      </h2>
+      <p
+        class="mb-4 text-xl font-bold leading-none tracking-tight text-gray-900 dark:text-white"
+      >
+        {book?.getAuthors()}
+      </p>
+      <img
+        class="mx-auto mt-10 h-auto max-w-xl rounded-lg shadow-xl dark:shadow-gray-800"
+        src={coverUrl}
+      />
+    </div>
+    <div class="max-w-xs flex flex-col justify-between gap-10">
+      <div class="text-justify">
+        {book?.getDescription()}
       </div>
-      <div class="max-w-xs flex flex-col justify-between gap-10">
-        <div class="text-justify">
-          {book?.getDescription()}
-        </div>
-        <a
-        href={logged_in ? (book?.getIsOwned() ? playerUrl : `/api/purchase/${book?.getId()}`) : "/auth/login"}
+      <a
+        href={logged_in
+          ? book?.getIsOwned()
+            ? playerUrl
+            : `/api/purchase/${book?.getId()}`
+          : "/auth/login"}
         class:list={[
           "text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center",
           book?.getIsOwned()
@@ -50,6 +62,6 @@ const logged_in = Astro.cookies.get("token").value !== undefined
           logged_in ? "" : "opacity-50 cursor-not-allowed",
         ]}>{book?.getIsOwned() ? "Open" : "Purchase"}</a
       >
-      </div>
+    </div>
   </div>
 </Layout>

@@ -16,7 +16,7 @@ export const Cover: CoverType = () => {
     const data = new FormData(e.target as HTMLFormElement);
     const file = data.get("cover") as File;
 
-    setBook((b) => ({ ...b, cover: file }));
+    setBook((b) => ({ ...b, cover: file, coverUrl: coverUrl() }));
     setStep((s) => s + 1);
   };
   const handleInput = (e: InputEvent) => {
