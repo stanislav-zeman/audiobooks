@@ -8,11 +8,11 @@ const logged_in = Astro.cookies.get("token").value !== undefined;
 ---
 
 <div
-  class="w-full md:max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+  class="w-full md:max-w-sm flex flex-col justify-between bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
 >
   <a href={`/product/${book.id}`} class="mx-auto">
     <img
-      class="p-6 rounded-t-lg mx-auto aspect-4/3 object-cover"
+      class="p-6 w-full rounded-t-lg mx-auto aspect-4/3 md:aspect-square object-cover"
       src={book.cover_url}
       alt={book.name}
     />
