@@ -1,8 +1,6 @@
 ---
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { getSignedCookies } from "@aws-sdk/cloudfront-signer";
-import Play from "@components/icons/Play.astro";
-import Rotate from "@components/icons/Rotate.astro";
 import { AudioPlayer } from "@components/widgets/AudioPlayer";
 import PageLayout from "@layouts/PageLayout.astro";
 import { validateJwt } from "@utils/auth/validateJwt";
@@ -86,10 +84,7 @@ try {
 <PageLayout>
   {
     bookView && chapters && (
-      <AudioPlayer client:idle book={bookView} chapters={chapters}>
-        <Rotate slot="rotate-icon" />
-        <Play slot="play-icon" />
-      </AudioPlayer>
+      <AudioPlayer client:idle book={bookView} chapters={chapters} />
     )
   }
 </PageLayout>
