@@ -56,7 +56,6 @@ export const Review: ReviewType = () => {
     setLoading(false);
     window.location.href = `/studio`;
   };
-
   return (
     <div>
       <div class="w-full flex flex-wrap justify-center px-10 gap-5 my-20">
@@ -69,7 +68,7 @@ export const Review: ReviewType = () => {
           </p>
           <img
             class="mx-auto mt-10 h-auto max-w-xl rounded-lg shadow-xl dark:shadow-gray-800"
-            src={book.cover_url || ""}
+            src={book.cover ? URL.createObjectURL(book.cover) : ""}
             alt="Book image"
           ></img>
         </div>
