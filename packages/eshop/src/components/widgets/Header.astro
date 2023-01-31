@@ -36,7 +36,7 @@ const menu = [
         text: "Privacy policy",
         href: "/privacy",
       },
-    ]
+    ],
   },
 ];
 
@@ -46,14 +46,14 @@ let parsed: IdToken | undefined;
 if (token) {
   isLoggedIn = await validateJwt(token);
   parsed = decodeJwt(token) as IdToken;
-};
+}
 
 if (isLoggedIn) {
   const links = menu.at(0)?.links;
   links?.unshift({
     text: "My Collection",
     href: "/player",
-  })
+  });
 }
 
 if (isLoggedIn && parsed?.app_permissions?.includes("author")) {
@@ -61,7 +61,7 @@ if (isLoggedIn && parsed?.app_permissions?.includes("author")) {
   links?.unshift({
     text: "My Studio",
     href: "/studio",
-  })
+  });
 }
 
 const { showSearch = false } = Astro.props as Props;
@@ -74,7 +74,7 @@ const { showSearch = false } = Astro.props as Props;
   <div
     class="py-3 px-3 md:py-3.5 md:px-4 mx-auto w-full md:flex md:justify-between max-w-6xl"
   >
-    <div class="w-48 flex justify-between">
+    <div class="w-full md:w-48 flex justify-between">
       <a class="flex items-center" href={"/"}>
         <Logo />
       </a>
@@ -90,7 +90,7 @@ const { showSearch = false } = Astro.props as Props;
       )
     }
     <nav
-      class="w-48 items-center md:w-auto hidden md:flex text-gray-600 dark:text-slate-200 h-[calc(100vh-72px)] md:h-auto overflow-y-auto md:overflow-visible"
+      class="w-full items-center md:w-auto hidden md:flex text-gray-600 dark:text-slate-200 h-[calc(100vh-72px)] md:h-auto overflow-y-auto md:overflow-visible"
       aria-label="Main navigation"
     >
       {
@@ -106,31 +106,27 @@ const { showSearch = false } = Astro.props as Props;
         {
           menu.map(({ text, links }) => (
             <li class={links?.length ? "dropdown" : ""}>
-              <>
-                <button class="font-medium hover:text-gray-900 dark:hover:text-white px-4 py-3 flex items-center transition duration-150 ease-in-out">
-                  {text}{" "}
-                  <ChevronDown class="w-3.5 h-3.5 ml-0.5 hidden md:inline" />
-                </button>
-                <ul class="dropdown-menu rounded md:absolute pl-4 md:pl-0 md:hidden font-medium md:bg-white md:min-w-[200px] dark:md:bg-slate-800 drop-shadow-xl">
-                  {links.map(({ text: text2, href: href2 }) => (
-                    <li>
-                      <a
-                        class="first:rounded-t last:rounded-b md:hover:bg-gray-100 dark:hover:bg-gray-700 py-2 px-5 block whitespace-no-wrap"
-                        href={href2}
-                      >
-                        {text2}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </>
+              <button class="font-medium hover:text-gray-900 dark:hover:text-white px-4 py-3 flex items-center transition duration-150 ease-in-out">
+                {text}{" "}
+                <ChevronDown class="w-3.5 h-3.5 ml-0.5 hidden md:inline" />
+              </button>
+              <ul class="dropdown-menu rounded md:absolute pl-4 md:pl-0 md:hidden font-medium md:bg-white md:min-w-[200px] dark:md:bg-slate-800 drop-shadow-xl">
+                {links.map(({ text: text2, href: href2 }) => (
+                  <li>
+                    <a
+                      class="first:rounded-t last:rounded-b md:hover:bg-gray-100 dark:hover:bg-gray-700 py-2 px-5 block whitespace-no-wrap"
+                      href={href2}
+                    >
+                      {text2}
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </li>
           ))
         }
       </ul>
-      <div
-        class="md:self-center flex items-center md:mb-0 mt-8 px-4 md:mt-0 md:px-0"
-      >
+      <div class="flex items-center md:mb-0 mt-8 px-4 md:mt-0 md:px-0">
         <LoginOrLogout />
       </div>
     </nav>
