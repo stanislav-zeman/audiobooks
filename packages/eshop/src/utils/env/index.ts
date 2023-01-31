@@ -1,7 +1,7 @@
 const BACKEND_URL = import.meta.env.BACKEND_URL || "http://localhost:9000";
-const AWS_ACCESS_KEY_ID = import.meta.env.AWS_ACCESS_KEY_ID;
-const AWS_SECRET_ACCESS_KEY = import.meta.env.AWS_SECRET_ACCESS_KEY;
-const AWS_REGION = import.meta.env.AWS_REGION || "eu-central-1";
+const AWS_ACCESS_KEY_ID = import.meta.env.AWS_S3_ACCESS_KEY_ID;
+const AWS_SECRET_ACCESS_KEY = import.meta.env.AWS_S3_SECRET_ACCESS_KEY;
+const AWS_REGION = import.meta.env.AWS_S3_REGION || "eu-central-1";
 const AWS_BUCKET = import.meta.env.AWS_BUCKET || "audiobook-development";
 const AWS_CLOUDFRONT_DISTRIBUTION_DOMAIN = import.meta.env
   .AWS_CLOUDFRONT_DISTRIBUTION_DOMAIN;

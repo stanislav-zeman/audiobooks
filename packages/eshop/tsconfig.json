@@ -4,6 +4,8 @@
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
     "baseUrl": ".",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "lib": ["dom", "dom.iterable", "esnext"],
     "paths": {
       "@components/*": ["./src/components/*"],

@@ -23,6 +23,12 @@ export default defineConfig({
         exclude: ["grpc-ts"],
         include: [],
       },
+      rollupOptions: {
+        output: {
+          entryFileNames: "entry.[hash].js",
+          chunkFileNames: "chunks/chunk.[hash].js",
+        },
+      },
     },
   },
   adapter: adapter({

@@ -23,7 +23,7 @@ export const get: APIRoute = async ({ url, redirect, cookies }) => {
   body.append("client_id", AUTH0_META.clientId);
   body.append("code_verifier", codeChallenge.verifier);
   body.append("code", code);
-  body.append("redirect_uri", AUTH0_META.redirectUri);
+  body.append("redirect_uri", `${url.origin}${AUTH0_META.redirectPath}`);
 
   const reqInit: RequestInit = {
     method: "POST",
@@ -37,6 +37,8 @@ export const get: APIRoute = async ({ url, redirect, cookies }) => {
   codeChallenge.yeet();
 
   const req = await fetch(`https://${AUTH0_META.domain}/oauth/token`, reqInit);
+
+  if (!req.ok) return redirect("/", 302);
 
   const res: Tokens = await req.json();
 
