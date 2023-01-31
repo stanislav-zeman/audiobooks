@@ -43,7 +43,7 @@ export const Review: ReviewType = () => {
           description: book.description,
           cover_url: ``,
           isbn: book.isbn,
-          price: book.price,
+          price: Math.round(book.price ?? 0 * 100),
           tag: book.tag,
           is_owned: false,
           length: 0,
