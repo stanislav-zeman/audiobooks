@@ -5,7 +5,7 @@ export interface AudioFileProps {}
 export type AudioFileType = Component<AudioFileProps>;
 
 export const AudioFile: AudioFileType = () => {
-  const [, setBook] = newBookStore;
+  const [book, setBook] = newBookStore;
   const [, setStep] = newBookStep;
 
   const [chapters, setChapters] = createSignal<File[]>([]);
@@ -98,10 +98,9 @@ export const AudioFile: AudioFileType = () => {
             onInput={handleInput}
             id="dropzone-file"
             type="file"
-            class="sr-only"
+            class="hidden"
             multiple
             accept=".mp3,audio/*"
-            required
           />
         </label>
       </div>

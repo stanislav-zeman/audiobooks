@@ -16,10 +16,7 @@ export const Cover: CoverType = () => {
     const data = new FormData(e.target as HTMLFormElement);
     const file = data.get("cover") as File;
 
-    const cover = coverUrl();
-    console.log(cover);
-
-    setBook((b) => ({ ...b, cover: file, coverUrl: cover }));
+    setBook((b) => ({ ...b, cover: file, coverUrl: coverUrl() }));
     setStep((s) => s + 1);
   };
   const handleInput = (e: InputEvent) => {
@@ -79,8 +76,7 @@ export const Cover: CoverType = () => {
           id="cover"
           name="cover"
           type="file"
-          class="sr-only"
-          required
+          class="hidden"
         />
       </label>
       <button
