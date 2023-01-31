@@ -76,7 +76,8 @@ export const Cover: CoverType = () => {
           id="cover"
           name="cover"
           type="file"
-          class="hidden"
+          class="sr-only"
+          required
         />
       </label>
       <button

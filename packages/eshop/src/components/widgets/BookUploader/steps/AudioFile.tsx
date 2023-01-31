@@ -98,9 +98,10 @@ export const AudioFile: AudioFileType = () => {
             onInput={handleInput}
             id="dropzone-file"
             type="file"
-            class="hidden"
             multiple
             accept=".mp3,audio/*"
+            class="sr-only"
+            required
           />
         </label>
       </div>
