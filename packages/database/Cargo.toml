@@ -6,13 +6,13 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.68"
-async-trait = "0.1.63"
-serde = { version = "1.0.152", features = ["derive"] }
-sqlx = { version = "0.6.2", features = ["mysql", "runtime-tokio-rustls", "macros", "time", "offline"] }
+anyhow = "1.0.88"
+async-trait = "0.1.82"
+serde = { version = "1.0.210", features = ["derive"] }
+sqlx = { version = "0.8.2", features = ["mysql", "runtime-tokio-rustls", "macros", "time"] }
 nanoid = "0.4.0"
-time = { version = "0.3.17", features = ["serde"] }
-dotenvy = "0.15.6"
-tokio = { version = "1.21.2", features = ["full"] }
+time = { version = "0.3.36", features = ["serde"] }
+dotenvy = "0.15.7"
+tokio = { version = "1.40.0", features = ["full"] }
 
 

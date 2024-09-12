@@ -4,23 +4,23 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-anyhow = { version = "1" }
+anyhow = { version = "1.0.88" }
 dotenv = "0.15"
-async-trait = "0.1"
-serde = { version = "1.0", features = [ "derive" ] }
+async-trait = "0.1.82"
+serde = { version = "1.0.210", features = [ "derive" ] }
 serde_json = "1.0"
-tokio = { version = "1.21.2", features = ["full"] }
-tonic = "0.8.2"
-prost = "0.11.2"
-tonic-web = "0.5.0"
-tower-http = { version = "0.3.5", features = ["trace"] }
-tracing-subscriber = "0.3.16"
-mysql = "23.0.1"
+tokio = { version = "1.40.0", features = ["full"] }
+tonic = "0.12.2"
+prost = "0.13.2"
+tonic-web = "0.12.2"
+tower-http = { version = "0.5.2", features = ["trace"] }
+tracing-subscriber = "0.3.18"
+mysql = "25.0.1"
 dotenvy = "0.15.6"
-sqlx = { version = "0.6.2", features = ["mysql", "runtime-tokio-rustls"] }
+sqlx = { version = "0.8.2", features = ["mysql", "runtime-tokio-rustls"] }
 database = { path = "../database" }
-jsonwebtoken = "8.2.0"
-reqwest = "0.11.14"
+jsonwebtoken = "9.3.0"
+reqwest = "0.12.7"
 
 [build-dependencies]
-tonic-build = "0.8"
+tonic-build = "0.12.2"
